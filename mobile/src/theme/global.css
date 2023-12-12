@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+	--bg: #09090a;
+	--bg-accent: #18181b;
+	--primary: #7c3aed;
+  --secondary: #a1a1aa;
+  --success: #16a34a;
+	--font: #ffffff;	
+	--font-accent: #f1f1f1;
+  --border: #27272a;
+}
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+ion-toolbar, ion-content {
+  --background: var(--bg);
+}
+
+div#container {
+  padding: 1rem;
+}

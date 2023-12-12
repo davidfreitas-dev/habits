@@ -1,0 +1,46 @@
+<template>
+  <ion-row class="ion-justify-content-start ion-align-items-center">
+    <ion-checkbox
+      :checked="isChecked"
+      @ion-change="$emit('handleCheckboxChange')"
+    />
+    <ion-label>{{ label }}</ion-label>
+  </ion-row>
+</template>
+
+<script setup>
+import { IonRow, IonCheckbox, IonLabel } from '@ionic/vue';
+
+const props = defineProps({
+  isChecked: Boolean,
+  label: {
+    type: String,
+    default: ''
+  },
+});
+
+const emit = defineEmits(['handleCheckboxChange']);
+</script>
+
+<style scoped>
+ion-row {
+  margin-bottom: .5rem;
+}
+ion-checkbox {
+  --size: 2rem;
+  --checkmark-width: 5px;
+  --checkbox-background: var(--bg-accent);
+  --checkbox-background-checked: #22c55e;
+  --border-color-checked: transparent;
+}
+ion-checkbox::part(container) {
+  padding: 6px;
+  border-radius: .5rem;
+  border-color: transparent;
+}
+ion-label {
+  color: var(--font);
+  font-size: 1.1rem;
+  margin-left: .75rem;
+}
+</style>
