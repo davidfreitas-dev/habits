@@ -2,9 +2,12 @@
   <ion-row class="ion-justify-content-start ion-align-items-center">
     <ion-checkbox
       :checked="isChecked"
+      :disabled="isDisabled"
       @ion-change="$emit('handleCheckboxChange')"
     />
-    <ion-label>{{ label }}</ion-label>
+    <ion-label :class="{ disabled: isDisabled }">
+      {{ label }}
+    </ion-label>
   </ion-row>
 </template>
 
@@ -13,6 +16,7 @@ import { IonRow, IonCheckbox, IonLabel } from '@ionic/vue';
 
 const props = defineProps({
   isChecked: Boolean,
+  isDisabled: Boolean,
   label: {
     type: String,
     default: ''
@@ -42,5 +46,8 @@ ion-label {
   color: var(--font);
   font-size: 1.1rem;
   margin-left: .75rem;
+}
+ion-label.disabled {
+  opacity: 0.5;
 }
 </style>

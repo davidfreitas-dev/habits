@@ -25,7 +25,7 @@
           :key="habit.id"
           :label="habit.data.title"
           :is-checked="isHabitChecked(habit.id)"
-          :disabled="isDateInPast"
+          :is-disabled="isDateInPast"
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
