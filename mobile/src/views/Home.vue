@@ -34,43 +34,16 @@ const habitWeekDays = ref([]);
 const dayHabits = ref([]);
 const days = ref([]);
 
-const getDayHabits = async () => {
+const getCollection = async (reference) => {
   const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'day_habits'
+    reference: reference
   });
 
-  dayHabits.value = snapshots;
+  return snapshots;
 };
-
-const getDays = async () => {
-  const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'days'
-  });
-
-  days.value = snapshots;
-};
-
-const getHabitWeekDays = async () => {
-  const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'habit_week_days'
-  });
-
-  habitWeekDays.value = snapshots;
-};
-
-onIonViewWillEnter(async () => {
-  isLoading.value = true;
-  datesFromYearStart.value = generateDatesFromYearBeginning();
-  amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
-  await getHabitWeekDays();
-  await getDayHabits();
-  await getDays();
-  await getSummary();
-  isLoading.value = false;
-});
 
 const getSummary = async () => {
-  const data = days.value.map(day => {
+  const summary = days.value.map(day => {
     const completed = dayHabits.value.filter(dh => dh.data.day_id === day.id).length;
     const amount = habitWeekDays.value.filter(hwd => hwd.data.week_day === dayjs(day.data.date).day()).length;
     return {
@@ -81,8 +54,19 @@ const getSummary = async () => {
     };
   });
 
-  summary.value = data;
+  return summary;
 };
+
+onIonViewWillEnter(async () => {
+  isLoading.value = true;
+  datesFromYearStart.value = generateDatesFromYearBeginning();
+  amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
+  habitWeekDays.value = await getCollection('habit_week_days');
+  dayHabits.value = await getCollection('day_habits');
+  days.value = await getCollection('days');
+  summary.value = await getSummary();
+  isLoading.value = false;
+});
 </script>
 
 <style scoped>
