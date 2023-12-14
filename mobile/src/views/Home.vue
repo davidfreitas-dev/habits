@@ -6,10 +6,11 @@
         <Loading v-if="isLoading" />
         <Summary
           v-if="!isLoading"
-          :summary="summary"
           :dates-from-year-start="datesFromYearStart"
+          :summary="summary"
         />
       </div>
+      <Toast ref="toast" />
     </ion-content>
   </ion-page>
 </template>
@@ -23,24 +24,23 @@ import dayjs from 'dayjs';
 import Header from '@/components/Header.vue';
 import Loading from '@/components/Loading.vue';
 import Summary from '@/components/Summary.vue';
+import Toast from '@/components/Toast.vue';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
-const isLoading = ref(true);
-const datesFromYearStart = ref([]);
-const amountOfDaysToFill = ref(0);
-const minimumSummaryDatesSize = ref(18 * 5);
-const habitWeekDays = ref([]);
-const dayHabits = ref([]);
-const days = ref([]);
+const toast = ref(null);
+const loadingCount = ref(0);
 
+const habitWeekDays = ref([]);
 const addHabitWeekDaysSnapshotListener = async () => {
   const callbackId = await FirebaseFirestore.addCollectionSnapshotListener(
     {
       reference: 'habit_week_days',
     },
     (event, error) => {
+      loadingCount.value++;
+
       if (error) {
-        console.error(error);
+        toast.value?.setOpen(true, 'danger', error);
       } else {
         habitWeekDays.value = event.snapshots;
       }
@@ -49,14 +49,17 @@ const addHabitWeekDaysSnapshotListener = async () => {
   return callbackId;
 };
 
+const dayHabits = ref([]);
 const addDayHabitsSnapshotListener = async () => {
   const callbackId = await FirebaseFirestore.addCollectionSnapshotListener(
     {
       reference: 'day_habits',
     },
     (event, error) => {
+      loadingCount.value++;
+
       if (error) {
-        console.error(error);
+        toast.value?.setOpen(true, 'danger', error);
       } else {
         dayHabits.value = event.snapshots;
       }
@@ -65,14 +68,17 @@ const addDayHabitsSnapshotListener = async () => {
   return callbackId;
 };
 
+const days = ref([]);
 const addDaysSnapshotListener = async () => {
   const callbackId = await FirebaseFirestore.addCollectionSnapshotListener(
     {
       reference: 'days',
     },
     (event, error) => {
+      loadingCount.value++;
+
       if (error) {
-        console.error(error);
+        toast.value?.setOpen(true, 'danger', error);
       } else {
         days.value = event.snapshots;
       }
@@ -80,6 +86,10 @@ const addDaysSnapshotListener = async () => {
   );
   return callbackId;
 };
+
+const isLoading = computed(() => {
+  return loadingCount.value < 3;
+});
 
 const summary = computed(() => {
   return days.value.map(day => {
@@ -94,6 +104,10 @@ const summary = computed(() => {
   }) || [];
 });
 
+const datesFromYearStart = ref([]);
+const amountOfDaysToFill = ref(0);
+const minimumSummaryDatesSize = ref(18 * 5);
+
 const addListeners = async () => {
   await addHabitWeekDaysSnapshotListener();
   await addDayHabitsSnapshotListener();
@@ -101,11 +115,9 @@ const addListeners = async () => {
 };
 
 onMounted(async () => {
-  isLoading.value = true;
   datesFromYearStart.value = generateDatesFromYearBeginning();
   amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
   await addListeners();
-  isLoading.value = false;
 });
 </script>
 
