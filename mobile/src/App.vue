@@ -7,8 +7,11 @@
 <script setup>
 import { onMounted } from 'vue';
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
+import { Capacitor } from '@capacitor/core';
 
 onMounted(() => {
-  window.screen.orientation.lock('portrait');
+  if (Capacitor.isNativePlatform()) {
+    window.screen.orientation.lock('portrait');
+  }  
 });
 </script>
