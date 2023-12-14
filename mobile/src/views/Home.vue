@@ -37,12 +37,14 @@ const addHabitWeekDaysSnapshotListener = async () => {
       reference: 'habit_week_days',
     },
     (event, error) => {
-      loadingCount.value++;
-
       if (error) {
         toast.value?.setOpen(true, 'danger', error);
       } else {
         habitWeekDays.value = event.snapshots;
+      }
+      
+      if (loadingCount.value < 3) {
+        loadingCount.value++;
       }
     }
   );
@@ -56,12 +58,14 @@ const addDayHabitsSnapshotListener = async () => {
       reference: 'day_habits',
     },
     (event, error) => {
-      loadingCount.value++;
-
       if (error) {
         toast.value?.setOpen(true, 'danger', error);
       } else {
         dayHabits.value = event.snapshots;
+      }
+      
+      if (loadingCount.value < 3) {
+        loadingCount.value++;
       }
     }
   );
@@ -75,12 +79,14 @@ const addDaysSnapshotListener = async () => {
       reference: 'days',
     },
     (event, error) => {
-      loadingCount.value++;
-
       if (error) {
         toast.value?.setOpen(true, 'danger', error);
       } else {
         days.value = event.snapshots;
+      }
+      
+      if (loadingCount.value < 3) {
+        loadingCount.value++;
       }
     }
   );
