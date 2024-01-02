@@ -1,5 +1,6 @@
 <template>
   <div>
+    <HabitDaysStartGap />    
     <HabitDay
       v-for="(date, index) in datesFromYearStart"
       :key="index"
@@ -14,6 +15,7 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import dayjs from 'dayjs';
+import HabitDaysStartGap from '@/components/HabitDaysStartGap.vue';
 import HabitDay from '@/components/HabitDay.vue';
 
 const props = defineProps({
