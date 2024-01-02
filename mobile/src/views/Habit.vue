@@ -126,7 +126,7 @@ const getCompletedHabits = async () => {
 
 const getDay = async () => {
   const date = parsedDate.value.toDate();
-  const dayAfter = dayjs(date.value).add(1, 'day').startOf('day').toDate();  
+  const dayAfter = dayjs(date).add(1, 'day').startOf('day').toDate(); 
   const { snapshots } = await FirebaseFirestore.getCollection({
     reference: 'days',
     compositeFilter: {
