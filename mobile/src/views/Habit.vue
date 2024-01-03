@@ -91,7 +91,9 @@ const getPossibleHabits = async () => {
     },
   });
 
-  dayInfo.value.possibleHabits = snapshots;
+  dayInfo.value.possibleHabits = snapshots.sort((a, b) => {
+    return a.data.title.localeCompare(b.data.title);
+  });
 };
 
 const getCompletedHabits = async () => {

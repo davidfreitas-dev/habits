@@ -1,6 +1,7 @@
 <template>
   <ion-row class="ion-justify-content-start ion-align-items-center">
     <ion-checkbox
+      mode="md"
       :checked="isChecked"
       :disabled="isDisabled"
       @ion-change="$emit('handleCheckboxChange')"
