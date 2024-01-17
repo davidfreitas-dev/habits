@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\DB;
+use App\Models\Databse;
 use App\Models\Response;
 
 class Habit {
@@ -47,7 +47,7 @@ class Habit {
 
     try {
       
-      $db = new Db();
+      $db = new Database();
 
       $results = $db->select($sql);
 
@@ -61,7 +61,7 @@ class Habit {
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "success", "Erro ao obter resumo do dia: " . $e->getMessage());
+      return Response::handleResponse(500, "error", "Erro ao obter resumo do dia: " . $e->getMessage());
 
     }
 
@@ -85,7 +85,7 @@ class Habit {
 
     try {
       
-      $db = new Db();
+      $db = new Database();
 
       $results = $db->select($possibleHabitsQuery, array(
         ":date"=>$date,
@@ -121,7 +121,7 @@ class Habit {
 
     try {
       
-      $db = new Db();
+      $db = new Database();
 
       $results = $db->select($completedHabitsQuery, array(
         ":date"=>$formattedDate
@@ -144,7 +144,7 @@ class Habit {
 
     try {
       
-      $db = new Db();
+      $db = new Database();
 
       $db->query("CALL CreateHabitAndAssociateWeekDays(:title, :weekDays)", array(
         ":title"=>$title,
@@ -155,7 +155,7 @@ class Habit {
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "success", "Erro ao criar hábito: " . $e->getMessage());
+      return Response::handleResponse(500, "error", "Erro ao criar hábito: " . $e->getMessage());
 
     }
 
@@ -166,7 +166,7 @@ class Habit {
 
     try {
       
-      $db = new Db();
+      $db = new Database();
 
       $db->query("CALL ToggleHabitForDay(:idhabit)", array(
         ":idhabit"=>$idhabit
@@ -176,7 +176,7 @@ class Habit {
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "success", "Erro ao marcar/desmarcar hábito: " . $e->getMessage());
+      return Response::handleResponse(500, "error", "Erro ao marcar/desmarcar hábito: " . $e->getMessage());
 
     }
 

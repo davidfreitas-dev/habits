@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use \PDO;
-
-class DB {
+class Database {
 
 	private $conn;
 
@@ -12,9 +10,9 @@ class DB {
 	{
 
 		$this->conn = new \PDO(
-			"mysql:dbname=".$_ENV['DBNAME'].";host=".$_ENV['HOST'], 
-			$_ENV['USERNAME'],
-			$_ENV['PASSWORD'], 
+			"mysql:dbname=".$_ENV['DB_NAME'].";host=".$_ENV['DB_HOST'], 
+			$_ENV['DB_USER'],
+			$_ENV['DB_PASSWORD'], 
 			array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;SET time_zone='America/Sao_Paulo'")
 		);
 
