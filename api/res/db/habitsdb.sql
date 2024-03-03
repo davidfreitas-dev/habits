@@ -2,14 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: db
--- Tempo de geração: 19/11/2023 às 14:58
--- Versão do servidor: 8.2.0
--- Versão do PHP: 8.2.8
-
-create database habits_db;
-
-use habits_db;
+-- Host: MySQL
+-- Tempo de geração: 03/03/2024 às 15:27
+-- Versão do servidor: 5.6.51
+-- Versão do PHP: 8.2.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,61 +25,62 @@ DELIMITER $$
 --
 -- Procedimentos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateHabitAndAssociateWeekDays` (IN `habitTitle` VARCHAR(255), IN `weekDaysString` VARCHAR(20))   BEGIN
-  DECLARE habitId INT;
-  DECLARE weekDay INT;
-  DECLARE commaPosition INT;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create` (`p_habit_title` VARCHAR(64), `p_week_days_string` VARCHAR(20))   BEGIN
+  DECLARE v_habit_id INT;
+  DECLARE v_week_day INT;
+  DECLARE v_comma_position INT;
 
   -- Criar o hábito com a data atual, começando do início do dia
-  INSERT INTO habits (title, created_at) VALUES (habitTitle, CURRENT_DATE());
+  INSERT INTO habits (`title`, `created_at`) VALUES (p_habit_title, CURRENT_DATE());
 
   -- Obter o ID do hábito recém-criado
-  SET habitId = LAST_INSERT_ID();
+  SET v_habit_id = LAST_INSERT_ID();
 
   -- Associar o hábito a cada dia
-  WHILE LENGTH(weekDaysString) > 0 DO
-    SET commaPosition = LOCATE(',', weekDaysString);
-    IF commaPosition = 0 THEN
-      SET weekDay = weekDaysString;
+  WHILE LENGTH(p_week_days_string) > 0 DO
+    SET v_comma_position = LOCATE(',', p_week_days_string);
+
+    IF v_comma_position = 0 THEN
+      SET v_week_day = p_week_days_string;
     ELSE
-      SET weekDay = SUBSTRING(weekDaysString, 1, commaPosition - 1);
+      SET v_week_day = SUBSTRING(p_week_days_string, 1, v_comma_position - 1);
     END IF;
 
     -- Inserir a associação do hábito ao dia
-    INSERT INTO habit_week_days (habit_id, week_day) VALUES (habitId, weekDay);
+    INSERT INTO habit_week_days (`habit_id`, `week_day`) VALUES (v_habit_id, v_week_day);
 
     -- Atualizar a string de dias para o próximo
-    IF commaPosition = 0 THEN
-      SET weekDaysString = '';
+    IF v_comma_position = 0 THEN
+      SET p_week_days_string = '';
     ELSE
-      SET weekDaysString = SUBSTRING(weekDaysString, commaPosition + 1);
+      SET p_week_days_string = SUBSTRING(p_week_days_string, v_comma_position + 1);
     END IF;
   END WHILE;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ToggleHabitForDay` (IN `habitId` INT)   BEGIN
-  DECLARE today DATETIME;
-  DECLARE dayId INT;
-  DECLARE dayHabitId INT;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle` (IN `p_habit_id` INT)   BEGIN
+  DECLARE v_today DATETIME;
+  DECLARE v_day_id INT;
+  DECLARE v_day_habit_id INT;
 
-  SET today = CURDATE();
+  SET v_today = CURDATE();
 
   -- Verifica se existe um registro para o dia atual
-  INSERT IGNORE INTO days (date) VALUES (today);
-  SELECT id INTO dayId FROM days WHERE date = today;
+  INSERT IGNORE INTO days (`date`) VALUES (v_today);
+  SELECT `id` INTO v_day_id FROM days WHERE `date` = v_today;
 
   -- Verifica se o hábito já foi marcado para o dia atual
-  SELECT id INTO dayHabitId
+  SELECT `id` INTO v_day_habit_id
   FROM day_habits
-  WHERE day_id = dayId AND habit_id = habitId;
+  WHERE `day_id` = v_day_id AND `habit_id` = p_habit_id;
 
   -- Toggle do hábito
-  IF dayHabitId IS NOT NULL THEN
+  IF v_day_habit_id IS NOT NULL THEN
     -- Se o hábito já estiver marcado, desmarca
-    DELETE FROM day_habits WHERE id = dayHabitId;
+    DELETE FROM day_habits WHERE `id` = v_day_habit_id;
   ELSE
     -- Se o hábito não estiver marcado, marca
-    INSERT INTO day_habits (day_id, habit_id) VALUES (dayId, habitId);
+    INSERT INTO day_habits (`day_id`, `habit_id`) VALUES (v_day_id, p_habit_id);
   END IF;
 END$$
 
@@ -96,16 +93,9 @@ DELIMITER ;
 --
 
 CREATE TABLE `days` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Despejando dados para a tabela `days`
---
-
-INSERT INTO `days` (`id`, `date`) VALUES
-(1, '2023-11-19 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -114,17 +104,10 @@ INSERT INTO `days` (`id`, `date`) VALUES
 --
 
 CREATE TABLE `day_habits` (
-  `id` int NOT NULL,
-  `day_id` int DEFAULT NULL,
-  `habit_id` int DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `day_id` int(11) DEFAULT NULL,
+  `habit_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Despejando dados para a tabela `day_habits`
---
-
-INSERT INTO `day_habits` (`id`, `day_id`, `habit_id`) VALUES
-(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -133,19 +116,10 @@ INSERT INTO `day_habits` (`id`, `day_id`, `habit_id`) VALUES
 --
 
 CREATE TABLE `habits` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Despejando dados para a tabela `habits`
---
-
-INSERT INTO `habits` (`id`, `title`, `created_at`) VALUES
-(1, 'Beber 2L de água', '2023-11-19 00:00:00'),
-(2, 'Ler por 1H', '2023-11-19 00:00:00'),
-(3, 'Estudar música', '2023-11-19 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -154,26 +128,10 @@ INSERT INTO `habits` (`id`, `title`, `created_at`) VALUES
 --
 
 CREATE TABLE `habit_week_days` (
-  `id` int NOT NULL,
-  `habit_id` int DEFAULT NULL,
-  `week_day` int DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `habit_id` int(11) DEFAULT NULL,
+  `week_day` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Despejando dados para a tabela `habit_week_days`
---
-
-INSERT INTO `habit_week_days` (`id`, `habit_id`, `week_day`) VALUES
-(1, 1, 2),
-(2, 1, 4),
-(3, 1, 6),
-(4, 2, 1),
-(5, 2, 3),
-(6, 2, 5),
-(7, 3, 2),
-(8, 3, 3),
-(9, 3, 4),
-(10, 3, 5);
 
 --
 -- Índices para tabelas despejadas
@@ -215,25 +173,25 @@ ALTER TABLE `habit_week_days`
 -- AUTO_INCREMENT de tabela `days`
 --
 ALTER TABLE `days`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `day_habits`
 --
 ALTER TABLE `day_habits`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `habits`
 --
 ALTER TABLE `habits`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `habit_week_days`
 --
 ALTER TABLE `habit_week_days`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restrições para tabelas despejadas

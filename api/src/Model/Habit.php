@@ -162,7 +162,7 @@ class Habit {
       
       $db = new Database();
 
-      $db->query("CALL CreateHabitAndAssociateWeekDays(:title, :weekDays)", array(
+      $db->query("CALL sp_habits_create(:title, :weekDays)", array(
         ":title"=>$title,
         ":weekDays"=>$weekDays
       ));
@@ -192,7 +192,7 @@ class Habit {
       
       $db = new Database();
 
-      $db->query("CALL ToggleHabitForDay(:idhabit)", array(
+      $db->query("CALL sp_habits_toggle(:idhabit)", array(
         ":idhabit"=>$idhabit
       ));
 
