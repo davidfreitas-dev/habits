@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\Model;
 
-use App\Models\Databse;
-use App\Models\Response;
+use App\DB\Database;
+use App\Utils\ApiResponseFormatter;
 
 class Habit {
 
@@ -14,10 +14,14 @@ class Habit {
 
     $completedHabits = Habit::getCompletedHabits($date);
 
-    return Response::handleResponse(200, "success", array(
-      "possibleHabits" => $possibleHabits,
-      "completedHabits" => $completedHabits
-    ));
+    return ApiResponseFormatter::formatResponse(
+      200, 
+      "success", 
+      [
+        "possibleHabits" => $possibleHabits,
+        "completedHabits" => $completedHabits
+      ]
+    );
 
   }
 
@@ -29,13 +33,13 @@ class Habit {
         D.date,
         (
           SELECT
-            CAST(COUNT(*) AS FLOAT)
+            COUNT(*)
           FROM day_habits DH
           WHERE DH.day_id = D.id
         ) AS completed,
         (
           SELECT 
-            CAST(COUNT(*) AS FLOAT)
+            COUNT(*)
           FROM habit_week_days HWD
           JOIN habits H ON H.id = HWD.habit_id
           WHERE
@@ -53,15 +57,27 @@ class Habit {
 
       if (count($results)) {
 
-				return Response::handleResponse(200, "success", $results);
+				return ApiResponseFormatter::formatResponse(
+          200, 
+          "success", 
+          $results
+        );
 
 			} 
       
-      return Response::handleResponse(204, "success", "Resumo não disponível para o dia selecionado");
+      return ApiResponseFormatter::formatResponse(
+        204, 
+        "success", 
+        "Resumo não disponível para o dia selecionado"
+      );
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "error", "Erro ao obter resumo do dia: " . $e->getMessage());
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Erro ao obter resumo do dia: " . $e->getMessage()
+      );
 
     }
 
@@ -151,11 +167,19 @@ class Habit {
         ":weekDays"=>$weekDays
       ));
 
-      return Response::handleResponse(201, "success", "Hábito criado com sucesso");
+      return ApiResponseFormatter::formatResponse(
+        201, 
+        "success", 
+        "Hábito criado com sucesso"
+      );
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "error", "Erro ao criar hábito: " . $e->getMessage());
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Erro ao criar hábito: " . $e->getMessage()
+      );
 
     }
 
@@ -172,11 +196,19 @@ class Habit {
         ":idhabit"=>$idhabit
       ));
 
-      return Response::handleResponse(201, "success", "Hábito marcado/desmarcado com sucesso");
+      return ApiResponseFormatter::formatResponse(
+        201, 
+        "success", 
+        "Hábito marcado/desmarcado com sucesso"
+      );
 
     } catch (\PDOException $e) {
 
-      return Response::handleResponse(500, "error", "Erro ao marcar/desmarcar hábito: " . $e->getMessage());
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Erro ao marcar/desmarcar hábito: " . $e->getMessage()
+      );
 
     }
 

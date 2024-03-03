@@ -7,6 +7,10 @@
 -- Versão do servidor: 8.2.0
 -- Versão do PHP: 8.2.8
 
+create database habits_db;
+
+use habits_db;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -25,7 +29,7 @@ DELIMITER $$
 --
 -- Procedimentos
 --
-CREATE DEFINER=`root`@`%` PROCEDURE `CreateHabitAndAssociateWeekDays` (IN `habitTitle` VARCHAR(255), IN `weekDaysString` VARCHAR(20))   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CreateHabitAndAssociateWeekDays` (IN `habitTitle` VARCHAR(255), IN `weekDaysString` VARCHAR(20))   BEGIN
   DECLARE habitId INT;
   DECLARE weekDay INT;
   DECLARE commaPosition INT;
@@ -57,7 +61,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `CreateHabitAndAssociateWeekDays` (IN `habit
   END WHILE;
 END$$
 
-CREATE DEFINER=`root`@`%` PROCEDURE `ToggleHabitForDay` (IN `habitId` INT)   BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ToggleHabitForDay` (IN `habitId` INT)   BEGIN
   DECLARE today DATETIME;
   DECLARE dayId INT;
   DECLARE dayHabitId INT;
@@ -94,7 +98,7 @@ DELIMITER ;
 CREATE TABLE `days` (
   `id` int NOT NULL,
   `date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Despejando dados para a tabela `days`
@@ -113,7 +117,7 @@ CREATE TABLE `day_habits` (
   `id` int NOT NULL,
   `day_id` int DEFAULT NULL,
   `habit_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Despejando dados para a tabela `day_habits`
@@ -132,7 +136,7 @@ CREATE TABLE `habits` (
   `id` int NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Despejando dados para a tabela `habits`
@@ -153,7 +157,7 @@ CREATE TABLE `habit_week_days` (
   `id` int NOT NULL,
   `habit_id` int DEFAULT NULL,
   `week_day` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Despejando dados para a tabela `habit_week_days`
