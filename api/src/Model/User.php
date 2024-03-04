@@ -10,7 +10,7 @@ class User {
   public static function create($user)
   {
 
-    $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password";
+    $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
 
     try {
       
@@ -22,20 +22,10 @@ class User {
 				":password"=>User::getPasswordHash($user['password'])
 			));
 
-      if (empty($results)) {
-        
-        return ApiResponseFormatter::formatResponse(
-          400, 
-          "error", 
-          "Não foi possível retornar os dados do usuário cadastrado"
-        );
-
-      }
-
       return ApiResponseFormatter::formatResponse(
         201, 
         "success", 
-        $results[0]
+        "Cadastro efetuado com sucesso"
       );
 
     } catch (\PDOException $e) {
@@ -43,7 +33,7 @@ class User {
 			return ApiResponseFormatter::formatResponse(
         500, 
         "error", 
-        "Falha ao cadastrar usuário: " . $e->getMessage()
+        "Falha ao efetuar cadastro: " . $e->getMessage()
       );
 			
 		}		

@@ -4,7 +4,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Selective\BasePath\BasePathMiddleware;
 use Slim\Factory\AppFactory;
-use App\Model\Habit;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -22,62 +21,39 @@ $app->add(new BasePathMiddleware($app));
 
 $app->addErrorMiddleware(true, true, true);
 
-$app->post('/habits/create', function (Request $request, Response $response) {
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+  "header" => "X-Token",
+  "regexp" => "/(.*)/",
+  "path" => "/",
+  "secure" => "false",
+  "ignore" => [
+    "/signin", 
+    "/signup",
+    "/($|/)"
+  ],
+  "secret" => $_ENV['JWT_SECRET_KEY'],
+  "algorithm" => "HS256",
+  "error" => function ($response, $arguments) {
+    $data["status"] = "error";
+    $data["message"] = $arguments["message"];
+    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
+    return $response->withHeader('content-type', 'application/json');
+  }
+]));
 
-  $payload = $request->getParsedBody();
+$app->get('/', function (Request $request, Response $response) {
 
-  $results = Habit::create($payload);
+  $welcomeMessage = [
+    'message' => 'Welcome to the Habits API!'
+  ];
 
-  $response->getBody()->write(json_encode($results));
+  $response->getBody()->write(json_encode($welcomeMessage));
 
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
-
-});
-
-$app->post('/habits/summary', function (Request $request, Response $response) {
-  
-  $payload = $request->getParsedBody();
-
-  $results = Habit::summary($payload['userId']);
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
-      
-});
-
-$app->post('/habits/day', function (Request $request, Response $response) {
-
-  $payload = $request->getParsedBody();
-  
-  $results = Habit::list($payload);
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
-      
-});
-
-$app->put('/habits/{id}/toggle', function (Request $request, Response $response) {
-
-  $payload = $request->getParsedBody();
-  
-  $habitId = $request->getAttribute('id');
-
-  $results = Habit::toggle($payload['userId'], $habitId);
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+  return $response->withHeader('content-type', 'application/json');
 
 });
+
+require_once('auth.php');
+require_once('habit.php');
 
 $app->run();
