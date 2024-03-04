@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: MySQL
--- Tempo de geração: 04/03/2024 às 02:14
+-- Tempo de geração: 04/03/2024 às 20:28
 -- Versão do servidor: 5.6.51
 -- Versão do PHP: 8.2.16
 
@@ -18,8 +18,80 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Banco de dados: `habitsdb`
+-- Banco de dados: `habits_db`
 --
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create`(
+  IN `p_habit_title` VARCHAR(64), 
+  IN `p_week_days_string` VARCHAR(20), 
+  IN `p_user_id` INT
+)
+BEGIN
+  DECLARE v_habit_id INT;
+  DECLARE v_week_day INT;
+  DECLARE v_comma_position INT;
+
+  -- Criar o hábito com a data atual, começando do início do dia
+  INSERT INTO habits (`title`, `created_at`, `user_id`) VALUES (p_habit_title, CURRENT_DATE(), p_user_id);
+
+  -- Obter o ID do hábito recém-criado
+  SET v_habit_id = LAST_INSERT_ID();
+
+  -- Associar o hábito a cada dia
+  WHILE LENGTH(p_week_days_string) > 0 DO
+    SET v_comma_position = LOCATE(',', p_week_days_string);
+
+    IF v_comma_position = 0 THEN
+      SET v_week_day = p_week_days_string;
+    ELSE
+      SET v_week_day = SUBSTRING(p_week_days_string, 1, v_comma_position - 1);
+    END IF;
+
+    -- Inserir a associação do hábito ao dia
+    INSERT INTO habit_week_days (`habit_id`, `week_day`) VALUES (v_habit_id, v_week_day);
+
+    -- Atualizar a string de dias para o próximo
+    IF v_comma_position = 0 THEN
+      SET p_week_days_string = '';
+    ELSE
+      SET p_week_days_string = SUBSTRING(p_week_days_string, v_comma_position + 1);
+    END IF;
+  END WHILE;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle`(
+  IN `p_user_id` INT, 
+  IN `p_habit_id` INT
+)
+BEGIN
+  DECLARE v_today DATETIME;
+  DECLARE v_day_id INT;
+  DECLARE v_day_habit_id INT;
+
+  SET v_today = CURDATE();
+
+  -- Verifica se existe um registro para o dia atual
+  INSERT IGNORE INTO days (`date`) VALUES (v_today);
+  SELECT `id` INTO v_day_id FROM days WHERE `date` = v_today;
+
+  -- Verifica se o hábito já foi marcado para o dia atual
+  SELECT `id` INTO v_day_habit_id
+  FROM day_habits
+  WHERE `day_id` = v_day_id AND `habit_id` = p_habit_id;
+
+  -- Toggle do hábito
+  IF v_day_habit_id IS NOT NULL THEN
+    -- Se o hábito já estiver marcado, desmarca
+    DELETE FROM day_habits WHERE `id` = v_day_habit_id;
+  ELSE
+    -- Se o hábito não estiver marcado, marca
+    INSERT INTO day_habits (`day_id`, `habit_id`) VALUES (v_day_id, p_habit_id);
+  END IF;
+END$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
