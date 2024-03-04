@@ -22,59 +22,61 @@ $app->add(new BasePathMiddleware($app));
 
 $app->addErrorMiddleware(true, true, true);
 
-$app->get('/summary', function (Request $request, Response $response) {
-  
-  $results = Habit::getSummary();
+$app->post('/habits/create', function (Request $request, Response $response) {
+
+  $payload = $request->getParsedBody();
+
+  $results = Habit::create($payload);
 
   $response->getBody()->write(json_encode($results));
-    return $response
-      ->withHeader('content-type', 'application/json')
-      ->withStatus(200);
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
+
+});
+
+$app->post('/habits/summary', function (Request $request, Response $response) {
+  
+  $payload = $request->getParsedBody();
+
+  $results = Habit::summary($payload['userId']);
+
+  $response->getBody()->write(json_encode($results));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
       
 });
 
-$app->get('/habits/day', function (Request $request, Response $response) {
+$app->post('/habits/day', function (Request $request, Response $response) {
 
-  $data = $request->getParsedBody();
-
-  $date = $data['date'];
+  $payload = $request->getParsedBody();
   
-  $results = Habit::list($date);
+  $results = Habit::list($payload);
 
   $response->getBody()->write(json_encode($results));
-    return $response
-      ->withHeader('content-type', 'application/json')
-      ->withStatus(200);
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
       
-});
-
-$app->post('/habits/save', function (Request $request, Response $response) {
-
-  $data = $request->getParsedBody();
-
-  $title = $data['title'];
-
-  $weekDays = $data['weekDays'];
-
-  $results = Habit::save($title, $weekDays);
-
-  $response->getBody()->write(json_encode($results));
-    return $response
-      ->withHeader('content-type', 'application/json')
-      ->withStatus(200);
-
 });
 
 $app->put('/habits/{id}/toggle', function (Request $request, Response $response) {
 
-  $idhabit = $request->getAttribute('id');
+  $payload = $request->getParsedBody();
+  
+  $habitId = $request->getAttribute('id');
 
-  $results = Habit::toggle($idhabit);
+  $results = Habit::toggle($payload['userId'], $habitId);
 
   $response->getBody()->write(json_encode($results));
-    return $response
-      ->withHeader('content-type', 'application/json')
-      ->withStatus(200);
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
 
 });
 

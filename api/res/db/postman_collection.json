@@ -1,0 +1,119 @@
+{
+    "info": {
+        "_postman_id": "655719a9-833b-403d-99da-6897ff7d4f59",
+        "name": "Habits API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Habits Create",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8000/habits/create",
+                    "path": [
+                        "habits",
+                        "create"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"title\": \"Correr 2 Km\",\n  \"weekDays\": \"0,1,2,3,4,5,6\",\n  \"userId\": 2\n}"
+                }
+            }
+        },
+        {
+            "name": "Habits Summary",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8000/habits/summary",
+                    "path": [
+                        "habits",
+                        "summary"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"userId\": 2\n}"
+                }
+            }
+        },
+        {
+            "name": "Habits Toggle",
+            "request": {
+                "method": "PUT",
+                "url": {
+                    "raw": "http://localhost:8000/habits/3/toggle",
+                    "path": [
+                        "habits",
+                        "3",
+                        "toggle"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"userId\": 2\n}"
+                }
+            }
+        },
+        {
+            "name": "Habits Day",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "http://localhost:8000/habits/day",
+                    "path": [
+                        "habits",
+                        "day"
+                    ],
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000"
+                },
+                "body": {
+                    "mode": "raw",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    },
+                    "raw": "{\n  \"userId\": 2,\n  \"date\": \"2024-03-03\"\n}"
+                }
+            }
+        }
+    ]
+}
