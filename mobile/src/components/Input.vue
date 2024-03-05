@@ -12,7 +12,7 @@ const props = defineProps({
   },
   modelValue: { 
     type: [ String, Number ], 
-    default: null 
+    default: '' 
   }
 });
 
@@ -24,36 +24,32 @@ const updateValue = (event) => (
 </script>
 
 <template>
-  <div>
-    <ion-input
-      @input="updateValue"
-      :type="type"
-      :value="modelValue"
-      :placeholder="placeholder"
-      autocapitalize="on"
-      autocorrect="on"
-      mode="ios"
-    />
-  </div>
+  <ion-input
+    mode="ios"
+    :type="type"
+    :value="modelValue"
+    :placeholder="placeholder"
+    @input="updateValue"
+  />
 </template>
 
 <style scoped>
-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  
+ion-input {
   height: 3rem;
-  padding: .5rem 1rem;
   border-radius: 0.375rem;
   border: 2px solid var(--border);
   background: var(--bg-accent);
-}
-
-div ion-input {
+  
   --color: var(--font);
-  --background: transparent;
   --placeholder-color: var(--placeholder);
   --placeholder-opacity: .8;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+}
+
+ion-input:focus-within {
+  border: 2px solid var(--success);
 }
 </style>

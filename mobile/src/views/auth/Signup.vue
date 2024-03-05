@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-
+import { IonPage, IonContent } from '@ionic/vue';
 </script>
 
 <style scoped>
