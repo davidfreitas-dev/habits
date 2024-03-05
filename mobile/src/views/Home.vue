@@ -16,8 +16,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { IonPage, IonContent } from '@ionic/vue';
+import { ref } from 'vue';
+import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
@@ -30,7 +30,7 @@ const amountOfDaysToFill = ref(0);
 const datesFromYearStart = ref([]);
 const minimumSummaryDatesSize = ref(18 * 5);
 
-onMounted(() => {
+onIonViewWillEnter(() => {
   datesFromYearStart.value = generateDatesFromYearBeginning();
   amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
   getSummary();
