@@ -39,8 +39,7 @@
 <script setup>
 import { ref } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
-import { FirebaseFirestore } from '@capacitor-firebase/firestore';
-import dayjs from 'dayjs';
+import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';
 import Checkbox from '@/components/Checkbox.vue';
@@ -74,47 +73,27 @@ const handleToggleWeekDay = (weekDayIndex) => {
   }
 };
 
-const handleCreateHabitWeekDay = async (habitid, weekday) => {
-  await FirebaseFirestore.addDocument({
-    reference: 'habit_week_days',
-    data: {
-      habit_id: habitid,
-      week_day: weekday
-    }
-  });
-};
-
 const handleCreateHabit = async () => {
   if (!title.value || !weekDays.value.length) {
     showAlert('Ops', 'Informe um título para o hábito e selecione os dias que quer associar');
     return;
   }
-
-  const today = dayjs().startOf('day').toDate();
-
-  const response = await FirebaseFirestore.addDocument({
-    reference: 'habits',
-    data: {
-      title: title.value,
-      created_at: today,
-      week_days: [ ...weekDays.value ]
-    }
+  
+  const response = await axios.post('/habits/create', { 
+    title: title.value,
+    weekDays: weekDays.value.join(','),
+    userId: 1 
   });
 
-  const habitid = response.reference.id;
-
-  if (!habitid) {
-    showAlert('Ops', 'Não foi possível criar o hábito');
+  if (response.status === 'success') {
+    title.value = '';
+    weekDays.value = [];
+    showAlert('Novo Hábito', response.data);
     return;
   }
 
-  weekDays.value.forEach(async (weekDay) => {
-    await handleCreateHabitWeekDay(habitid, weekDay);
-  });
-
-  title.value = '';
-  weekDays.value = [];
-  showAlert('Novo Hábito', 'Hábito criado com sucesso!');
+  console.log(response.data);
+  // Exibir toast com a mensagem de erro
 };
 
 const isDayChecked = (index) => {
