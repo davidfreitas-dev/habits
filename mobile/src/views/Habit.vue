@@ -96,9 +96,12 @@ const handleToggleHabit = async (habitid) => {
   const response = await axios.put(`/habits/${habitid}/toggle`, { userId: 1 });
   
   if (response.status === 'error') {
-    console.log(response.data);
     // Exibir toast com a mensagem de erro
+    console.log(response.data);
+    return;
   }
+
+  await getDayInfo();
 };
 
 const isHabitChecked = (habitid) => {
