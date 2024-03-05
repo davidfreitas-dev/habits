@@ -125,7 +125,7 @@ class Habit {
   private static function getPossibleHabits($date, $userId) 
 	{
 
-    $weekDay = date('w', strtotime($date)) + 1;
+    $weekDay = date('w', strtotime($date));
     
     $possibleHabitsQuery = "
       SELECT *
