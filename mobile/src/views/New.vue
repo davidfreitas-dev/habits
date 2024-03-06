@@ -25,7 +25,7 @@
           @handle-checkbox-change="handleToggleWeekDay(index)"
         />
 
-        <Button @click="handleCreateHabit">
+        <Button class="ion-margin-top ion-padding-top" @click="handleCreateHabit">
           <ion-icon :icon="checkmark" />    
           Confirmar
         </Button>

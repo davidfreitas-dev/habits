@@ -26,7 +26,7 @@
           </Button>
         </form>
 
-        <a href="#">
+        <a href="/signup">
           Criar minha conta
         </a>
       </div>
@@ -64,8 +64,6 @@ const signIn = async () => {
 
   isLoading.value = false;
 
-  console.log(response.data);
-
   if (response.status === 'error') {
     toastRef.value?.setOpen(true, response.status, response.data);
     return;
@@ -89,7 +87,7 @@ const submitForm = async (event) => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido e a senha.');
+    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido e a senha');
     return;
   } 
   
