@@ -25,7 +25,7 @@
           @handle-checkbox-change="handleToggleWeekDay(index)"
         />
 
-        <Button>
+        <Button @click="handleCreateHabit">
           <ion-icon :icon="checkmark" />    
           Confirmar
         </Button>
@@ -37,9 +37,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { IonPage, IonHeader, IonToolbar, IonContent, IonIcon } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
+import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';
@@ -47,6 +48,8 @@ import Checkbox from '@/components/Checkbox.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
 
+
+const toastRef = ref(undefined);
 const title = ref('');
 const weekDays = ref([]);
 const availableWeekDays = ref([
@@ -74,6 +77,12 @@ const handleToggleWeekDay = (weekDayIndex) => {
   }
 };
 
+const storeSession = useSessionStore();
+
+const user = computed(() => {
+  return storeSession.session;
+});
+
 const handleCreateHabit = async () => {
   if (!title.value || !weekDays.value.length) {
     showAlert('Ops', 'Informe um título para o hábito e selecione os dias que quer associar');
@@ -83,7 +92,7 @@ const handleCreateHabit = async () => {
   const response = await axios.post('/habits/create', { 
     title: title.value,
     weekDays: weekDays.value.join(','),
-    userId: 1 
+    userId: user.value.id 
   });
 
   if (response.status === 'success') {
@@ -92,9 +101,8 @@ const handleCreateHabit = async () => {
     showAlert('Novo Hábito', response.data);
     return;
   }
-
-  console.log(response.data);
-  // Exibir toast com a mensagem de erro
+  
+  toastRef.value?.setOpen(true, response.status, response.data);
 };
 
 const isDayChecked = (index) => {

@@ -16,8 +16,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
@@ -29,6 +30,7 @@ const { generateDatesFromYearBeginning } = useGenerateRange();
 const amountOfDaysToFill = ref(0);
 const datesFromYearStart = ref([]);
 const minimumSummaryDatesSize = ref(18 * 5);
+const storeSession = useSessionStore();
 
 onIonViewWillEnter(() => {
   datesFromYearStart.value = generateDatesFromYearBeginning();
@@ -36,12 +38,16 @@ onIonViewWillEnter(() => {
   getSummary();
 });
 
+const user = computed(() => {
+  return storeSession.session;
+});
+
 const isLoading = ref(true);
 const toast = ref(undefined);
 const summary = ref([]);
 
 const getSummary = async () => {
-  const response = await axios.post('/habits/summary', { userId: 1 });
+  const response = await axios.post('/habits/summary', { userId: user.value.id });
   
   if (response.status === 'success') {
     summary.value = response.data;

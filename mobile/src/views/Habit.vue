@@ -44,6 +44,7 @@
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { IonPage, IonHeader, IonToolbar, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
@@ -62,6 +63,11 @@ const weekDay = ref(parsedDate.value.day());
 const dayOfWeek = ref(parsedDate.value.format('dddd'));
 const dayAndMonth = ref(parsedDate.value.format('DD/MM'));
 const isDateInPast = ref(dayjs(date.value).endOf('day').isBefore(new Date));
+const storeSession = useSessionStore();
+
+const user = computed(() => {
+  return storeSession.session;
+});
 
 const dayInfo = ref({
   possibleHabits: [],
@@ -74,7 +80,7 @@ const getDayInfo = async () => {
   const date = parsedDate.value.toDate();
 
   const response = await axios.post('/habits/day', {
-    userId: 1,
+    userId: user.value.id,
     date: date
   });
   
@@ -93,7 +99,7 @@ onIonViewWillEnter(async () => {
 });
 
 const handleToggleHabit = async (habitid) => {
-  const response = await axios.put(`/habits/${habitid}/toggle`, { userId: 1 });
+  const response = await axios.put(`/habits/${habitid}/toggle`, { userId: user.value.id });
   
   if (response.status === 'error') {
     // Exibir toast com a mensagem de erro
