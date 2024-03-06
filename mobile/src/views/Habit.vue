@@ -36,6 +36,8 @@
           Você não pode editar hábitos de uma data passada.
         </div>
       </div>
+
+      <Alert ref="alertRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -75,6 +77,7 @@ const dayInfo = ref({
 });
 
 const isLoading = ref(true);
+const toastRef = ref(undefined);
 
 const getDayInfo = async () => {
   const date = parsedDate.value.toDate();
@@ -87,8 +90,7 @@ const getDayInfo = async () => {
   if (response.status === 'success') {
     dayInfo.value = response.data;
   } else {
-    console.log(response.data);
-    // Exibir toast com a mensagem de erro
+    toastRef.value?.setOpen(true, response.status, response.data);
   }
 
   isLoading.value = false;
@@ -102,7 +104,6 @@ const handleToggleHabit = async (habitid) => {
   const response = await axios.put(`/habits/${habitid}/toggle`, { userId: user.value.id });
   
   if (response.status === 'error') {
-    // Exibir toast com a mensagem de erro
     console.log(response.data);
     return;
   }

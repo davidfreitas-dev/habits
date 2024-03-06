@@ -48,7 +48,6 @@ import Checkbox from '@/components/Checkbox.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
 
-
 const toastRef = ref(undefined);
 const title = ref('');
 const weekDays = ref([]);

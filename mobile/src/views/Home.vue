@@ -5,10 +5,15 @@
       <div id="container">
         <Loading v-if="isLoading" />
         <Summary
-          v-if="!isLoading"
+          v-if="!isLoading && summary.length"
           :dates-from-year-start="datesFromYearStart"
           :summary="summary"
         />
+        <p v-if="!isLoading && !summary.length" class="ion-text-center">
+          <ion-text color="light">
+            Você ainda não criou nenhum hábito
+          </ion-text>
+        </p>
       </div>
       <Toast ref="toast" />
     </ion-content>
@@ -17,7 +22,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
@@ -43,7 +48,7 @@ const user = computed(() => {
 });
 
 const isLoading = ref(true);
-const toast = ref(undefined);
+const toastRef = ref(undefined);
 const summary = ref([]);
 
 const getSummary = async () => {
@@ -52,8 +57,7 @@ const getSummary = async () => {
   if (response.status === 'success') {
     summary.value = response.data;
   } else {
-    console.log(response.data);
-    // Exibir toast com a mensagem de erro
+    toastRef.value?.setOpen(true, response.status, response.data);
   }
 
   isLoading.value = false;
