@@ -25,10 +25,10 @@
           @handle-checkbox-change="handleToggleWeekDay(index)"
         />
 
-        <Button
-          text="Confirmar"
-          @click="handleCreateHabit"
-        />
+        <Button>
+          <ion-icon :icon="checkmark" />    
+          Confirmar
+        </Button>
         
         <Alert ref="alertRef" />
       </div>
@@ -38,7 +38,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonIcon } from '@ionic/vue';
+import { checkmark } from 'ionicons/icons';
 import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';

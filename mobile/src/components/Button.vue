@@ -1,29 +1,18 @@
 <script setup>
-import { IonButton, IonIcon } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
-
-const props = defineProps({
-  text: { 
-    type: String,
-    default: '' 
-  },
-});
+import { IonButton } from '@ionic/vue';
 </script>
 
 <template>
   <ion-button :expand="true">
-    <ion-icon :icon="checkmark" />
-    
-    {{ text }}
+    <slot />
   </ion-button>
 </template>
 
 <style scoped>
 ion-button {
   width: 100%;
-  height: 3.5rem;
+  height: 3rem;
   font-weight: 700;
-  margin-top: 1.5rem;
   --background: var(--success);
   --background-hover: var(--success);
   --background-activated: var(--success);

@@ -35,6 +35,10 @@ const updateValue = (event) => (
 
 <style scoped>
 ion-input {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  
   height: 3rem;
   border-radius: 0.375rem;
   border: 2px solid var(--border);
