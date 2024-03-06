@@ -17,12 +17,12 @@ Habits is a powerful habit management application designed to help you track and
 
 <table>
   <tr>
-    <td><img src="src/assets/screenshots/signin.png" alt="Login Screen" width="200"></td>
-    <td><img src="src/assets/screenshots/summary.png" alt="Home Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/signin.png" alt="Login Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/summary.png" alt="Home Screen" width="200"></td>
   </tr>
   <tr>
-    <td><img src="src/assets/screenshots/habits.png" alt="Shopping List Screen" width="200"></td>
-    <td><img src="src/assets/screenshots/new.png" alt="Settings Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/habits.png" alt="Shopping List Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/new.png" alt="Settings Screen" width="200"></td>
   </tr>
 </table>
 
