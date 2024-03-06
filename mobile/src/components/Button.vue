@@ -1,10 +1,16 @@
 <script setup>
-import { IonButton } from '@ionic/vue';
+import { IonButton, IonSpinner } from '@ionic/vue';
+
+const props = defineProps({
+  isLoading: Boolean,
+  isDisabled: Boolean
+});
 </script>
 
 <template>
-  <ion-button :expand="true">
-    <slot />
+  <ion-button :expand="true" :disabled="isDisabled">
+    <ion-spinner v-if="isLoading" name="dots" />
+    <slot v-else />
   </ion-button>
 </template>
 
