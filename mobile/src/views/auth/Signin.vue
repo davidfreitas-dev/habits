@@ -21,7 +21,7 @@
             Esqueci a senha
           </a>
 
-          <Button @click="handleSignin"> 
+          <Button :is-loading="isLoading" @click="submitForm">
             Entrar
           </Button>
         </form>
@@ -30,23 +30,70 @@
           Criar minha conta
         </a>
       </div>
+
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { IonPage, IonContent } from '@ionic/vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
+import { useSessionStore } from '@/stores/session';
+import axios from '@/api/axios';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
+import Toast from '@/components/Toast.vue';
 
-const formData = ref({
+const router = useRouter();
+const storeSession = useSessionStore();
+const isLoading = ref(false);
+const toastRef = ref(undefined);
+const formData = reactive({
   email: '',
   password: ''
 });
 
-const handleSignin = () => {
+const signIn = async () => {
+  isLoading.value = true;
 
+  const response = await axios.post('/signin', formData);
+
+  isLoading.value = false;
+
+  console.log(response.data);
+
+  if (response.status === 'error') {
+    toastRef.value?.setOpen(true, response.status, response.data);
+    return;
+  }
+
+  storeSession.setSession(response.data);
+
+  router.push('/'); 
+};
+
+const rules = computed(() => {
+  return {
+    email: { required, email },
+    password: { required }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async (event) => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido e a senha.');
+    return;
+  } 
+  
+  signIn();
 };
 </script>
 
