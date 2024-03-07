@@ -99,9 +99,7 @@ class Auth extends User {
 
       $recovery = $results[0];
 
-      $code = AESCryptographer::encrypt($recovery['id']);
-
-      $link = $_ENV['BASE_URL'] . "/forgot/reset?code=$code";
+      $token = AESCryptographer::encrypt($recovery['id']);
 
       $mailer = new Mailer(
         $user['email'], 
@@ -109,7 +107,7 @@ class Auth extends User {
         "Redefinição de senha", 
         array(
           "name"=>$user['name'],
-          "link"=>$link
+          "token"=>$token
         )
       );
 
@@ -118,7 +116,7 @@ class Auth extends User {
       return ApiResponseFormatter::formatResponse(
         200, 
         "success", 
-        "Link de redefinição de senha enviado para o e-mail informado"
+        "Token de redefinição de senha enviado para o e-mail informado"
       );
 
     } catch (\PDOException $e) {
