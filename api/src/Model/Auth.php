@@ -136,12 +136,12 @@ class Auth extends User {
 
     $recoveryId = AESCryptographer::decrypt($token);
 
-    $sql = "SELECT *
-            FROM users_passwords_recoveries a
-            INNER JOIN users b ON a.user_id = b.id
-            WHERE a.id = :recoveryId
-            AND a.recovery_date IS NULL
-            AND DATE_ADD(a.created_at, INTERVAL 1 HOUR) >= NOW()";
+    $sql = "SELECT * FROM users_passwords_recoveries AS upr
+            INNER JOIN users AS u 
+            ON upr.user_id = u.id
+            WHERE upr.id = :recoveryId
+            AND upr.recovery_date IS NULL
+            AND DATE_ADD(upr.created_at, INTERVAL 1 HOUR) >= NOW()";
     
     try {
       
@@ -159,9 +159,16 @@ class Auth extends User {
           "O token de redefinição utilizado expirou"
         );
 
-      } 
-      
-      return $results[0]['id'];
+      }
+
+      return ApiResponseFormatter::formatResponse(
+        200, 
+        "success", 
+        array (
+          "recoveryId"=>$recoveryId,
+          "userId"=>$results[0]['user_id'],
+        )
+      );
 
     } catch (\PDOException $e) {
       

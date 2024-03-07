@@ -25,6 +25,12 @@ const router = createRouter({
       component: () => import('@/views/auth/Token.vue'),
     },
     {
+      path: '/forgot/reset',
+      name: 'Reset',
+      component: () => import('@/views/auth/Reset.vue'),
+      props: route => ({ data: route.query.data })
+    },
+    {
       path: '/',
       redirect: '/home'
     },

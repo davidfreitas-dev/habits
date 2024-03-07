@@ -83,7 +83,7 @@ const rules = computed(() => {
 
 const v$ = useVuelidate(rules, formData);
 
-const submitForm = async (event) => {
+const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {

@@ -6,13 +6,19 @@
           <h1>habits</h1>
 
           <Input
-            type="text"
-            v-model="formData.token"
-            placeholder="Insira seu token aqui"
+            type="password"
+            v-model="formData.password"
+            placeholder="Sua nova senha"
+          /> 
+
+          <Input
+            type="password"
+            v-model="formData.confPassword"
+            placeholder="Confirme sua senha"
           /> 
 
           <Button :is-loading="isLoading" @click="submitForm">
-            Continuar
+            Confirmar
           </Button>
         </form>
 
@@ -31,23 +37,37 @@ import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonPage, IonContent } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { required, sameAs } from '@vuelidate/validators';
 import axios from '@/api/axios';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import Toast from '@/components/Toast.vue';
 
+const props = defineProps({
+  data: {
+    type: String,
+    default: ''
+  }
+});
+
 const router = useRouter();
 const isLoading = ref(false);
 const toastRef = ref(undefined);
 const formData = reactive({
-  token: ''
+  password: '',
+  confPassword: ''
 });
 
-const handleContinue = async () => {
+const handleConfirm = async () => {
   isLoading.value = true;
 
-  const response = await axios.post('/forgot/token', formData);
+  const data = JSON.parse(props.data);
+
+  const response = await axios.post('/forgot/reset', {
+    password: formData.password,
+    recoveryId: data.recoveryId,
+    userId: data.userId
+  });
 
   isLoading.value = false;
 
@@ -56,14 +76,18 @@ const handleContinue = async () => {
     return;
   }
 
-  const data = JSON.stringify(response.data);
+  toastRef.value?.setOpen(true, response.status, response.data);
 
-  router.push({ name: 'Reset', query: { data } });
+  router.push('/');
 };
 
 const rules = computed(() => {
   return {
-    token: { required }
+    password: { required },
+    confPassword: {
+      required,
+      sameAsPassword: sameAs(formData.password)
+    }
   };
 });
 
@@ -72,12 +96,14 @@ const v$ = useVuelidate(rules, formData);
 const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
+  console.log(v$.value.$errors);
+
   if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Informe o token de redefinição de senha');
+    toastRef.value?.setOpen(true, 'error', 'Preencha os campos com senhas idênticas');
     return;
   } 
   
-  handleContinue();
+  handleConfirm();
 };
 </script>
 
