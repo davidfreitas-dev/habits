@@ -194,8 +194,8 @@ class Auth extends User {
       $db = new Database();
 
       $db->query($sql, array(
+        ":userId"=>$payload['userId'],
         ":password"=>Auth::getPasswordHash($payload['password']),
-        ":userId"=>$payload['userId']
       ));
 
       Auth::setForgotUsed($payload['recoveryId']);

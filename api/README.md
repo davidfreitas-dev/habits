@@ -43,6 +43,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 - [User Authentication](#user-authentication)
 - [User Forgot Password](#user-forgot-password)
 - [User Forgot Token](#user-forgot-token)
+- [User Reset Password](#user-reset-password)
 - [Habits Create](#habits-create)
 - [Habits Summary](#habits-summary)
 - [Habits Day](#habits-day)
@@ -102,6 +103,22 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 | Parameter  | Type     | Description                                             |
 | :--------  | :------- | :------------------------------------------------------ |
 | `token`    | `string` | **Required**. Token sent by email to the user           |
+
+**Observation:** The parameters should be passed within a single JSON object.
+
+**Response:** Void
+
+#### User Reset Password
+
+```http
+  POST /forgot/reset
+```
+
+| Parameter    | Type      | Description                                             |
+| :----------- | :-------- | :------------------------------------------------------ |
+| `password`   | `string`  | **Required**. User's password                           |
+| `userId`     | `integer` | **Required**. Logged user ID                            |
+| `recoveryId` | `integer` | **Required**. Requested recovery ID                     |
 
 **Observation:** The parameters should be passed within a single JSON object.
 
