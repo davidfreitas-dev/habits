@@ -3,7 +3,8 @@
 namespace App\Model;
 
 use App\DB\Database;
-use App\Model\User;
+use App\Mail\Mailer;
+use App\Utils\AESCryptographer;
 use App\Utils\ApiResponseFormatter;
 
 class Auth extends User {
@@ -11,9 +12,9 @@ class Auth extends User {
   public static function signup($user) 
 	{
 
-		$userExists = User::getByEmail($user['email']);
+		$results = User::get($user['email']);
 			
-		if ($userExists) {
+		if ($results['status'] == 'success') {
 
 			return ApiResponseFormatter::formatResponse(
         400, 
@@ -30,39 +31,94 @@ class Auth extends User {
   public static function signin($user)
   {
 
-    $sql = "SELECT * FROM users           
-            WHERE email = :email ";
+    $results = User::get($user['email']);
+
+    if ($results['status'] == 'error') {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "Usuário inexistente ou senha inválida."
+      );
+
+    }
+
+    $data = $results['data'];
+
+    if (!password_verify($user['password'], $data['password'])) {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "Usuário inexistente ou senha inválida."
+      );
+
+    }
+
+    return Auth::generateToken($data);
+    
+  }
+
+  public static function getForgotLink($email)
+  {
+
+    $result = User::get($email);
+      
+    if ($result['status'] == 'error') {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "O e-mail informado não consta no banco de dados"
+      );
+
+    } 
+
+    $user = $result['data'];
 
     try {
       
       $db = new Database();
 
-      $results = $db->select($sql, array(
-        ":email"=>$user['email']
-      ));
+      $results = $db->select(
+        "CALL sp_users_passwords_recoveries_create(:userId, :ip)", array(
+          ":userId"=>$user['id'],
+          ":ip"=>$_SERVER['REMOTE_ADDR']
+        )
+      ); 
 
-      if (empty($results)) {
+      if (empty($results))	{
 
         return ApiResponseFormatter::formatResponse(
-          404, 
+          400, 
           "error", 
-          "Usuário inexistente ou senha inválida."
+          "Não foi possível recuperar a senha"
         );
-  
+
       }
 
-      $data = $results[0];
+      $recovery = $results[0];
 
-      if (password_verify($user['password'], $data['password'])) {
+      $code = AESCryptographer::encrypt($recovery['id']);
 
-        return Auth::generateToken($data);
+      $link = $_ENV['BASE_URL'] . "/forgot/reset?code=$code";
 
-      } 
-      
+      $mailer = new Mailer(
+        $user['email'], 
+        $user['name'], 
+        "Redefinição de senha", 
+        array(
+          "name"=>$user['name'],
+          "link"=>$link
+        )
+      );
+
+      $mailer->send();
+
       return ApiResponseFormatter::formatResponse(
-        404, 
-        "error", 
-        "Usuário inexistente ou senha inválida."
+        200, 
+        "success", 
+        "Link de redefinição de senha enviado para o e-mail informado"
       );
 
     } catch (\PDOException $e) {
@@ -70,11 +126,11 @@ class Auth extends User {
       return ApiResponseFormatter::formatResponse(
         500, 
         "error", 
-        "Falha na autenticação do usuário: " . $e->getMessage()
+        "Falha ao recuperar senha: " . $e->getMessage()
       );
 
-    }
-    
+    }		
+
   }
 
   private static function generateToken($data)
