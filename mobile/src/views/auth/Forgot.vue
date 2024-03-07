@@ -56,6 +56,8 @@ const handleContinue = async () => {
     return;
   }
 
+  toastRef.value?.setOpen(true, response.status, response.data);
+
   router.push('/forgot/token'); 
 };
 

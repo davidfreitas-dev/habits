@@ -96,8 +96,6 @@ const v$ = useVuelidate(rules, formData);
 const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
-  console.log(v$.value.$errors);
-
   if (!isFormCorrect) {
     toastRef.value?.setOpen(true, 'error', 'Preencha os campos com senhas idênticas');
     return;
