@@ -59,9 +59,7 @@ BEGIN
     END IF;
   END WHILE;
 END$$
-DELIMITER ;
 
-DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle`(
   IN `p_user_id` INT, 
   IN `p_habit_id` INT
@@ -90,6 +88,18 @@ BEGIN
     -- Se o hábito não estiver marcado, marca
     INSERT INTO day_habits (`day_id`, `habit_id`) VALUES (v_day_id, p_habit_id);
   END IF;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_users_passwords_recoveries_create` (
+  `p_user_id` INT, 
+  `p_ip` VARCHAR(45)
+)   
+BEGIN  
+  INSERT INTO users_passwords_recoveries (user_id, ip)
+  VALUES(p_user_id, p_ip);
+  
+  SELECT * FROM users_passwords_recoveries
+  WHERE id = LAST_INSERT_ID();
 END$$
 DELIMITER ;
 
@@ -154,6 +164,37 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `users_logs`
+--
+
+CREATE TABLE `users_logs` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `log` varchar(128) NOT NULL,
+  `ip` varchar(45) NOT NULL,
+  `user_agent` varchar(128) NOT NULL,
+  `session_id` varchar(64) NOT NULL,
+  `url` varchar(128) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `users_passwords_recoveries`
+--
+
+CREATE TABLE `users_passwords_recoveries` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `ip` varchar(45) NOT NULL,
+  `recovery_date` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Índices para tabelas despejadas
 --
@@ -197,6 +238,20 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Índices de tabela `users_logs`
+--
+ALTER TABLE `users_logs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_users_logs_users_idx` (`user_id`);
+
+--
+-- Índices de tabela `users_passwords_recoveries`
+--
+ALTER TABLE `users_passwords_recoveries`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_users_passwords_recoveries_users_idx` (`user_id`);
+
+--
 -- AUTO_INCREMENT para tabelas despejadas
 --
 
@@ -231,6 +286,18 @@ ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de tabela `users_logs`
+--
+ALTER TABLE `users_logs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `users_passwords_recoveries`
+--
+ALTER TABLE `users_passwords_recoveries`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Restrições para tabelas despejadas
 --
 
@@ -252,6 +319,19 @@ ALTER TABLE `habits`
 --
 ALTER TABLE `habit_week_days`
   ADD CONSTRAINT `fk_habit_week_days_habits` FOREIGN KEY (`habit_id`) REFERENCES `habits` (`id`);
+COMMIT;
+
+--
+-- Restrições para tabelas `users_logs`
+--
+ALTER TABLE `users_logs`
+  ADD CONSTRAINT `fk_users_logs_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Restrições para tabelas `users_passwords_recoveries`
+--
+ALTER TABLE `users_passwords_recoveries`
+  ADD CONSTRAINT `fk_users_passwords_recoveries_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
