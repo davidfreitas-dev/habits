@@ -5,15 +5,10 @@
       <div id="container">
         <Loading v-if="isLoading" />
         <Summary
-          v-if="!isLoading && summary.length"
+          v-if="!isLoading"
           :dates-from-year-start="datesFromYearStart"
           :summary="summary"
         />
-        <p v-if="!isLoading && !summary.length" class="ion-text-center">
-          <ion-text color="light">
-            Você ainda não criou nenhum hábito
-          </ion-text>
-        </p>
       </div>
       <Toast ref="toast" />
     </ion-content>
@@ -22,7 +17,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { IonPage, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
