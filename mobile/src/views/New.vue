@@ -25,7 +25,11 @@
           @handle-checkbox-change="handleToggleWeekDay(index)"
         />
 
-        <Button class="ion-margin-top ion-padding-top" @click="handleCreateHabit">
+        <Button
+          class="ion-margin-top ion-padding-top"
+          :is-loading="isLoading"
+          @click="handleCreateHabit"
+        >
           <ion-icon :icon="checkmark" />    
           Confirmar
         </Button>
@@ -51,6 +55,7 @@ import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
 
+const isLoading = ref(false);
 const toastRef = ref(undefined);
 const title = ref('');
 const weekDays = ref([]);
@@ -90,12 +95,16 @@ const handleCreateHabit = async () => {
     showAlert('Ops', 'Informe um título para o hábito e selecione os dias que quer associar');
     return;
   }
+
+  isLoading.value = true;
   
   const response = await axios.post('/habits/create', { 
     title: title.value,
     weekDays: weekDays.value.join(','),
     userId: user.value.id 
   });
+
+  isLoading.value = false;
 
   if (response.status === 'success') {
     title.value = '';

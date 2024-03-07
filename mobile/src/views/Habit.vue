@@ -20,7 +20,7 @@
 
         <ProgressBar :progress="progressPercentage" />
 
-        <p class="ion-text-center ion-padding-top">
+        <p v-if="!dayInfo.possibleHabits.length" class="ion-text-center ion-padding-top">
           <ion-text color="light">
             Você ainda não criou nenhum hábito
           </ion-text>
@@ -51,7 +51,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { IonPage, IonHeader, IonToolbar, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
