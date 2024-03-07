@@ -161,7 +161,7 @@ class Auth extends User {
 
       } 
       
-      return $results[0];
+      return $results[0]['id'];
 
     } catch (\PDOException $e) {
       
@@ -169,6 +169,69 @@ class Auth extends User {
         500, 
         "error", 
         "Falha ao validar token: " . $e->getMessage()
+      );
+
+    }
+
+  }
+
+  public static function setNewPassword($payload)
+  {
+
+    $sql = "UPDATE users 
+            SET password = :password 
+            WHERE id = :userId";
+
+    try {
+
+      $db = new Database();
+
+      $db->query($sql, array(
+        ":password"=>Auth::getPasswordHash($payload['password']),
+        ":userId"=>$payload['userId']
+      ));
+
+      Auth::setForgotUsed($payload['recoveryId']);
+
+      return ApiResponseFormatter::formatResponse(
+        200, 
+        "success", 
+        "Senha alterada com sucesso"
+      );
+
+    } catch (\PDOException $e) {
+
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao gravar nova senha: " . $e->getMessage()
+      );
+
+    }
+
+  }
+
+  private static function setForgotUsed($recoveryId)
+  {
+
+    $sql = "UPDATE users_passwords_recoveries 
+            SET recovery_date = NOW() 
+            WHERE id = :recoveryId";
+
+    try {
+
+      $db = new Database();
+
+      $db->query($sql, array(
+        ":recoveryId"=>$recoveryId
+      ));
+
+    } catch (\PDOException $e) {
+
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao definir senha antiga como usada: " . $e->getMessage()
       );
 
     }
