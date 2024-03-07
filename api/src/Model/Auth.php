@@ -156,7 +156,7 @@ class Auth extends User {
         return ApiResponseFormatter::formatResponse(
           401, 
           "error", 
-          "O link de redefinição utilizado expirou"
+          "O token de redefinição utilizado expirou"
         );
 
       } 

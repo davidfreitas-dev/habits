@@ -15,6 +15,16 @@ const router = createRouter({
       component: () => import('@/views/auth/Signin.vue'),
     },
     {
+      path: '/forgot',
+      name: 'Forgot',
+      component: () => import('@/views/auth/Forgot.vue'),
+    },
+    {
+      path: '/forgot/token',
+      name: 'Token',
+      component: () => import('@/views/auth/Token.vue'),
+    },
+    {
       path: '/',
       redirect: '/home'
     },

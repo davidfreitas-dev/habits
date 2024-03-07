@@ -28,9 +28,9 @@
           </Button>
         </form>
 
-        <a href="/signin">
+        <router-link to="/signin">
           Já possuo uma conta
-        </a>
+        </router-link>
       </div>
 
       <Toast ref="toastRef" />

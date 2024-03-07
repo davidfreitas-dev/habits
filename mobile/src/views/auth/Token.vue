@@ -7,27 +7,17 @@
 
           <Input
             type="text"
-            v-model="formData.email"
-            placeholder="Endereço de e-mail"
+            v-model="formData.token"
+            placeholder="Insira seu token aqui"
           /> 
-
-          <Input
-            type="password"
-            v-model="formData.password"
-            placeholder="Sua senha"
-          /> 
-
-          <router-link to="/forgot">
-            Esqueci a senha
-          </router-link>
 
           <Button :is-loading="isLoading" @click="submitForm">
-            Entrar
+            Continuar
           </Button>
         </form>
 
-        <router-link to="/signup">
-          Criar minha conta
+        <router-link to="/signin">
+          Voltar ao login
         </router-link>
       </div>
 
@@ -42,25 +32,22 @@ import { useRouter } from 'vue-router';
 import { IonPage, IonContent } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
-import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import Toast from '@/components/Toast.vue';
 
 const router = useRouter();
-const storeSession = useSessionStore();
 const isLoading = ref(false);
 const toastRef = ref(undefined);
 const formData = reactive({
-  email: '',
-  password: ''
+  token: ''
 });
 
-const signIn = async () => {
+const handleContinue = async () => {
   isLoading.value = true;
 
-  const response = await axios.post('/signin', formData);
+  const response = await axios.post('/forgot/token', formData);
 
   isLoading.value = false;
 
@@ -69,15 +56,12 @@ const signIn = async () => {
     return;
   }
 
-  storeSession.setSession(response.data);
-
-  router.push('/'); 
+  console.log(response); 
 };
 
 const rules = computed(() => {
   return {
-    email: { required, email },
-    password: { required }
+    token: { required }
   };
 });
 
@@ -87,11 +71,11 @@ const submitForm = async (event) => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido e a senha');
+    toastRef.value?.setOpen(true, 'error', 'Informe o token de redefinição de senha');
     return;
   } 
   
-  signIn();
+  handleContinue();
 };
 </script>
 
