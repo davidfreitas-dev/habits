@@ -59,7 +59,7 @@ class Auth extends User {
     
   }
 
-  public static function getForgotLink($email)
+  public static function getForgotToken($email)
   {
 
     $result = User::get($email);
@@ -128,6 +128,50 @@ class Auth extends User {
       );
 
     }		
+
+  }
+
+  public static function validateForgotToken($token)
+  {
+
+    $recoveryId = AESCryptographer::decrypt($token);
+
+    $sql = "SELECT *
+            FROM users_passwords_recoveries a
+            INNER JOIN users b ON a.user_id = b.id
+            WHERE a.id = :recoveryId
+            AND a.recovery_date IS NULL
+            AND DATE_ADD(a.created_at, INTERVAL 1 HOUR) >= NOW()";
+    
+    try {
+      
+      $db = new Database();
+
+      $results = $db->select($sql, array(
+        ":recoveryId"=>$recoveryId
+      ));
+
+      if (empty($results)) {
+
+        return ApiResponseFormatter::formatResponse(
+          401, 
+          "error", 
+          "O link de redefinição utilizado expirou"
+        );
+
+      } 
+      
+      return $results[0];
+
+    } catch (\PDOException $e) {
+      
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao validar token: " . $e->getMessage()
+      );
+
+    }
 
   }
 
