@@ -31,3 +31,17 @@ $app->post('/signin', function (Request $request, Response $response) {
     ->withStatus(200);
 
 });
+
+$app->post('/forgot', function (Request $request, Response $response) {
+ 
+  $payload = $request->getParsedBody();
+
+  $result = Auth::getForgotLink($payload['email']);
+
+  $response->getBody()->write(json_encode($result));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
+ 
+});

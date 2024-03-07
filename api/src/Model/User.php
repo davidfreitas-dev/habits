@@ -40,18 +40,19 @@ class User {
 
   }
 
-	public static function get($userId)
+	public static function get($credential)
 	{
 
 		$sql = "SELECT * FROM users 
-            WHERE user_id = :userId";
+            WHERE id = :credential
+            OR email = :credential";
 
 		try {
 
 			$db = new Database();
 
 			$results = $db->select($sql, array(
-				":userId"=>$userId
+				":credential"=>$credential
 			));
 
       if (count($results)) {
@@ -82,35 +83,7 @@ class User {
 
 	}
 
-  public static function getByEmail($email) 
-	{
-		
-		$sql = "SELECT * FROM users 
-            WHERE email = :email";
-		
-		try {
-
-			$db = new Database();
-			
-			$results = $db->select($sql, array(
-				":email"=>$email
-			));
-
-			return count($results);
-
-		} catch (\PDOException $e) {
-
-			return ApiResponseFormatter::formatResponse(
-        500, 
-        "error", 
-        "Falha ao obter usuário: " . $e->getMessage()
-      );
-
-		}		
-
-	}
-
-  private static function getPasswordHash($password)
+  public static function getPasswordHash($password)
 	{
 
 		return password_hash($password, PASSWORD_BCRYPT, [

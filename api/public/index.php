@@ -29,6 +29,7 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
   "ignore" => [
     "/signin", 
     "/signup",
+    "/forgot",
     "/($|/)"
   ],
   "secret" => $_ENV['JWT_SECRET_KEY'],
