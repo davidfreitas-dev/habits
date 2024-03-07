@@ -20,6 +20,12 @@
 
         <ProgressBar :progress="progressPercentage" />
 
+        <p class="ion-text-center ion-padding-top">
+          <ion-text color="light">
+            Você ainda não criou nenhum hábito
+          </ion-text>
+        </p>
+
         <Checkbox
           v-for="habit in dayInfo.possibleHabits"
           :key="habit.id"
@@ -62,7 +68,6 @@ dayjs.locale('pt-br');
 const route = useRoute();
 const date = ref(route.params.date);
 const parsedDate = ref(dayjs(date.value).startOf('day'));
-const weekDay = ref(parsedDate.value.day());
 const dayOfWeek = ref(parsedDate.value.format('dddd'));
 const dayAndMonth = ref(parsedDate.value.format('DD/MM'));
 const isDateInPast = ref(dayjs(date.value).endOf('day').isBefore(new Date));

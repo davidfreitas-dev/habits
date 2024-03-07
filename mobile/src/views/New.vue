@@ -32,6 +32,8 @@
         
         <Alert ref="alertRef" />
       </div>
+
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -47,6 +49,7 @@ import Input from '@/components/Input.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
+import Toast from '@/components/Toast.vue';
 
 const toastRef = ref(undefined);
 const title = ref('');
