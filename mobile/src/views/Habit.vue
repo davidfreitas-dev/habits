@@ -20,12 +20,6 @@
 
         <ProgressBar :progress="progressPercentage" />
 
-        <p v-if="!dayInfo.possibleHabits.length" class="ion-text-center ion-padding-top">
-          <ion-text color="light">
-            Você ainda não criou nenhum hábito
-          </ion-text>
-        </p>
-
         <Checkbox
           v-for="habit in dayInfo.possibleHabits"
           :key="habit.id"
@@ -35,10 +29,11 @@
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <div
-          v-if="isDateInPast"
-          class="message"
-        >
+        <div v-if="!dayInfo.possibleHabits.length && !isDateInPast" class="message">
+          Você ainda não criou nenhum hábito
+        </div>
+
+        <div v-if="isDateInPast" class="message">
           Você não pode editar hábitos de uma data passada.
         </div>
       </div>
