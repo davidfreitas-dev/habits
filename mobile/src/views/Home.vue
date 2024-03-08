@@ -48,14 +48,15 @@ const summary = ref([]);
 
 const getSummary = async () => {
   const response = await axios.post('/habits/summary', { userId: user.value.id });
-  
-  if (response.status === 'success') {
-    summary.value = Array.isArray(response.data) ? response.data : [];
-  } else {
-    toastRef.value?.setOpen(true, response.status, response.data);
-  }
 
   isLoading.value = false;
+  
+  if (response.status === 'error') {
+    toastRef.value?.setOpen(true, response.status, response.data);
+    return;
+  }
+
+  summary.value = Array.isArray(response.data) ? response.data : [];
 };
 </script>
 

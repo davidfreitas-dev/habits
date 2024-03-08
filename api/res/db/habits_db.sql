@@ -74,18 +74,16 @@ END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle`(
   IN `p_user_id` INT, 
-  IN `p_habit_id` INT
+  IN `p_habit_id` INT,
+  IN `p_date` DATETIME
 )
 BEGIN
-  DECLARE v_today DATETIME;
   DECLARE v_day_id INT;
   DECLARE v_day_habit_id INT;
 
-  SET v_today = CURDATE();
-
   -- Verifica se existe um registro para o dia atual
-  INSERT IGNORE INTO days (`date`) VALUES (v_today);
-  SELECT `id` INTO v_day_id FROM days WHERE `date` = v_today;
+  INSERT IGNORE INTO days (`date`) VALUES (p_date);
+  SELECT `id` INTO v_day_id FROM days WHERE `date` = p_date;
 
   -- Verifica se o hábito já foi marcado para o dia atual
   SELECT `id` INTO v_day_habit_id
