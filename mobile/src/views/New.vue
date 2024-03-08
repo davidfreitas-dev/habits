@@ -33,9 +33,9 @@
           <ion-icon :icon="checkmark" />    
           Confirmar
         </Button>
-        
-        <Alert ref="alertRef" />
       </div>
+        
+      <Alert ref="alertRef" />
 
       <Toast ref="toastRef" />
     </ion-content>

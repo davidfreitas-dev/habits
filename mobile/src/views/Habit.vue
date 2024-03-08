@@ -38,7 +38,7 @@
         </div>
       </div>
 
-      <Alert ref="alertRef" />
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -54,7 +54,7 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import Loading from '@/components/Loading.vue';
-import Alert from '@/components/Alert.vue';
+import Toast from '@/components/Toast.vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
