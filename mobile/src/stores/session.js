@@ -8,14 +8,14 @@ export const useSessionStore = defineStore('session', () => {
     session.value = data;
   };
 
-  if (sessionStorage.getItem('session')) {
-    session.value = JSON.parse(sessionStorage.getItem('session'));
+  if (localStorage.getItem('session')) {
+    session.value = JSON.parse(localStorage.getItem('session'));
   }
   
   watch(
     session,
     newSession => {
-      sessionStorage.setItem('session', JSON.stringify(newSession));
+      localStorage.setItem('session', JSON.stringify(newSession));
     },
     { deep: true }
   );
