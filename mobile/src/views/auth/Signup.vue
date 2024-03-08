@@ -42,6 +42,7 @@
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonPage, IonContent } from '@ionic/vue';
+import { useSessionStore } from '@/stores/session';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import axios from '@/api/axios';
@@ -49,6 +50,7 @@ import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import Toast from '@/components/Toast.vue';
 
+const storeSession = useSessionStore();
 const router = useRouter();
 const isLoading = ref(false);
 const toastRef = ref(undefined);
@@ -70,9 +72,9 @@ const signUp = async () => {
     return;
   }
 
-  toastRef.value?.setOpen(true, response.status, response.data);
+  storeSession.setSession(response.data);
 
-  router.push('/signin'); 
+  router.push('/'); 
 };
 
 const rules = computed(() => {

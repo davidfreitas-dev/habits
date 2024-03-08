@@ -24,7 +24,17 @@ class Auth extends User {
 
 		}
     
-    return User::create($user);
+    $results = User::create($user);
+
+    if ($results['status'] == 'error') {
+
+      return $results;
+
+    }
+
+    $data = $results['data'];
+
+    return Auth::generateToken($data);
 
 	}
         
