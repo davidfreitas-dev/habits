@@ -10,7 +10,7 @@ class User {
   public static function create($user)
   {
 
-    $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
+    $sql = "CALL sp_users_create(:name, :email, :password)";
 
     try {
       
@@ -25,7 +25,7 @@ class User {
       return ApiResponseFormatter::formatResponse(
         201, 
         "success", 
-        "Cadastro efetuado com sucesso"
+        $results[0]
       );
 
     } catch (\PDOException $e) {

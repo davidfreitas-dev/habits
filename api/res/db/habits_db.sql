@@ -22,6 +22,18 @@ SET time_zone = "+00:00";
 --
 
 DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_users_create` (
+  `p_name` VARCHAR(64), 
+  `p_email` VARCHAR(128),
+  `p_password` VARCHAR(256)
+)   
+BEGIN  
+  INSERT INTO users (`name`, `email`, `password`) 
+  VALUES (p_name, p_email, p_password);
+  
+  SELECT * FROM users WHERE id = LAST_INSERT_ID();
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create`(
   IN `p_habit_title` VARCHAR(64), 
   IN `p_week_days_string` VARCHAR(20), 
