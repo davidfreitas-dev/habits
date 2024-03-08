@@ -26,7 +26,7 @@
         />
 
         <Button
-          class="ion-margin-top ion-padding-top"
+          class="ion-margin-top"
           :is-loading="isLoading"
           @click="handleCreateHabit"
         >

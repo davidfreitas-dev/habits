@@ -1,54 +1,134 @@
 {
     "client": "Thunder Client",
     "collectionName": "Habits API",
-    "dateExported": "2024-03-04T18:29:14.048Z",
+    "dateExported": "2024-03-07T21:29:36.036Z",
     "version": "1.1",
     "folders": [],
     "requests": [
         {
-            "_id": "4fe8ec3e-f701-4239-b61d-d2d3c091680d",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
+            "_id": "9a4de600-c2d6-425a-9f30-4cf1940411de",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
             "containerId": "",
             "name": "Base",
             "url": "http://localhost:8000/",
             "method": "GET",
             "sortNum": 2500,
-            "created": "2024-03-04T18:27:05.667Z",
-            "modified": "2024-03-04T18:27:26.940Z",
+            "created": "2024-03-06T13:27:58.563Z",
+            "modified": "2024-03-06T13:27:58.563Z",
             "headers": [],
             "params": [],
+            "tests": []
+        },
+        {
+            "_id": "bb0292ec-19bc-4a32-b9bd-84628cb2a8cf",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Sign Up",
+            "url": "http://localhost:8000/signup",
+            "method": "POST",
+            "sortNum": 3125,
+            "created": "2024-03-06T13:27:58.562Z",
+            "modified": "2024-03-07T13:24:38.311Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"John Doe\", \n  \"email\": \"johndoe@email.com\", \n  \"password\": \"JohnDoe@123\"\n}",
+                "form": []
+            },
             "reqType": "post",
             "tests": []
         },
         {
-            "_id": "0a2706cc-50ca-4277-a6c0-6cf80616d711",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
+            "_id": "01df8387-b8c0-4938-a0d8-ac58737daf4a",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Sign In",
+            "url": "http://localhost:8000/signin",
+            "method": "POST",
+            "sortNum": 3750,
+            "created": "2024-03-06T13:27:58.561Z",
+            "modified": "2024-03-07T19:54:26.260Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"davidfrei7as@gmail.com\",\n  \"password\": \"Teste@123\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "1965eadb-50a9-471a-b217-0248a2de4aa7",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Forgot",
+            "url": "http://localhost:8000/forgot",
+            "method": "POST",
+            "sortNum": 4375,
+            "created": "2024-03-07T13:29:11.162Z",
+            "modified": "2024-03-07T15:10:40.006Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"davidfrei7as@gmail.com\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "dd6904a1-b8ac-458b-986b-195c38694a5f",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Validate Token",
+            "url": "http://localhost:8000/forgot/token",
+            "method": "POST",
+            "sortNum": 4687.5,
+            "created": "2024-03-07T15:21:43.159Z",
+            "modified": "2024-03-07T19:43:39.708Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"token\": \"bG4rdGNsSS93N2RDK2FTTUJNbUNoUT09\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "11c81a09-f73f-46e2-b4ca-20e9feae6a5d",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Reset Password",
+            "url": "http://localhost:8000/forgot/reset",
+            "method": "POST",
+            "sortNum": 4843.8,
+            "created": "2024-03-07T17:18:07.092Z",
+            "modified": "2024-03-07T17:24:39.273Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"password\": \"Teste@123\",\n  \"userId\": 1,\n  \"recoveryId\": 7\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "bdc20258-87fd-4b1b-b393-714d34bcfb77",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
             "containerId": "",
             "name": "Habits Summary",
             "url": "http://localhost:8000/habits/summary",
             "method": "POST",
             "sortNum": 5000,
-            "created": "2024-03-03T19:54:08.870Z",
-            "modified": "2024-03-03T19:54:08.870Z",
-            "headers": [],
-            "params": [],
-            "body": {
-                "type": "json",
-                "raw": "{\n  \"userId\": 2\n}",
-                "form": []
-            },
-            "tests": []
-        },
-        {
-            "_id": "b79ad7e6-191b-4bdd-8e6a-66667163f866",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
-            "containerId": "",
-            "name": "Habits Day",
-            "url": "http://localhost:8000/habits/day",
-            "method": "POST",
-            "sortNum": 7500,
-            "created": "2024-03-04T02:08:10.030Z",
-            "modified": "2024-03-04T18:28:57.116Z",
+            "created": "2024-03-06T13:27:58.558Z",
+            "modified": "2024-03-07T20:12:46.130Z",
             "headers": [
                 {
                     "name": "X-Token",
@@ -58,22 +138,47 @@
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"userId\": 2,\n  \"date\": \"2024-03-03\"\n}",
+                "raw": "{\n  \"userId\": 1\n}",
                 "form": []
             },
             "reqType": "post",
             "tests": []
         },
         {
-            "_id": "dae3573e-4a1f-49c5-95de-de7d69ffdf94",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
+            "_id": "468f3745-fbc3-4a00-80a2-7bdcbd186af1",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
+            "containerId": "",
+            "name": "Habits Day",
+            "url": "http://localhost:8000/habits/day",
+            "method": "POST",
+            "sortNum": 7500,
+            "created": "2024-03-06T13:27:58.560Z",
+            "modified": "2024-03-06T13:33:23.656Z",
+            "headers": [
+                {
+                    "name": "X-Token",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJlbWFpbCI6ImpvaG5kb2VAZW1haWwuY29tIn0.AA48dEZuHEH1rXZKv2n_eLGS27MwgVauyQtx8CQkwGE"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"userId\": 2,\n  \"date\": \"2024-03-04\"\n}",
+                "form": []
+            },
+            "reqType": "post",
+            "tests": []
+        },
+        {
+            "_id": "43200037-d7c7-43bd-955c-73bdc9550e41",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
             "containerId": "",
             "name": "Habits Create",
             "url": "http://localhost:8000/habits/create",
             "method": "POST",
             "sortNum": 10000,
-            "created": "2024-03-03T19:53:02.285Z",
-            "modified": "2024-03-03T19:53:21.680Z",
+            "created": "2024-03-06T13:27:58.557Z",
+            "modified": "2024-03-06T13:27:58.557Z",
             "headers": [],
             "params": [],
             "body": {
@@ -84,15 +189,15 @@
             "tests": []
         },
         {
-            "_id": "491d9284-11c5-43b8-b6ff-b414b9338da8",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
+            "_id": "132dffc4-376e-417a-99b8-4a46b26a96ea",
+            "colId": "9fb8e4bb-5b73-45a1-8e57-c51593c2334d",
             "containerId": "",
             "name": "Habits Toggle",
             "url": "http://localhost:8000/habits/3/toggle",
             "method": "PUT",
             "sortNum": 30000,
-            "created": "2024-03-03T19:54:36.061Z",
-            "modified": "2024-03-04T02:10:22.937Z",
+            "created": "2024-03-06T13:27:58.559Z",
+            "modified": "2024-03-06T13:27:58.559Z",
             "headers": [],
             "params": [],
             "body": {
@@ -100,46 +205,6 @@
                 "raw": "{\n  \"userId\": 2\n}",
                 "form": []
             },
-            "tests": []
-        },
-        {
-            "_id": "b0a180b4-97cc-466a-884c-e29767f9798c",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
-            "containerId": "",
-            "name": "Habits Sign In",
-            "url": "http://localhost:8000/signin",
-            "method": "POST",
-            "sortNum": 40000,
-            "created": "2024-03-04T18:04:39.596Z",
-            "modified": "2024-03-04T18:21:44.505Z",
-            "headers": [],
-            "params": [],
-            "body": {
-                "type": "json",
-                "raw": "{\n  \"email\": \"johndoe@email.com\",\n  \"password\": \"JohDoe@123\"\n}",
-                "form": []
-            },
-            "reqType": "post",
-            "tests": []
-        },
-        {
-            "_id": "934c8104-43a8-4a33-aafd-d27a59ca926a",
-            "colId": "c305e261-b1a4-477b-8e4c-00d3b68906e5",
-            "containerId": "",
-            "name": "Habits Sign Up",
-            "url": "http://localhost:8000/signup",
-            "method": "POST",
-            "sortNum": 50000,
-            "created": "2024-03-04T18:04:50.631Z",
-            "modified": "2024-03-04T18:12:33.519Z",
-            "headers": [],
-            "params": [],
-            "body": {
-                "type": "json",
-                "raw": "{\n  \"name\": \"John Doe\", \n  \"email\": \"johndoe@email.com\", \n  \"password\": \"JohDoe@123\"\n}",
-                "form": []
-            },
-            "reqType": "post",
             "tests": []
         }
     ]
