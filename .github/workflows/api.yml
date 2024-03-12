@@ -3,7 +3,7 @@ name: Personal Portfolio Site API CI
 on:
   push:
     branches:
-      - develop
+      - master
     paths:
       - "api/**"
 
