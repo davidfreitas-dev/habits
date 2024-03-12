@@ -1,4 +1,4 @@
-name: Personal Portfolio Site API CI
+name: Habits API CI
 
 on:
   push:
