@@ -19,8 +19,6 @@ Habits is a powerful habit management application designed to help you track and
   <tr>
     <td><img src="mobile/src/assets/screenshots/signin.png" alt="Login Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/summary.png" alt="Home Screen" width="200"></td>
-  </tr>
-  <tr>
     <td><img src="mobile/src/assets/screenshots/habits.png" alt="Shopping List Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/new.png" alt="Settings Screen" width="200"></td>
   </tr>
@@ -46,6 +44,6 @@ Habits is a powerful habit management application designed to help you track and
 - PHP, Slim and MySQL (API)
 - Vue 3, Ionic, Capacitor (Mobile)
 
-Thank you for choosing HabitTracker to help you achieve your goals and build healthier habits! We're here to support you on your journey towards a more fulfilling lifestyle. If you have any questions or need assistance, don't hesitate to reach out.
+Thank you for choosing Habits to help you achieve your goals and build healthier habits! We're here to support you on your journey towards a more fulfilling lifestyle. If you have any questions or need assistance, don't hesitate to reach out.
 
 Happy habit building!
