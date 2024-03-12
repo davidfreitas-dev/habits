@@ -1,20 +1,15 @@
 <script setup>
-import { IonButton, IonIcon } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
+import { IonButton, IonSpinner } from '@ionic/vue';
 
 const props = defineProps({
-  text: { 
-    type: String,
-    default: '' 
-  },
+  isLoading: Boolean
 });
 </script>
 
 <template>
-  <ion-button :expand="true">
-    <ion-icon :icon="checkmark" />
-    
-    {{ text }}
+  <ion-button :disabled="isLoading">
+    <ion-spinner v-if="isLoading" name="dots" />
+    <slot v-else />
   </ion-button>
 </template>
 
@@ -22,19 +17,16 @@ const props = defineProps({
 ion-button {
   width: 100%;
   height: 3.5rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-top: 1.5rem;
+  text-transform: unset;
+  letter-spacing: .0225rem;
+
+  --color: var(--font);
   --background: var(--success);
   --background-hover: var(--success);
   --background-activated: var(--success);
   --background-focused: var(--success);
-  --ripple-color: var(--main);
   --border-radius: 0.375rem;
-  --color: var(--font);
-}
-
-ion-button ion-icon {
-  --ionicon-stroke-width: 64px;
-  margin-right: .5rem;
 }
 </style>

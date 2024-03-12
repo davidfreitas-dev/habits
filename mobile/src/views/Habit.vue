@@ -23,200 +23,97 @@
         <Checkbox
           v-for="habit in dayInfo.possibleHabits"
           :key="habit.id"
-          :label="habit.data.title"
+          :label="habit.title"
           :is-checked="isHabitChecked(habit.id)"
           :is-disabled="isDateInPast"
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <div
-          v-if="isDateInPast"
-          class="message"
-        >
+        <div v-if="!dayInfo.possibleHabits.length && !isDateInPast" class="message">
+          Você ainda não criou nenhum hábito
+        </div>
+
+        <div v-if="isDateInPast" class="message">
           Você não pode editar hábitos de uma data passada.
         </div>
       </div>
+
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
-import { FirebaseFirestore } from '@capacitor-firebase/firestore';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
+import { useSessionStore } from '@/stores/session';
+import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import Loading from '@/components/Loading.vue';
+import Toast from '@/components/Toast.vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
 dayjs.locale('pt-br');
 
 const route = useRoute();
-const isLoading = ref(true);
 const date = ref(route.params.date);
 const parsedDate = ref(dayjs(date.value).startOf('day'));
-const weekDay = ref(parsedDate.value.day());
 const dayOfWeek = ref(parsedDate.value.format('dddd'));
 const dayAndMonth = ref(parsedDate.value.format('DD/MM'));
 const isDateInPast = ref(dayjs(date.value).endOf('day').isBefore(new Date));
-const day = ref(null);
+const storeSession = useSessionStore();
+
+const user = computed(() => {
+  return storeSession.session;
+});
+
 const dayInfo = ref({
   possibleHabits: [],
   completedHabits: []
 });
 
-const getPossibleHabits = async () => {
-  const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'habits',
-    compositeFilter: {
-      type: 'and',
-      queryConstraints: [
-        {
-          type: 'where',
-          fieldPath: 'created_at',
-          opStr: '<=',
-          value: parsedDate.value.toDate(),
-        },
-        {
-          type: 'where',
-          fieldPath: 'week_days',
-          opStr: 'array-contains',
-          value: weekDay.value,
-        },
-      ],
-    },
-  });
+const isLoading = ref(true);
+const toastRef = ref(undefined);
 
-  dayInfo.value.possibleHabits = snapshots.sort((a, b) => {
-    return a.data.title.localeCompare(b.data.title);
-  });
-};
-
-const getCompletedHabits = async () => {
-  day.value = await getDay();
-
-  if (!day.value) return;
-
-  await FirebaseFirestore.addCollectionSnapshotListener(
-    {
-      reference: 'day_habits',
-      compositeFilter: {
-        type: 'and',
-        queryConstraints: [
-          {
-            type: 'where',
-            fieldPath: 'day_id',
-            opStr: '==',
-            value: day.value.id,
-          }
-        ],
-      },
-    },
-    (event, error) => {
-      if (error) {
-        console.error(error);
-      } else {
-        dayInfo.value.completedHabits = event.snapshots;
-      }
-    }
-  );
-};
-
-const getDay = async () => {
+const getDayInfo = async () => {
   const date = parsedDate.value.toDate();
-  const dayAfter = dayjs(date).add(1, 'day').startOf('day').toDate(); 
-  const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'days',
-    compositeFilter: {
-      type: 'and',
-      queryConstraints: [
-        {
-          type: 'where',
-          fieldPath: 'date',
-          opStr: '>=',
-          value: date,
-        },
-        {
-          type: 'where',
-          fieldPath: 'date',
-          opStr: '<',
-          value: dayAfter,
-        }
-      ],
-    },
-  });
 
-  return snapshots[0];
+  const response = await axios.post('/habits/day', {
+    userId: user.value.id,
+    date: date
+  });
+  
+  if (response.status === 'success') {
+    dayInfo.value = response.data;
+  } else {
+    toastRef.value?.setOpen(true, response.status, response.data);
+  }
+
+  isLoading.value = false;
 };
 
-onMounted(async () => {
-  await getPossibleHabits();
-  await getCompletedHabits();  
-  isLoading.value = false;
+onIonViewWillEnter(async () => {
+  await getDayInfo();
 });
 
-const getDayHabit = async (dayid, habitid) => {
-  const { snapshots } = await FirebaseFirestore.getCollection({
-    reference: 'day_habits',
-    compositeFilter: {
-      type: 'and',
-      queryConstraints: [
-        {
-          type: 'where',
-          fieldPath: 'day_id',
-          opStr: '==',
-          value: dayid,
-        },
-        {
-          type: 'where',
-          fieldPath: 'habit_id',
-          opStr: '==',
-          value: habitid,
-        }
-      ],
-    },
-  });
-
-  return snapshots[0];
-};
-
 const handleToggleHabit = async (habitid) => {
-  if (!day.value) {
-    const today = dayjs().startOf('day').toDate();
-
-    await FirebaseFirestore.addDocument({
-      reference: 'days',
-      data: { 
-        date: today,
-      },
-    });
-
-    await getCompletedHabits();
+  const response = await axios.put(`/habits/${habitid}/toggle`, { userId: user.value.id });
+  
+  if (response.status === 'error') {
+    console.log(response.data);
+    return;
   }
 
-  const dayHabit = await getDayHabit(day.value.id, habitid);
-
-  if (dayHabit) {
-    await FirebaseFirestore.deleteDocument({
-      reference: `day_habits/${dayHabit.id}`,
-    });
-  } else {
-    await FirebaseFirestore.addDocument({
-      reference: 'day_habits',
-      data: { 
-        day_id: day.value.id, 
-        habit_id: habitid
-      },
-    });
-  }
+  await getDayInfo();
 };
 
 const isHabitChecked = (habitid) => {
-  return dayInfo.value.completedHabits.some(habit => habit.data.habit_id === habitid);
+  return dayInfo.value.completedHabits.some(habit => habit.habit_id === habitid);
 };
 
 const progressPercentage = computed(() => {

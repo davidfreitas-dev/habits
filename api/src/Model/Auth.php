@@ -3,7 +3,8 @@
 namespace App\Model;
 
 use App\DB\Database;
-use App\Model\User;
+use App\Mail\Mailer;
+use App\Utils\AESCryptographer;
 use App\Utils\ApiResponseFormatter;
 
 class Auth extends User {
@@ -11,9 +12,9 @@ class Auth extends User {
   public static function signup($user) 
 	{
 
-		$userExists = User::getByEmail($user['email']);
+		$results = User::get($user['email']);
 			
-		if ($userExists) {
+		if ($results['status'] == 'success') {
 
 			return ApiResponseFormatter::formatResponse(
         400, 
@@ -23,46 +24,109 @@ class Auth extends User {
 
 		}
     
-    return User::create($user);
+    $results = User::create($user);
+
+    if ($results['status'] == 'error') {
+
+      return $results;
+
+    }
+
+    $data = $results['data'];
+
+    return Auth::generateToken($data);
 
 	}
         
   public static function signin($user)
   {
 
-    $sql = "SELECT * FROM users           
-            WHERE email = :email ";
+    $results = User::get($user['email']);
+
+    if ($results['status'] == 'error') {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "Usuário inexistente ou senha inválida."
+      );
+
+    }
+
+    $data = $results['data'];
+
+    if (!password_verify($user['password'], $data['password'])) {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "Usuário inexistente ou senha inválida."
+      );
+
+    }
+
+    return Auth::generateToken($data);
+    
+  }
+
+  public static function getForgotToken($email)
+  {
+
+    $result = User::get($email);
+      
+    if ($result['status'] == 'error') {
+
+      return ApiResponseFormatter::formatResponse(
+        404, 
+        "error", 
+        "O e-mail informado não consta no banco de dados"
+      );
+
+    } 
+
+    $user = $result['data'];
 
     try {
       
       $db = new Database();
 
-      $results = $db->select($sql, array(
-        ":email"=>$user['email']
-      ));
+      $results = $db->select(
+        "CALL sp_users_passwords_recoveries_create(:userId, :ip)", array(
+          ":userId"=>$user['id'],
+          ":ip"=>$_SERVER['REMOTE_ADDR']
+        )
+      ); 
 
-      if (empty($results)) {
+      if (empty($results))	{
 
         return ApiResponseFormatter::formatResponse(
-          404, 
+          400, 
           "error", 
-          "Usuário inexistente ou senha inválida."
+          "Não foi possível recuperar a senha"
         );
-  
+
       }
 
-      $data = $results[0];
+      $recovery = $results[0];
 
-      if (password_verify($user['password'], $data['password'])) {
+      $token = AESCryptographer::encrypt($recovery['id']);
 
-        return Auth::generateToken($data);
+      $mailer = new Mailer(
+        $user['email'], 
+        $user['name'], 
+        "Redefinição de senha", 
+        array(
+          "name"=>$user['name'],
+          "token"=>$token
+        )
+      );
 
-      } 
-      
+      $mailer->send();
+
       return ApiResponseFormatter::formatResponse(
-        404, 
-        "error", 
-        "Usuário inexistente ou senha inválida."
+        200, 
+        "success", 
+        "Token de redefinição de senha enviado para o e-mail informado"
       );
 
     } catch (\PDOException $e) {
@@ -70,11 +134,125 @@ class Auth extends User {
       return ApiResponseFormatter::formatResponse(
         500, 
         "error", 
-        "Falha na autenticação do usuário: " . $e->getMessage()
+        "Falha ao recuperar senha: " . $e->getMessage()
+      );
+
+    }		
+
+  }
+
+  public static function validateForgotToken($token)
+  {
+
+    $recoveryId = AESCryptographer::decrypt($token);
+
+    $sql = "SELECT * FROM users_passwords_recoveries AS upr
+            INNER JOIN users AS u 
+            ON upr.user_id = u.id
+            WHERE upr.id = :recoveryId
+            AND upr.recovery_date IS NULL
+            AND DATE_ADD(upr.created_at, INTERVAL 1 HOUR) >= NOW()";
+    
+    try {
+      
+      $db = new Database();
+
+      $results = $db->select($sql, array(
+        ":recoveryId"=>$recoveryId
+      ));
+
+      if (empty($results)) {
+
+        return ApiResponseFormatter::formatResponse(
+          401, 
+          "error", 
+          "O token de redefinição utilizado expirou"
+        );
+
+      }
+
+      return ApiResponseFormatter::formatResponse(
+        200, 
+        "success", 
+        array (
+          "recoveryId"=>$recoveryId,
+          "userId"=>$results[0]['user_id'],
+        )
+      );
+
+    } catch (\PDOException $e) {
+      
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao validar token: " . $e->getMessage()
       );
 
     }
-    
+
+  }
+
+  public static function setNewPassword($payload)
+  {
+
+    $sql = "UPDATE users 
+            SET password = :password 
+            WHERE id = :userId";
+
+    try {
+
+      $db = new Database();
+
+      $db->query($sql, array(
+        ":userId"=>$payload['userId'],
+        ":password"=>Auth::getPasswordHash($payload['password']),
+      ));
+
+      Auth::setForgotUsed($payload['recoveryId']);
+
+      return ApiResponseFormatter::formatResponse(
+        200, 
+        "success", 
+        "Senha alterada com sucesso"
+      );
+
+    } catch (\PDOException $e) {
+
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao gravar nova senha: " . $e->getMessage()
+      );
+
+    }
+
+  }
+
+  private static function setForgotUsed($recoveryId)
+  {
+
+    $sql = "UPDATE users_passwords_recoveries 
+            SET recovery_date = NOW() 
+            WHERE id = :recoveryId";
+
+    try {
+
+      $db = new Database();
+
+      $db->query($sql, array(
+        ":recoveryId"=>$recoveryId
+      ));
+
+    } catch (\PDOException $e) {
+
+      return ApiResponseFormatter::formatResponse(
+        500, 
+        "error", 
+        "Falha ao definir senha antiga como usada: " . $e->getMessage()
+      );
+
+    }
+
   }
 
   private static function generateToken($data)

@@ -125,7 +125,7 @@ class Habit {
   private static function getPossibleHabits($date, $userId) 
 	{
 
-    $weekDay = date('w', strtotime($date)) + 1;
+    $weekDay = date('w', strtotime($date));
     
     $possibleHabitsQuery = "
       SELECT *
@@ -206,13 +206,18 @@ class Habit {
   public static function toggle($userId, $habitId) 
   {
 
+    date_default_timezone_set('America/Sao_Paulo');
+
+    $currentDate = date('Y-m-d H:i:s', strtotime('today'));
+
     try {
       
       $db = new Database();
 
-      $db->query("CALL sp_habits_toggle(:userId, :habitId)", array(
+      $db->query("CALL sp_habits_toggle(:userId, :habitId, :currentDate)", array(
         ":userId"=>$userId,
-        ":habitId"=>$habitId
+        ":habitId"=>$habitId,
+        ":currentDate"=>$currentDate
       ));
 
       return ApiResponseFormatter::formatResponse(

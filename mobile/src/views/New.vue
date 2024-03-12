@@ -26,27 +26,37 @@
         />
 
         <Button
-          text="Confirmar"
+          class="ion-margin-top"
+          :is-loading="isLoading"
           @click="handleCreateHabit"
-        />
-        
-        <Alert ref="alertRef" />
+        >
+          <ion-icon :icon="checkmark" />    
+          Confirmar
+        </Button>
       </div>
+        
+      <Alert ref="alertRef" />
+
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
-import { FirebaseFirestore } from '@capacitor-firebase/firestore';
-import dayjs from 'dayjs';
+import { ref, computed } from 'vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonIcon } from '@ionic/vue';
+import { checkmark } from 'ionicons/icons';
+import { useSessionStore } from '@/stores/session';
+import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
+import Toast from '@/components/Toast.vue';
 
+const isLoading = ref(false);
+const toastRef = ref(undefined);
 const title = ref('');
 const weekDays = ref([]);
 const availableWeekDays = ref([
@@ -74,15 +84,11 @@ const handleToggleWeekDay = (weekDayIndex) => {
   }
 };
 
-const handleCreateHabitWeekDay = async (habitid, weekday) => {
-  await FirebaseFirestore.addDocument({
-    reference: 'habit_week_days',
-    data: {
-      habit_id: habitid,
-      week_day: weekday
-    }
-  });
-};
+const storeSession = useSessionStore();
+
+const user = computed(() => {
+  return storeSession.session;
+});
 
 const handleCreateHabit = async () => {
   if (!title.value || !weekDays.value.length) {
@@ -90,31 +96,24 @@ const handleCreateHabit = async () => {
     return;
   }
 
-  const today = dayjs().startOf('day').toDate();
-
-  const response = await FirebaseFirestore.addDocument({
-    reference: 'habits',
-    data: {
-      title: title.value,
-      created_at: today,
-      week_days: [ ...weekDays.value ]
-    }
+  isLoading.value = true;
+  
+  const response = await axios.post('/habits/create', { 
+    title: title.value,
+    weekDays: weekDays.value.join(','),
+    userId: user.value.id 
   });
 
-  const habitid = response.reference.id;
+  isLoading.value = false;
 
-  if (!habitid) {
-    showAlert('Ops', 'Não foi possível criar o hábito');
+  if (response.status === 'success') {
+    title.value = '';
+    weekDays.value = [];
+    showAlert('Novo Hábito', response.data);
     return;
   }
-
-  weekDays.value.forEach(async (weekDay) => {
-    await handleCreateHabitWeekDay(habitid, weekDay);
-  });
-
-  title.value = '';
-  weekDays.value = [];
-  showAlert('Novo Hábito', 'Hábito criado com sucesso!');
+  
+  toastRef.value?.setOpen(true, response.status, response.data);
 };
 
 const isDayChecked = (index) => {

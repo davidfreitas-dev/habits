@@ -10,7 +10,7 @@ class User {
   public static function create($user)
   {
 
-    $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
+    $sql = "CALL sp_users_create(:name, :email, :password)";
 
     try {
       
@@ -25,7 +25,7 @@ class User {
       return ApiResponseFormatter::formatResponse(
         201, 
         "success", 
-        "Cadastro efetuado com sucesso"
+        $results[0]
       );
 
     } catch (\PDOException $e) {
@@ -40,18 +40,19 @@ class User {
 
   }
 
-	public static function get($userId)
+	public static function get($credential)
 	{
 
 		$sql = "SELECT * FROM users 
-            WHERE user_id = :userId";
+            WHERE id = :credential
+            OR email = :credential";
 
 		try {
 
 			$db = new Database();
 
 			$results = $db->select($sql, array(
-				":userId"=>$userId
+				":credential"=>$credential
 			));
 
       if (count($results)) {
@@ -82,35 +83,7 @@ class User {
 
 	}
 
-  public static function getByEmail($email) 
-	{
-		
-		$sql = "SELECT * FROM users 
-            WHERE email = :email";
-		
-		try {
-
-			$db = new Database();
-			
-			$results = $db->select($sql, array(
-				":email"=>$email
-			));
-
-			return count($results);
-
-		} catch (\PDOException $e) {
-
-			return ApiResponseFormatter::formatResponse(
-        500, 
-        "error", 
-        "Falha ao obter usuário: " . $e->getMessage()
-      );
-
-		}		
-
-	}
-
-  private static function getPasswordHash($password)
+  public static function getPasswordHash($password)
 	{
 
 		return password_hash($password, PASSWORD_BCRYPT, [

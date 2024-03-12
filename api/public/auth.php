@@ -31,3 +31,45 @@ $app->post('/signin', function (Request $request, Response $response) {
     ->withStatus(200);
 
 });
+
+$app->post('/forgot', function (Request $request, Response $response) {
+ 
+  $payload = $request->getParsedBody();
+
+  $result = Auth::getForgotToken($payload['email']);
+
+  $response->getBody()->write(json_encode($result));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
+ 
+});
+
+$app->post('/forgot/token', function (Request $request, Response $response) {
+ 
+  $payload = $request->getParsedBody();
+
+  $result = Auth::validateForgotToken($payload['token']);
+
+  $response->getBody()->write(json_encode($result));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
+ 
+});
+
+$app->post('/forgot/reset', function (Request $request, Response $response) {
+ 
+  $payload = $request->getParsedBody();
+
+  $result = Auth::setNewPassword($payload);
+
+  $response->getBody()->write(json_encode($result));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus(200);
+ 
+});

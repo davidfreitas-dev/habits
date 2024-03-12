@@ -36,6 +36,17 @@ module.exports = {
     'indent': ['error', 2],
     'semi': ['error', 'always'],
     'quotes': ['error', 'single'],
-    'comma-spacing': ['error', { before: false, after: true }]
+    'comma-spacing': ['error', { 
+      before: false, 
+      after: true 
+    }],
+    'vue/max-attributes-per-line': ['error', {
+      'singleline': {
+        'max': 2
+      },      
+      'multiline': {
+        'max': 1
+      }
+    }]
   }
 };

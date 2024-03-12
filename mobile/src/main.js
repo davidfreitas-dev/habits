@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
@@ -20,13 +21,14 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
-import './services/firebase-firestore';
-
 /* Theme variables */
 import './theme/global.css';
 
+const pinia = createPinia();
+
 const app = createApp(App)
   .use(IonicVue)
+  .use(pinia)
   .use(router);
   
 router.isReady().then(() => {
