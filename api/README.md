@@ -73,7 +73,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 
 | Parameter  | Type     | Description                                             |
 | :--------  | :------- | :------------------------------------------------------ |
-| `email`    | `string` | **Required**. User's email address                       |
+| `email`    | `string` | **Required**. User's email address                      |
 | `password` | `string` | **Required**. User's password                           |
 
 **Observation:** The parameters should be passed within a single JSON object.

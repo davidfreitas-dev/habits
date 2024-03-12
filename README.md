@@ -46,4 +46,4 @@ Habits is a powerful habit management application designed to help you track and
 
 Thank you for choosing Habits to help you achieve your goals and build healthier habits! We're here to support you on your journey towards a more fulfilling lifestyle. If you have any questions or need assistance, don't hesitate to reach out.
 
-Happy habit building!!!
+Happy habit building!
