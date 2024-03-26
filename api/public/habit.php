@@ -14,7 +14,7 @@ $app->post('/habits/create', function (Request $request, Response $response) {
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
 
 });
 
@@ -28,7 +28,7 @@ $app->post('/habits/summary', function (Request $request, Response $response) {
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
       
 });
 
@@ -42,7 +42,7 @@ $app->post('/habits/day', function (Request $request, Response $response) {
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
       
 });
 
@@ -58,6 +58,6 @@ $app->put('/habits/{id}/toggle', function (Request $request, Response $response)
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
 
 });

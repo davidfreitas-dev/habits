@@ -8,13 +8,13 @@ $app->post('/signup', function (Request $request, Response $response) {
  
   $payload = $request->getParsedBody();
 
-  $result = Auth::signup($payload);
+  $results = Auth::signup($payload);
 
-  $response->getBody()->write(json_encode($result));
+  $response->getBody()->write(json_encode($results));
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
  
 });
 
@@ -22,13 +22,13 @@ $app->post('/signin', function (Request $request, Response $response) {
 
   $payload = $request->getParsedBody();
 
-  $result = Auth::signin($payload);
+  $results = Auth::signin($payload);
 
-  $response->getBody()->write(json_encode($result));
+  $response->getBody()->write(json_encode($results));
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
 
 });
 
@@ -36,13 +36,13 @@ $app->post('/forgot', function (Request $request, Response $response) {
  
   $payload = $request->getParsedBody();
 
-  $result = Auth::getForgotToken($payload['email']);
+  $results = Auth::getForgotToken($payload['email']);
 
-  $response->getBody()->write(json_encode($result));
+  $response->getBody()->write(json_encode($results));
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
  
 });
 
@@ -50,13 +50,13 @@ $app->post('/forgot/token', function (Request $request, Response $response) {
  
   $payload = $request->getParsedBody();
 
-  $result = Auth::validateForgotToken($payload['token']);
+  $results = Auth::validateForgotToken($payload['token']);
 
-  $response->getBody()->write(json_encode($result));
+  $response->getBody()->write(json_encode($results));
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
  
 });
 
@@ -64,12 +64,12 @@ $app->post('/forgot/reset', function (Request $request, Response $response) {
  
   $payload = $request->getParsedBody();
 
-  $result = Auth::setNewPassword($payload);
+  $results = Auth::setNewPassword($payload);
 
-  $response->getBody()->write(json_encode($result));
+  $response->getBody()->write(json_encode($results));
 
   return $response
     ->withHeader('content-type', 'application/json')
-    ->withStatus(200);
+    ->withStatus($results['code']);
  
 });

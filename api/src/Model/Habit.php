@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\DB\Database;
+use App\Enums\HttpStatus as HTTPStatus;
 use App\Utils\ApiResponseFormatter;
 
 class Habit {
@@ -21,7 +22,7 @@ class Habit {
       ));
 
       return ApiResponseFormatter::formatResponse(
-        201, 
+        HTTPStatus::CREATED, 
         "success", 
         "Hábito criado com sucesso"
       );
@@ -29,7 +30,7 @@ class Habit {
     } catch (\PDOException $e) {
 
       return ApiResponseFormatter::formatResponse(
-        500, 
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
         "Erro ao criar hábito: " . $e->getMessage()
       );
@@ -75,7 +76,7 @@ class Habit {
       if (count($results)) {
 
 				return ApiResponseFormatter::formatResponse(
-          200, 
+          HTTPStatus::OK,  
           "success", 
           $results
         );
@@ -83,7 +84,7 @@ class Habit {
 			} 
       
       return ApiResponseFormatter::formatResponse(
-        204, 
+        HTTPStatus::NO_CONTENT, 
         "success", 
         "Resumo não disponível para o dia selecionado"
       );
@@ -91,7 +92,7 @@ class Habit {
     } catch (\PDOException $e) {
 
       return ApiResponseFormatter::formatResponse(
-        500, 
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
         "Erro ao obter resumo do dia: " . $e->getMessage()
       );
@@ -112,7 +113,7 @@ class Habit {
     $completedHabits = Habit::getCompletedHabits($date, $userId);
 
     return ApiResponseFormatter::formatResponse(
-      200, 
+      HTTPStatus::OK,  
       "success", 
       [
         "possibleHabits" => $possibleHabits,
@@ -221,7 +222,7 @@ class Habit {
       ));
 
       return ApiResponseFormatter::formatResponse(
-        201, 
+        HTTPStatus::CREATED, 
         "success", 
         "Hábito marcado/desmarcado com sucesso"
       );
@@ -229,7 +230,7 @@ class Habit {
     } catch (\PDOException $e) {
 
       return ApiResponseFormatter::formatResponse(
-        500, 
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
         "Erro ao marcar/desmarcar hábito: " . $e->getMessage()
       );

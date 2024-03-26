@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\DB\Database;
+use App\Enums\HttpStatus as HTTPStatus;
 use App\Utils\ApiResponseFormatter;
 
 class User {
@@ -23,7 +24,7 @@ class User {
 			));
 
       return ApiResponseFormatter::formatResponse(
-        201, 
+        HTTPStatus::CREATED, 
         "success", 
         $results[0]
       );
@@ -31,7 +32,7 @@ class User {
     } catch (\PDOException $e) {
 			
 			return ApiResponseFormatter::formatResponse(
-        500, 
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
         "Falha ao efetuar cadastro: " . $e->getMessage()
       );
@@ -58,7 +59,7 @@ class User {
       if (count($results)) {
 			
 			  return ApiResponseFormatter::formatResponse(
-          200, 
+          HTTPStatus::OK,  
           "success", 
           $results[0]
         );
@@ -66,7 +67,7 @@ class User {
       }
 
 			return ApiResponseFormatter::formatResponse(
-        404, 
+        HTTPStatus::NOT_FOUND, 
         "error", 
         "Usuário não encontrado"
       );
@@ -74,7 +75,7 @@ class User {
 		} catch (\PDOException $e) {
 			
 			return ApiResponseFormatter::formatResponse(
-        500, 
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
         "Falha ao obter usuário: " . $e->getMessage()
       );
