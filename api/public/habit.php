@@ -2,7 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Model\Habit;
+use App\Models\Habit;
 
 $app->post('/habits/create', function (Request $request, Response $response) {
 
