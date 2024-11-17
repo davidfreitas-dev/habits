@@ -203,7 +203,7 @@ class Auth {
 
       if (empty($results)) {
 
-        throw new \Exception("O link de redefinição utilizado expirou", HTTPStatus::UNAUTHORIZED);
+        throw new \Exception("O token de redefinição utilizado expirou", HTTPStatus::UNAUTHORIZED);
 
       } 
 
@@ -231,7 +231,7 @@ class Auth {
       return ApiResponseFormatter::formatResponse(
         $e->getCode(), 
         "error", 
-        "Falha ao validar token: " . $e->getMessage(),
+        $e->getMessage(),
         null
       );
 
@@ -256,6 +256,8 @@ class Auth {
         ":user_id"  => $data['userId'],
         ":password" => PasswordHelper::hashPassword($data['password'])
       ));
+
+      self::setForgotUsed($data['recoveryId']);
 
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::OK, 
