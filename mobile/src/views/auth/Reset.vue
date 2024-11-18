@@ -61,24 +61,24 @@ const formData = reactive({
 const handleConfirm = async () => {
   isLoading.value = true;
 
-  const data = JSON.parse(props.data);
+  try {
+    const data = JSON.parse(props.data);
 
-  const response = await axios.post('/forgot/reset', {
-    password: formData.password,
-    recoveryId: data.recoveryId,
-    userId: data.userId
-  });
+    const response = await axios.post('/forgot/reset', {
+      password: formData.password,
+      recoveryId: data.recoveryId,
+      userId: data.userId
+    });
 
-  isLoading.value = false;
-
-  if (response.status === 'error') {
     toastRef.value?.setOpen(true, response.status, response.message);
-    return;
+
+    router.push('/');
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
 
-  toastRef.value?.setOpen(true, response.status, response.message);
-
-  router.push('/');
+  isLoading.value = false;  
 };
 
 const rules = computed(() => {

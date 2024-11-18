@@ -47,18 +47,16 @@ const formData = reactive({
 const handleContinue = async () => {
   isLoading.value = true;
 
-  const response = await axios.post('/forgot', formData);
-
-  isLoading.value = false;
-
-  if (response.status === 'error') {
+  try {
+    const response = await axios.post('/forgot', formData);
     toastRef.value?.setOpen(true, response.status, response.message);
-    return;
+    router.push('/forgot/token'); 
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
 
-  toastRef.value?.setOpen(true, response.status, response.message);
-
-  router.push('/forgot/token'); 
+  isLoading.value = false;
 };
 
 const rules = computed(() => {
