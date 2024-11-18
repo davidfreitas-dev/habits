@@ -131,28 +131,31 @@ class Habit extends Model {
         ":userId"=>$userId
       ));
 
-      if (count($results)) {
+      if (empty($results)) {
 
-				return ApiResponseFormatter::formatResponse(
-          HTTPStatus::OK,  
+        return ApiResponseFormatter::formatResponse(
+          HTTPStatus::NO_CONTENT, 
           "success", 
-          $results
-        );
+          "Resumo não disponível para o dia selecionado",
+          NULL
+        );				
 
 			} 
-      
+
       return ApiResponseFormatter::formatResponse(
-        HTTPStatus::NO_CONTENT, 
+        HTTPStatus::OK,  
         "success", 
-        "Resumo não disponível para o dia selecionado"
-      );
+        "Resumo dos hábitos para o dia selecionado",
+        $results
+      );      
 
     } catch (\PDOException $e) {
 
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
-        "Erro ao obter resumo do dia: " . $e->getMessage()
+        "Erro ao obter resumo para o dia selecionado: " . $e->getMessage(),
+        NULL
       );
 
     }
@@ -173,6 +176,7 @@ class Habit extends Model {
     return ApiResponseFormatter::formatResponse(
       HTTPStatus::OK,  
       "success", 
+      "Lista de hábitos possíveis e completados",
       [
         "possibleHabits" => $possibleHabits,
         "completedHabits" => $completedHabits
@@ -282,7 +286,8 @@ class Habit extends Model {
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::CREATED, 
         "success", 
-        "Hábito marcado/desmarcado com sucesso"
+        "Hábito marcado/desmarcado com sucesso",
+        NULL
       );
 
     } catch (\PDOException $e) {
@@ -290,7 +295,8 @@ class Habit extends Model {
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
-        "Erro ao marcar/desmarcar hábito: " . $e->getMessage()
+        "Erro ao marcar/desmarcar hábito: " . $e->getMessage(),
+        NULL
       );
 
     }
