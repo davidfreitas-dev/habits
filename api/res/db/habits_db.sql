@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: MySQL
--- Tempo de geração: 04/03/2024 às 20:28
+-- Tempo de geração: 18/11/2024 às 15:38
 -- Versão do servidor: 5.6.51
--- Versão do PHP: 8.2.16
+-- Versão do PHP: 8.2.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -214,7 +214,7 @@ CREATE TABLE `users_logs` (
 CREATE TABLE `users_passwords_recoveries` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `ip` varchar(45) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
   `recovery_date` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -336,14 +336,13 @@ ALTER TABLE `day_habits`
 -- Restrições para tabelas `habits`
 --
 ALTER TABLE `habits`
-  ADD CONSTRAINT `fk_habits_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `fk_habits_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `habit_week_days`
 --
 ALTER TABLE `habit_week_days`
-  ADD CONSTRAINT `fk_habit_week_days_habits` FOREIGN KEY (`habit_id`) REFERENCES `habits` (`id`);
-COMMIT;
+  ADD CONSTRAINT `fk_habit_week_days_habits` FOREIGN KEY (`habit_id`) REFERENCES `habits` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `users_logs`

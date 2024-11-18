@@ -37,3 +37,17 @@ $app->put('/users/update/{id}', function (Request $request, Response $response, 
     ->withStatus($results['code']);
 
 });
+
+$app->delete('/users/delete/{id}', function (Request $request, Response $response, array $args) {
+
+  $id = $args['id'];
+
+  $results = User::delete($id);
+
+  $response->getBody()->write(json_encode($results));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus($results['code']);
+
+});

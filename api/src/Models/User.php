@@ -155,6 +155,39 @@ class User extends Model {
     }
   }
 
+  public static function delete($id) 
+	{
+		
+		$sql = "DELETE FROM users WHERE id = :id";		
+		
+		try {
+
+			$db = new Database();
+			
+			$db->query($sql, array(
+				":id" => $id
+			));
+			
+			return ApiResponseFormatter::formatResponse(
+        HTTPStatus::OK, 
+        "success", 
+        "Usuário excluído com sucesso",
+        null
+      );
+
+		} catch (\PDOException $e) {
+
+			return ApiResponseFormatter::formatResponse(
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
+        "error", 
+        "Falha ao excluir usuário: " . $e->getMessage(),
+        null
+      );
+			
+		}		
+
+	}
+
   private function checkUserExists($email, $id = NULL) 
   {
 
