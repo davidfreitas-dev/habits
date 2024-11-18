@@ -2,10 +2,15 @@ import { ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 
 export const useSessionStore = defineStore('session', () => {
-  const session = ref(undefined);
+  const session = ref(null);
 
   const setSession = (data) => {
     session.value = data;
+  };
+
+  const clearSession = async () => {
+    sessionStorage.clear();
+    session.value = null;
   };
 
   if (localStorage.getItem('session')) {
@@ -22,6 +27,7 @@ export const useSessionStore = defineStore('session', () => {
 
   return { 
     session, 
-    setSession 
+    setSession,
+    clearSession
   };
 });

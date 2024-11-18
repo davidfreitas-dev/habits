@@ -22,7 +22,7 @@ defineExpose({setOpen});
     :is-open="isOpenRef"
     :message="message"
     :color="color"
-    :duration="2000"
+    :duration="2500"
     @did-dismiss="setOpen(false)"
   />
 </template>

@@ -17,6 +17,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
@@ -39,7 +40,10 @@ onIonViewWillEnter(() => {
 });
 
 const user = computed(() => {
-  return storeSession.session;
+  const user = storeSession.session && storeSession.session.token 
+    ? jwtDecode(storeSession.session.token) 
+    : null;
+  return user;
 });
 
 const isLoading = ref(true);
@@ -52,7 +56,7 @@ const getSummary = async () => {
   isLoading.value = false;
   
   if (response.status === 'error') {
-    toastRef.value?.setOpen(true, response.status, response.data);
+    toastRef.value?.setOpen(true, response.status, response.message);
     return;
   }
 

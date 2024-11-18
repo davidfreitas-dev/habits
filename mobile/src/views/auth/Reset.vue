@@ -72,11 +72,11 @@ const handleConfirm = async () => {
   isLoading.value = false;
 
   if (response.status === 'error') {
-    toastRef.value?.setOpen(true, response.status, response.data);
+    toastRef.value?.setOpen(true, response.status, response.message);
     return;
   }
 
-  toastRef.value?.setOpen(true, response.status, response.data);
+  toastRef.value?.setOpen(true, response.status, response.message);
 
   router.push('/');
 };

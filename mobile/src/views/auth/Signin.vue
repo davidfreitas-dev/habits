@@ -60,18 +60,16 @@ const formData = reactive({
 const signIn = async () => {
   isLoading.value = true;
 
-  const response = await axios.post('/signin', formData);
-
-  isLoading.value = false;
-
-  if (response.status === 'error') {
-    toastRef.value?.setOpen(true, response.status, response.data);
-    return;
+  try {
+    const response = await axios.post('/signin', formData);
+    await storeSession.setSession({ token: response.data });
+    router.push('/'); 
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
-
-  storeSession.setSession(response.data);
-
-  router.push('/'); 
+  
+  isLoading.value = false;
 };
 
 const rules = computed(() => {

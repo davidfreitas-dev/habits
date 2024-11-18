@@ -44,6 +44,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent, IonIcon } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useSessionStore } from '@/stores/session';
@@ -87,7 +88,10 @@ const handleToggleWeekDay = (weekDayIndex) => {
 const storeSession = useSessionStore();
 
 const user = computed(() => {
-  return storeSession.session;
+  const user = storeSession.session && storeSession.session.token 
+    ? jwtDecode(storeSession.session.token) 
+    : null;
+  return user;
 });
 
 const handleCreateHabit = async () => {
@@ -109,11 +113,11 @@ const handleCreateHabit = async () => {
   if (response.status === 'success') {
     title.value = '';
     weekDays.value = [];
-    showAlert('Novo Hábito', response.data);
+    showAlert('Novo Hábito', response.message);
     return;
   }
   
-  toastRef.value?.setOpen(true, response.status, response.data);
+  toastRef.value?.setOpen(true, response.status, response.message);
 };
 
 const isDayChecked = (index) => {

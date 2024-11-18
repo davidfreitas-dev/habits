@@ -46,6 +46,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
@@ -69,7 +70,10 @@ const isDateInPast = ref(dayjs(date.value).endOf('day').isBefore(new Date));
 const storeSession = useSessionStore();
 
 const user = computed(() => {
-  return storeSession.session;
+  const user = storeSession.session && storeSession.session.token 
+    ? jwtDecode(storeSession.session.token) 
+    : null;
+  return user;
 });
 
 const dayInfo = ref({
@@ -91,7 +95,7 @@ const getDayInfo = async () => {
   if (response.status === 'success') {
     dayInfo.value = response.data;
   } else {
-    toastRef.value?.setOpen(true, response.status, response.data);
+    toastRef.value?.setOpen(true, response.status, response.message);
   }
 
   isLoading.value = false;
