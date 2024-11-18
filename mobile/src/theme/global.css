@@ -15,7 +15,7 @@
   font-family: 'Inter', sans-serif;
 }
 
-ion-toolbar, ion-content {
+ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
   --background: var(--bg);
 }
 
