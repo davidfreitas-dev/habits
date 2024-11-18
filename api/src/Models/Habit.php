@@ -3,28 +3,32 @@
 namespace App\Models;
 
 use App\DB\Database;
+use App\Models\Model;
 use App\Enums\HttpStatus as HTTPStatus;
 use App\Utils\ApiResponseFormatter;
 
-class Habit {
+class Habit extends Model {
 
-  public static function create($payload) 
+  public function create() 
   {
 
     try {
+
+      $this->checkHabitExists($this->getTitle());
       
       $db = new Database();
 
-      $db->query("CALL sp_habits_create(:title, :weekDays, :userId)", array(
-        ":title"=>$payload['title'],
-        ":weekDays"=>$payload['weekDays'],
-        ":userId"=>$payload['userId']
+      $db->query("CALL sp_habits_create(:title, :week_days, :user_id)", array(
+        ":title"     => $this->getTitle(),
+        ":week_days" => $this->getWeekDays(),
+        ":user_id"   => $this->getUserId()
       ));
 
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::CREATED, 
         "success", 
-        "Hábito criado com sucesso"
+        "Hábito criado com sucesso",
+        $this->getAttributes()
       );
 
     } catch (\PDOException $e) {
@@ -32,9 +36,63 @@ class Habit {
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::INTERNAL_SERVER_ERROR, 
         "error", 
-        "Erro ao criar hábito: " . $e->getMessage()
+        "Erro ao criar hábito: " . $e->getMessage(),
+        NULL
       );
 
+    } catch (\Exception $e) {
+
+      return ApiResponseFormatter::formatResponse(
+        $e->getCode(), 
+        "error", 
+        $e->getMessage(),
+        NULL
+      );
+
+    }
+
+  }
+
+  public function update() 
+  {
+
+    try {
+
+      $this->checkHabitExists($this->getTitle(), $this->getId());
+
+      $db = new Database();
+
+      $db->query("CALL sp_habits_update(:id, :title, :week_days)", array(
+        ":id"        => $this->getId(),
+        ":title"     => $this->getTitle(),
+        ":week_days" => $this->getWeekDays()
+      ));
+
+      return ApiResponseFormatter::formatResponse(
+        HTTPStatus::OK,
+        "success",
+        "Hábito atualizado com sucesso",
+        $this->getAttributes()
+      );
+
+    } catch (\PDOException $e) {
+      
+      return ApiResponseFormatter::formatResponse(
+        HTTPStatus::INTERNAL_SERVER_ERROR,
+        "error",
+        "Erro ao atualizar hábito: " . $e->getMessage(),
+        NULL
+      );
+
+    } catch (\Exception $e) {
+      
+      return ApiResponseFormatter::formatResponse(
+        $e->getCode(),
+        "error",
+        $e->getMessage(),
+        NULL
+      );
+      
     }
 
   }
@@ -235,6 +293,51 @@ class Habit {
         "Erro ao marcar/desmarcar hábito: " . $e->getMessage()
       );
 
+    }
+
+  }
+
+  private function checkHabitExists($title, $id = NULL) 
+  {
+
+    $sql = "SELECT * FROM habits WHERE title = :title";
+
+    if ($id) {
+
+      $sql .= " AND id != :id";
+
+    }
+
+    try {
+
+      $db = new Database();
+
+      $params = [
+        ":title" => $title
+      ];
+
+      if ($id) {
+
+        $params[":id"] = $id;
+  
+      }
+        
+      $results = $db->select($sql, $params);
+
+      if (count($results) > 0) {
+        
+        throw new \Exception("Já existe um hábito com este título.", HTTPStatus::BAD_REQUEST);
+
+      }
+
+    } catch (\PDOException $e) {
+
+      throw new \Exception($e->getMessage(), HTTPStatus::INTERNAL_SERVER_ERROR);
+      
+    } catch (\Exception $e) {
+
+      throw new \Exception($e->getMessage(), $e->getCode());
+      
     }
 
   }
