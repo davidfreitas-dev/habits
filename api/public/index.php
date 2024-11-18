@@ -55,6 +55,7 @@ $app->get('/', function (Request $request, Response $response) {
 });
 
 require_once('auth.php');
+require_once('user.php');
 require_once('habit.php');
 
 $app->run();
