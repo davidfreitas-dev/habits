@@ -88,10 +88,9 @@ const handleToggleWeekDay = (weekDayIndex) => {
 const storeSession = useSessionStore();
 
 const user = computed(() => {
-  const user = storeSession.session && storeSession.session.token 
+  return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
     : null;
-  return user;
 });
 
 const handleCreateHabit = async () => {
@@ -101,23 +100,24 @@ const handleCreateHabit = async () => {
   }
 
   isLoading.value = true;
-  
-  const response = await axios.post('/habits/create', { 
-    title: title.value,
-    weekDays: weekDays.value.join(','),
-    userId: user.value.id 
-  });
 
-  isLoading.value = false;
-
-  if (response.status === 'success') {
+  try {
+    const response = await axios.post('/habits/create', { 
+      title: title.value,
+      weekDays: weekDays.value.join(','),
+      userId: user.value.id 
+    });
+    
     title.value = '';
     weekDays.value = [];
+
     showAlert('Novo Hábito', response.message);
-    return;
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
-  
-  toastRef.value?.setOpen(true, response.status, response.message);
+
+  isLoading.value = false;
 };
 
 const isDayChecked = (index) => {

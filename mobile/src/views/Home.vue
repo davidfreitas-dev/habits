@@ -40,10 +40,9 @@ onIonViewWillEnter(() => {
 });
 
 const user = computed(() => {
-  const user = storeSession.session && storeSession.session.token 
+  return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
     : null;
-  return user;
 });
 
 const isLoading = ref(true);
@@ -51,16 +50,18 @@ const toastRef = ref(undefined);
 const summary = ref([]);
 
 const getSummary = async () => {
-  const response = await axios.post('/habits/summary', { userId: user.value.id });
-
-  isLoading.value = false;
-  
-  if (response.status === 'error') {
-    toastRef.value?.setOpen(true, response.status, response.message);
-    return;
+  try {
+    const response = await axios.post('/habits/summary', { 
+      userId: user.value.id 
+    });
+    
+    summary.value = Array.isArray(response.data) ? response.data : [];
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
-
-  summary.value = Array.isArray(response.data) ? response.data : [];
+  
+  isLoading.value = false;
 };
 </script>
 

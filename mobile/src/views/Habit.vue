@@ -70,10 +70,9 @@ const isDateInPast = ref(dayjs(date.value).endOf('day').isBefore(new Date));
 const storeSession = useSessionStore();
 
 const user = computed(() => {
-  const user = storeSession.session && storeSession.session.token 
+  return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
     : null;
-  return user;
 });
 
 const dayInfo = ref({
@@ -85,17 +84,18 @@ const isLoading = ref(true);
 const toastRef = ref(undefined);
 
 const getDayInfo = async () => {
-  const date = parsedDate.value.toDate();
+  try {
+    const date = parsedDate.value.toDate();
 
-  const response = await axios.post('/habits/day', {
-    userId: user.value.id,
-    date: date
-  });
-  
-  if (response.status === 'success') {
+    const response = await axios.post('/habits/day', {
+      userId: user.value.id,
+      date: date
+    });
+
     dayInfo.value = response.data;
-  } else {
-    toastRef.value?.setOpen(true, response.status, response.message);
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
 
   isLoading.value = false;
@@ -105,19 +105,21 @@ onIonViewWillEnter(async () => {
   await getDayInfo();
 });
 
-const handleToggleHabit = async (habitid) => {
-  const response = await axios.put(`/habits/${habitid}/toggle`, { userId: user.value.id });
-  
-  if (response.status === 'error') {
-    console.log(response.data);
-    return;
+const handleToggleHabit = async (habitId) => {
+  try {
+    const response = await axios.put(`/habits/${habitId}/toggle`, { 
+      userId: user.value.id 
+    });
+    
+    await getDayInfo();
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
   }
-
-  await getDayInfo();
 };
 
-const isHabitChecked = (habitid) => {
-  return dayInfo.value.completedHabits.some(habit => habit.habit_id === habitid);
+const isHabitChecked = (habitId) => {
+  return dayInfo.value.completedHabits.some(habit => habit.habit_id === habitId);
 };
 
 const progressPercentage = computed(() => {
