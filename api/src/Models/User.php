@@ -15,7 +15,7 @@ class User extends Model {
   public function create()
   {
 
-    $sql = "CALL sp_users_create(:name, :email, :password)";
+    $sql = "INSERT INTO users (`name`, `email`, `password`) VALUES (:name, :email, :password)";
 
     try {
 
@@ -31,19 +31,17 @@ class User extends Model {
       
       $db = new Database();
 
-			$results = $db->select($sql, array(
-				":name"    => $this->getname(),
-				":email"   => strtolower($this->getemail()),
-				":password"=> PasswordHelper::hashPassword($this->getpassword())
+			$userId = $db->insert($sql, array(
+				":name"     => $this->getname(),
+				":email"    => strtolower($this->getemail()),
+				":password" => PasswordHelper::hashPassword($this->getpassword())
 			));
 
-      if (empty($results)) {
-        
-        throw new \Exception("Não foi possível efetuar o cadastro.", HTTPStatus::BAD_REQUEST);
+      $this->setId($userId);
+      
+      $this->setPassword(PasswordHelper::hashPassword($this->getpassword()));
 
-      }
-
-      return $results[0];
+      return $this->getAttributes();
 
     } catch (\PDOException $e) {
 			

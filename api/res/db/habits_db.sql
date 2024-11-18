@@ -21,19 +21,6 @@ SET time_zone = "+00:00";
 -- Banco de dados: `habits_db`
 --
 
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_users_create` (
-  `p_name` VARCHAR(64), 
-  `p_email` VARCHAR(128),
-  `p_password` VARCHAR(256)
-)   
-BEGIN  
-  INSERT INTO users (`name`, `email`, `password`) 
-  VALUES (p_name, p_email, p_password);
-  
-  SELECT * FROM users WHERE id = LAST_INSERT_ID();
-END$$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create`(
   IN `p_habit_title` VARCHAR(64), 
   IN `p_week_days_string` VARCHAR(20), 
@@ -99,19 +86,6 @@ BEGIN
     INSERT INTO day_habits (`day_id`, `habit_id`) VALUES (v_day_id, p_habit_id);
   END IF;
 END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_users_passwords_recoveries_create` (
-  `p_user_id` INT, 
-  `p_ip` VARCHAR(45)
-)   
-BEGIN  
-  INSERT INTO users_passwords_recoveries (user_id, ip)
-  VALUES(p_user_id, p_ip);
-  
-  SELECT * FROM users_passwords_recoveries
-  WHERE id = LAST_INSERT_ID();
-END$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
