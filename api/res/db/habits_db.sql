@@ -21,12 +21,11 @@ SET time_zone = "+00:00";
 -- Banco de dados: `habits_db`
 --
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create`(
-  IN `p_habit_title` VARCHAR(64), 
-  IN `p_week_days_string` VARCHAR(20), 
-  IN `p_user_id` INT
-)
-BEGIN
+DELIMITER $$
+--
+-- Procedimentos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_create` (IN `p_habit_title` VARCHAR(64), IN `p_week_days_string` VARCHAR(20), IN `p_user_id` INT)   BEGIN
   DECLARE v_habit_id INT;
   DECLARE v_week_day INT;
   DECLARE v_comma_position INT;
@@ -57,14 +56,11 @@ BEGIN
       SET p_week_days_string = SUBSTRING(p_week_days_string, v_comma_position + 1);
     END IF;
   END WHILE;
+
+  SELECT * FROM habits WHERE id = v_habit_id;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle`(
-  IN `p_user_id` INT, 
-  IN `p_habit_id` INT,
-  IN `p_date` DATETIME
-)
-BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle` (IN `p_user_id` INT, IN `p_habit_id` INT, IN `p_date` DATETIME)   BEGIN
   DECLARE v_day_id INT;
   DECLARE v_day_habit_id INT;
 
@@ -86,6 +82,50 @@ BEGIN
     INSERT INTO day_habits (`day_id`, `habit_id`) VALUES (v_day_id, p_habit_id);
   END IF;
 END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_update` (IN `p_habit_id` INT, IN `p_title` VARCHAR(64), IN `p_week_days` VARCHAR(20))   BEGIN
+  DECLARE v_week_day INT;
+  DECLARE v_comma_position INT;
+
+  -- Verificar se o hábito existe
+  IF (SELECT COUNT(*) FROM habits WHERE `id` = p_habit_id) = 0 THEN
+    SIGNAL SQLSTATE '45000' 
+      SET MESSAGE_TEXT = 'O hábito especificado não existe.';
+  END IF;
+
+  -- Atualizar o título do hábito
+  UPDATE habits
+  SET `title` = p_title
+  WHERE `id` = p_habit_id;
+
+  -- Remover associações existentes dos dias
+  DELETE FROM habit_week_days WHERE `habit_id` = p_habit_id;
+
+  -- Associar os novos dias ao hábito
+  WHILE LENGTH(p_week_days) > 0 DO
+    SET v_comma_position = LOCATE(',', p_week_days);
+
+    IF v_comma_position = 0 THEN
+      SET v_week_day = p_week_days;
+    ELSE
+      SET v_week_day = SUBSTRING(p_week_days, 1, v_comma_position - 1);
+    END IF;
+
+    -- Inserir a associação do hábito ao dia
+    INSERT INTO habit_week_days (`habit_id`, `week_day`) VALUES (p_habit_id, v_week_day);
+
+    -- Atualizar a string de dias para o próximo
+    IF v_comma_position = 0 THEN
+      SET p_week_days = '';
+    ELSE
+      SET p_week_days = SUBSTRING(p_week_days, v_comma_position + 1);
+    END IF;
+  END WHILE;
+
+  SELECT * FROM habits WHERE id = p_habit_id;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 

@@ -45,6 +45,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 - [User Forgot Token](#user-forgot-token)
 - [User Reset Password](#user-reset-password)
 - [Habits Create](#habits-create)
+- [Habits Update](#habits-update)
 - [Habits Summary](#habits-summary)
 - [Habits Day](#habits-day)
 - [Habits Toggle](#habits-toggle)
@@ -138,7 +139,22 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 
 **Observation:** The parameters should be passed within a single JSON object.
 
-**Response:** Void
+**Response:** Habit data
+
+#### Habits Update
+
+```http
+  POST /habits/update/{id}
+```
+
+| Parameter  | Type      | Description                                         |
+| :--------- | :-------- | :-------------------------------------------------- |
+| `title`    | `string`  | **Required**. Habit title                           |
+| `weekDays` | `string`  | **Required**. Days of week string (Ex.: "0, 1, 2")  |
+
+**Observation:** The parameters should be passed within a single JSON object.
+
+**Response:** Habit data
 
 #### Habits Summary
 
@@ -170,7 +186,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 #### Habits Toggle
 
 ```http
-  PUT /habits/toggle
+  PUT /habits/{id}/toggle
 ```
 
 | Parameter | Type       | Description                                        |

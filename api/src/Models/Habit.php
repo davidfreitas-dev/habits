@@ -18,7 +18,7 @@ class Habit extends Model {
       
       $db = new Database();
 
-      $db->query("CALL sp_habits_create(:title, :week_days, :user_id)", array(
+      $results = $db->select("CALL sp_habits_create(:title, :week_days, :user_id)", array(
         ":title"     => $this->getTitle(),
         ":week_days" => $this->getWeekDays(),
         ":user_id"   => $this->getUserId()
@@ -28,7 +28,7 @@ class Habit extends Model {
         HTTPStatus::CREATED, 
         "success", 
         "Hábito criado com sucesso",
-        $this->getAttributes()
+        $results[0]
       );
 
     } catch (\PDOException $e) {
@@ -62,7 +62,7 @@ class Habit extends Model {
 
       $db = new Database();
 
-      $db->query("CALL sp_habits_update(:id, :title, :week_days)", array(
+      $results = $db->select("CALL sp_habits_update(:id, :title, :week_days)", array(
         ":id"        => $this->getId(),
         ":title"     => $this->getTitle(),
         ":week_days" => $this->getWeekDays()
@@ -72,7 +72,7 @@ class Habit extends Model {
         HTTPStatus::OK,
         "success",
         "Hábito atualizado com sucesso",
-        $this->getAttributes()
+        $results[0]
       );
 
     } catch (\PDOException $e) {
