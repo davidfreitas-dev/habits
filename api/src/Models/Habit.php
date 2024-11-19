@@ -97,6 +97,60 @@ class Habit extends Model {
 
   }
 
+  public static function get($id)
+  {
+
+    $sql = "SELECT 
+              h.id,
+              h.title,
+              GROUP_CONCAT(hwd.week_day ORDER BY hwd.week_day) AS week_days
+            FROM 
+              habits h
+            LEFT JOIN 
+              habit_week_days hwd ON h.id = hwd.habit_id
+            WHERE 
+              h.id = :id
+            GROUP BY 
+              h.id, h.title";
+
+    try {
+      
+      $db = new Database();
+
+      $results = $db->select($sql, array(
+        ":id" => $id
+      ));
+
+      if (empty($results)) {
+        
+        return ApiResponseFormatter::formatResponse(
+          HTTPStatus::NOT_FOUND, 
+          "error", 
+          "Hábito não encontrado.",
+          NULL
+        );
+
+      }
+
+      return ApiResponseFormatter::formatResponse(
+        HTTPStatus::OK,
+        "success", 
+        "Dados do hábito",
+        $results[0]
+      );
+
+    } catch (\PDOException $e) {
+      
+      return ApiResponseFormatter::formatResponse(
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
+        "error", 
+        "Falha ao obter dados do hábito: " . $e->getMessage(),
+        NULL
+      );
+
+    }
+  }
+
   public static function summary($userId) 
 	{
 
@@ -162,12 +216,12 @@ class Habit extends Model {
 
   }
 
-  public static function list($payload) 
+  public static function list($data) 
   {
 
-    $date = $payload['date'];
+    $date = $data['date'];
 
-    $userId = $payload['userId'];
+    $userId = $data['userId'];
 
     $possibleHabits = Habit::getPossibleHabits($date, $userId);
 

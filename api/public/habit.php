@@ -4,6 +4,20 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Models\Habit;
 
+$app->get('/habits/{id}', function (Request $request, Response $response) {
+  
+  $habitId = $request->getAttribute('id');
+
+  $results = Habit::get($habitId);
+
+  $response->getBody()->write(json_encode($results));
+
+  return $response
+    ->withHeader('content-type', 'application/json')
+    ->withStatus($results['code']);
+
+});
+
 $app->put('/habits/{id}/toggle', function (Request $request, Response $response) {
 
   $data = $request->getParsedBody();
