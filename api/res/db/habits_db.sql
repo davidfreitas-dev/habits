@@ -84,45 +84,77 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_toggle` (IN `p_user_id` I
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_update` (IN `p_habit_id` INT, IN `p_title` VARCHAR(64), IN `p_week_days` VARCHAR(20))   BEGIN
-  DECLARE v_week_day INT;
-  DECLARE v_comma_position INT;
+    DECLARE v_week_day INT;
+    DECLARE v_comma_position INT;
 
-  -- Verificar se o hábito existe
-  IF (SELECT COUNT(*) FROM habits WHERE `id` = p_habit_id) = 0 THEN
-    SIGNAL SQLSTATE '45000' 
-      SET MESSAGE_TEXT = 'O hábito especificado não existe.';
-  END IF;
-
-  -- Atualizar o título do hábito
-  UPDATE habits
-  SET `title` = p_title
-  WHERE `id` = p_habit_id;
-
-  -- Remover associações existentes dos dias
-  DELETE FROM habit_week_days WHERE `habit_id` = p_habit_id;
-
-  -- Associar os novos dias ao hábito
-  WHILE LENGTH(p_week_days) > 0 DO
-    SET v_comma_position = LOCATE(',', p_week_days);
-
-    IF v_comma_position = 0 THEN
-      SET v_week_day = p_week_days;
-    ELSE
-      SET v_week_day = SUBSTRING(p_week_days, 1, v_comma_position - 1);
+    -- Verificar se o hábito existe
+    IF (SELECT COUNT(*) FROM habits WHERE `id` = p_habit_id) = 0 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'O hábito especificado não existe.';
     END IF;
 
-    -- Inserir a associação do hábito ao dia
-    INSERT INTO habit_week_days (`habit_id`, `week_day`) VALUES (p_habit_id, v_week_day);
+    -- Atualizar o título do hábito
+    UPDATE habits
+    SET `title` = p_title
+    WHERE `id` = p_habit_id;
 
-    -- Atualizar a string de dias para o próximo
-    IF v_comma_position = 0 THEN
-      SET p_week_days = '';
-    ELSE
-      SET p_week_days = SUBSTRING(p_week_days, v_comma_position + 1);
-    END IF;
-  END WHILE;
+    -- Criar uma tabela temporária para os novos dias
+    CREATE TEMPORARY TABLE temp_week_days (
+        `week_day` INT NOT NULL
+    );
 
-  SELECT * FROM habits WHERE id = p_habit_id;
+    -- Preencher a tabela temporária com os dias recebidos como parâmetro
+    WHILE LENGTH(p_week_days) > 0 DO
+        SET v_comma_position = LOCATE(',', p_week_days);
+
+        IF v_comma_position = 0 THEN
+            SET v_week_day = p_week_days;
+        ELSE
+            SET v_week_day = SUBSTRING(p_week_days, 1, v_comma_position - 1);
+        END IF;
+
+        INSERT INTO temp_week_days (`week_day`) VALUES (v_week_day);
+
+        -- Atualizar a string de dias para o próximo
+        IF v_comma_position = 0 THEN
+            SET p_week_days = '';
+        ELSE
+            SET p_week_days = SUBSTRING(p_week_days, v_comma_position + 1);
+        END IF;
+    END WHILE;
+
+    -- Remover apenas associações de dias que não estão nos novos dias
+    DELETE hwd
+    FROM habit_week_days hwd
+    LEFT JOIN temp_week_days twd ON hwd.week_day = twd.week_day
+    WHERE hwd.habit_id = p_habit_id AND twd.week_day IS NULL;
+
+    -- Adicionar novos dias que ainda não estão associados ao hábito
+    INSERT INTO habit_week_days (`habit_id`, `week_day`)
+    SELECT p_habit_id, `week_day`
+    FROM temp_week_days
+    WHERE `week_day` NOT IN (
+        SELECT `week_day` 
+        FROM habit_week_days 
+        WHERE `habit_id` = p_habit_id
+    );
+
+    -- Limpar a tabela temporária
+    DROP TEMPORARY TABLE temp_week_days;
+
+    -- Retornar as informações atualizadas do hábito
+    SELECT 
+        h.id AS id, 
+        h.title AS title, 
+        GROUP_CONCAT(hwd.week_day ORDER BY hwd.week_day) AS week_days
+    FROM 
+        habits h
+    LEFT JOIN 
+        habit_week_days hwd ON h.id = hwd.habit_id
+    WHERE 
+        h.id = p_habit_id
+    GROUP BY 
+        h.id, h.title;
 END$$
 
 DELIMITER ;
