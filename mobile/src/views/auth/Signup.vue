@@ -41,7 +41,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonPage, IonContent } from '@ionic/vue';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
@@ -95,6 +95,12 @@ const submitForm = async () => {
   
   signUp();
 };
+
+onIonViewDidLeave(() => {
+  formData.name = '';
+  formData.email = '';
+  formData.password = '';
+});
 </script>
 
 <style scoped>

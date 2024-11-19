@@ -39,7 +39,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonPage, IonContent } from '@ionic/vue';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import { useSessionStore } from '@/stores/session';
@@ -91,6 +91,11 @@ const submitForm = async () => {
   
   signIn();
 };
+
+onIonViewDidLeave(() => {
+  formData.email = '';
+  formData.password = '';
+});
 </script>
 
 <style scoped>

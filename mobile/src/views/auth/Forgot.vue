@@ -29,7 +29,7 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonPage, IonContent } from '@ionic/vue';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import axios from '@/api/axios';
@@ -77,6 +77,10 @@ const submitForm = async () => {
   
   handleContinue();
 };
+
+onIonViewDidLeave(() => {
+  formData.email = '';
+});
 </script>
 
 <style scoped>

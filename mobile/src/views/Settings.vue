@@ -64,6 +64,12 @@
         <Alert ref="alertRef" @on-alert="logOut" />
 
         <Toast ref="toastRef" />
+
+        <ModalDialog
+          ref="modalRef"
+          message="Deseja realmente finalizar sua sessão?"
+          @on-confirm="logOut"
+        />
       </div>
     </ion-content>
   </ion-page>
@@ -77,6 +83,7 @@ import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 
 const alertRef = ref(null);
 
@@ -84,8 +91,10 @@ const showAlert = (header, message) => {
   alertRef.value?.setOpen(header, message);
 };
 
-const handleLogOut = () => {
-  showAlert('Deseja realmente sair?', 'Lembre-se que não poderá editar hábitos de datas passadas.');
+const modalRef = ref(null);
+    
+const handleLogOut = (item) => {
+  modalRef.value?.setOpen(true);
 };
 
 const router = useRouter();
@@ -95,7 +104,7 @@ const toastRef = ref(undefined);
 const logOut = async () => {
   try {
     localStorage.clear();
-    router.push('/');
+    router.push('/signin');
   } catch (error) {
     toastRef.value?.setOpen(true, error.message);
   }
