@@ -35,7 +35,7 @@ const router = useRouter();
 
 const handleNavigate = (date) => {
   router.push({
-    name: 'Habit', 
+    name: 'Day', 
     params: {
       date: date.toISOString()
     }

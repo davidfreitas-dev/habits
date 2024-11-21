@@ -43,9 +43,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/habit/:date',
-      name: 'Habit',
-      component: () => import('@/views/Habit.vue'),
+      path: '/day/:date',
+      name: 'Day',
+      component: () => import('@/views/Day.vue'),
       meta: { 
         requiresAuth: true 
       }
