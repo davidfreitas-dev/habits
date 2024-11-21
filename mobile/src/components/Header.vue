@@ -3,7 +3,7 @@
     <ion-toolbar class="ion-safe-area-top">
       <ion-row class="ion-justify-content-between ion-align-items-center">
         <Logo />
-        <ion-button router-link="/new">
+        <ion-button router-link="/habit">
           <ion-icon :icon="add" />          
           <span>Novo</span>
         </ion-button>

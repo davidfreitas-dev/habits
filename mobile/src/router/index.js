@@ -51,9 +51,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/new',
-      name: 'New',
-      component: () => import('@/views/New.vue'),
+      path: '/habit',
+      name: 'Habit',
+      component: () => import('@/views/Habit.vue'),
       meta: { 
         requiresAuth: true 
       }
