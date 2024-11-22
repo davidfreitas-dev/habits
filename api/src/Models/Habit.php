@@ -244,17 +244,27 @@ class Habit extends Model {
 
     $weekDay = date('w', strtotime($date));
     
-    $possibleHabitsQuery = "
-      SELECT *
-      FROM habits
-      WHERE created_at <= :date
-        AND id IN (
-          SELECT habit_id
-          FROM habit_week_days
-          WHERE week_day = :weekDay
-        )
-        AND user_id = :userId
-    ";
+    $possibleHabitsQuery = "SELECT 
+                                h.*,
+                                (SELECT 
+                                    GROUP_CONCAT(hwd.week_day ORDER BY hwd.week_day)
+                                FROM 
+                                    habit_week_days hwd
+                                WHERE 
+                                    hwd.habit_id = h.id) AS week_days
+                            FROM 
+                                habits h
+                            WHERE 
+                                h.created_at <= :date
+                                AND h.id IN (
+                                    SELECT 
+                                        habit_id
+                                    FROM 
+                                        habit_week_days
+                                    WHERE 
+                                        week_day = :weekDay
+                                )
+                                AND h.user_id = :userId";
 
     try {
       
@@ -283,21 +293,33 @@ class Habit extends Model {
 
     $formattedDate = date('Y-m-d', strtotime($date));
 
-    $completedHabitsQuery = "
-      SELECT habit_id
-      FROM day_habits
-      WHERE day_id = (
-        SELECT id
-        FROM days
-        WHERE date = :date
-      )
-      AND habit_id IN (
-        SELECT id
-        FROM habits
-        WHERE user_id = :userId
-      )
-    ";
-
+    $completedHabitsQuery = "SELECT 
+                                dh.habit_id,
+                                (SELECT 
+                                    GROUP_CONCAT(hwd.week_day ORDER BY hwd.week_day)
+                                FROM 
+                                    habit_week_days hwd
+                                WHERE 
+                                    hwd.habit_id = dh.habit_id) AS week_days
+                            FROM 
+                                day_habits dh
+                            WHERE 
+                                dh.day_id = (
+                                    SELECT 
+                                        id
+                                    FROM 
+                                        days
+                                    WHERE 
+                                        date = :date
+                                )
+                                AND dh.habit_id IN (
+                                    SELECT 
+                                        id
+                                    FROM 
+                                        habits
+                                    WHERE 
+                                        user_id = :userId
+                                )";
 
     try {
       

@@ -123,13 +123,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_update` (IN `p_habit_id` 
         END IF;
     END WHILE;
 
-    -- Remover apenas associações de dias que não estão nos novos dias
+    -- Remover associações de dias antigos
     DELETE hwd
     FROM habit_week_days hwd
     LEFT JOIN temp_week_days twd ON hwd.week_day = twd.week_day
     WHERE hwd.habit_id = p_habit_id AND twd.week_day IS NULL;
 
-    -- Adicionar novos dias que ainda não estão associados ao hábito
+    -- Adicionar novas associações de dias
     INSERT INTO habit_week_days (`habit_id`, `week_day`)
     SELECT p_habit_id, `week_day`
     FROM temp_week_days
@@ -138,6 +138,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_habits_update` (IN `p_habit_id` 
         FROM habit_week_days 
         WHERE `habit_id` = p_habit_id
     );
+
+    -- Atualizar os registros na tabela day_habits (somente removendo entradas inválidas)
+    DELETE dh
+    FROM day_habits dh
+    JOIN days d ON dh.day_id = d.id
+    LEFT JOIN habit_week_days hwd 
+        ON hwd.habit_id = dh.habit_id 
+        AND WEEKDAY(d.date) + 1 = hwd.week_day
+    WHERE dh.habit_id = p_habit_id 
+      AND hwd.week_day IS NULL;
 
     -- Limpar a tabela temporária
     DROP TEMPORARY TABLE temp_week_days;
