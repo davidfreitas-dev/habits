@@ -41,29 +41,35 @@ const props = defineProps({
     default: () => ({
       id: null,
       title: '',
-      created_at: '',
-      user_id: null,
       week_days: '',
     }),
   },
 });
 
 const formData = ref({
-  title: props.habit.title || '',
-  weekDays: props.habit.week_days
-    ? props.habit.week_days.split(',').map(Number)
-    : [],
+  title: '',
+  weekDays: [],
 });
 
-const availableWeekDays = [
-  'Domingo',
-  'Segunda-feira',
-  'Terça-feira',
-  'Quarta-feira',
-  'Quinta-feira',
-  'Sexta-feira',
-  'Sábado',
-];
+watch(
+  () => props.habit,
+  (newHabit) => {
+    if (newHabit) {
+      formData.value.title = newHabit.title || '';
+      formData.value.weekDays = newHabit.week_days
+        ? newHabit.week_days.split(',').map(Number)
+        : [];
+    }
+  },
+  { immediate: true } // Executa imediatamente para sincronizar ao montar
+);
+
+const clearFormData = () => {
+  formData.value.title = '';
+  formData.value.weekDays = [];
+};
+
+defineExpose({ clearFormData });
 
 const isLoading = ref(false);
 
@@ -96,19 +102,15 @@ const submitForm = () => {
   emit('onSubmit', formattedData);
 };
 
-const clearFormData = () => {
-  formData.value.title = '';
-  formData.value.weekDays = [];
-};
-
-watch(() => props.habit, (newHabit) => {
-  formData.value.title = newHabit.title || '';
-  formData.value.weekDays = newHabit.week_days
-    ? newHabit.week_days.split(',').map(Number)
-    : [];
-});
-
-defineExpose({ clearFormData });
+const availableWeekDays = [
+  'Domingo',
+  'Segunda-feira',
+  'Terça-feira',
+  'Quarta-feira',
+  'Quinta-feira',
+  'Sexta-feira',
+  'Sábado',
+];
 </script>
 
 <style scoped>

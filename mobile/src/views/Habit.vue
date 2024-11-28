@@ -12,6 +12,7 @@
 
         <HabitForm
           ref="habitFormRef"
+          :habit="habit"
           :is-loading="isLoading"
           @on-submit="handleCreateHabit"
           @on-error="showAlert"
@@ -38,13 +39,31 @@ import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
 
 const route = useRoute();
-const habitId = ref(route.params.id);
 const storeSession = useSessionStore();
-
 const user = computed(() => {
   return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
     : null;
+});
+
+const habit = ref({
+  id: null,
+  title: '',
+  week_days: '',
+});
+
+const habitId = ref(route.params.id);
+
+onMounted(async () => {
+  if (!habitId.value) return;
+  
+  try {
+    const response = await axios.get('/habits/' + habitId.value);
+    habit.value = response.data;
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
+  }
 });
 
 const isLoading = ref(false);
@@ -76,16 +95,6 @@ const handleCreateHabit = async (formData) => {
 
   isLoading.value = false;
 };
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('/habits/' + habitId.value);
-    console.log(response);
-  } catch (err) {
-    const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
-  }
-});
 </script>
 
 <style scoped>
