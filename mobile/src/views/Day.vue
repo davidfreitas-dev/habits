@@ -26,6 +26,7 @@
           :label="habit.title"
           :is-checked="isHabitChecked(habit.id)"
           :is-disabled="isDateInPast"
+          @handle-item="router.push('/habits/' + habit.id)"
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
@@ -45,9 +46,9 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import BackButton from '@/components/BackButton.vue';
@@ -62,6 +63,7 @@ import 'dayjs/locale/pt-br';
 dayjs.locale('pt-br');
 
 const route = useRoute();
+const router = useRouter();
 const date = ref(route.params.date);
 const parsedDate = ref(dayjs(date.value).startOf('day'));
 const dayOfWeek = ref(parsedDate.value.format('dddd'));
@@ -101,13 +103,13 @@ const getDayInfo = async () => {
   isLoading.value = false;
 };
 
-onIonViewWillEnter(async () => {
-  await getDayInfo();
+onIonViewWillEnter(() => {
+  getDayInfo();
 });
 
 const handleToggleHabit = async (habitId) => {
   try {
-    const response = await axios.put(`/habits/${habitId}/toggle`, { 
+    await axios.put(`/habits/${habitId}/toggle`, { 
       userId: user.value.id 
     });
     

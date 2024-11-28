@@ -8,6 +8,8 @@
 
     <ion-content :fullscreen="true">      
       <div id="container">
+        <h1>Criar hábito</h1>
+
         <HabitForm
           ref="habitFormRef"
           :is-loading="isLoading"
@@ -57,7 +59,7 @@ const handleCreateHabit = async (formData) => {
   try {
     const response = await axios.post('/habits/create', { 
       title: formData.title,
-      weekDays: formData.weekDays.join(','),
+      weekDays: formData.weekDays,
       userId: user.value.id 
     });
 
@@ -72,3 +74,12 @@ const handleCreateHabit = async (formData) => {
   isLoading.value = false;
 };
 </script>
+
+<style scoped>
+h1 {
+  color: var(--font);
+  font-weight: 800;
+  font-size: 1.875rem;
+  margin: 0;
+}
+</style>

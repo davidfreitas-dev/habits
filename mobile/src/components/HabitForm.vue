@@ -1,7 +1,5 @@
 <template>
-  <form>
-    <h1>Criar hábito</h1>
-    
+  <form>    
     <p>Qual seu comprometimento?</p>
     <Input
       v-model="formData.title"
@@ -37,19 +35,34 @@ import Button from '@/components/Button.vue';
 
 const emit = defineEmits(['onError', 'onSubmit']);
 
+const props = defineProps({
+  habit: {
+    type: Object,
+    default: () => ({
+      id: null,
+      title: '',
+      created_at: '',
+      user_id: null,
+      week_days: '',
+    }),
+  },
+});
+
 const formData = ref({
-  title: '',
-  weekDays: []
+  title: props.habit.title || '',
+  weekDays: props.habit.week_days
+    ? props.habit.week_days.split(',').map(Number)
+    : [],
 });
 
 const availableWeekDays = [
-  'Domingo', 
-  'Segunda-feira', 
-  'Terça-feira', 
-  'Quarta-feira', 
-  'Quinta-feira', 
-  'Sexta-feira', 
-  'Sábado'
+  'Domingo',
+  'Segunda-feira',
+  'Terça-feira',
+  'Quarta-feira',
+  'Quinta-feira',
+  'Sexta-feira',
+  'Sábado',
 ];
 
 const isLoading = ref(false);
@@ -62,10 +75,10 @@ const toggleWeekDay = (index) => {
   const days = formData.value.weekDays;
 
   if (days.includes(index)) {
-    formData.value.weekDays = days.filter(day => day !== index);
+    formData.value.weekDays = days.filter((day) => day !== index);
     return;
-  } 
-  
+  }
+
   days.push(index);
 };
 
@@ -75,7 +88,12 @@ const submitForm = () => {
     return;
   }
 
-  emit('onSubmit', formData.value);
+  const formattedData = {
+    ...formData.value,
+    weekDays: formData.value.weekDays.join(','), // Formata os dias como string para envio
+  };
+
+  emit('onSubmit', formattedData);
 };
 
 const clearFormData = () => {
@@ -83,17 +101,17 @@ const clearFormData = () => {
   formData.value.weekDays = [];
 };
 
-defineExpose({clearFormData});
+watch(() => props.habit, (newHabit) => {
+  formData.value.title = newHabit.title || '';
+  formData.value.weekDays = newHabit.week_days
+    ? newHabit.week_days.split(',').map(Number)
+    : [];
+});
+
+defineExpose({ clearFormData });
 </script>
 
 <style scoped>
-h1 {
-  color: var(--font);
-  font-weight: 800;
-  font-size: 1.875rem;
-  margin: 0;
-}
-
 p {
   color: var(--font);
   font-weight: 700;
