@@ -26,7 +26,7 @@
           :label="habit.title"
           :is-checked="isHabitChecked(habit.id)"
           :is-disabled="isDateInPast"
-          @handle-item="router.push('/habits/' + habit.id)"
+          @handle-item="router.push('/habit/' + habit.id)"
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 

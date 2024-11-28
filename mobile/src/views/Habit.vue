@@ -26,7 +26,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
@@ -36,6 +37,8 @@ import HabitForm from '@/components/HabitForm.vue';
 import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
 
+const route = useRoute();
+const habitId = ref(route.params.id);
 const storeSession = useSessionStore();
 
 const user = computed(() => {
@@ -73,6 +76,16 @@ const handleCreateHabit = async (formData) => {
 
   isLoading.value = false;
 };
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('/habits/' + habitId.value);
+    console.log(response);
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
+  }
+});
 </script>
 
 <style scoped>

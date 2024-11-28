@@ -59,6 +59,14 @@ const router = createRouter({
       }
     },
     {
+      path: '/habit/:id?',
+      name: 'Habit',
+      component: () => import('@/views/Habit.vue'),
+      meta: { 
+        requiresAuth: true 
+      }
+    },
+    {
       path: '/settings',
       name: 'Settings',
       component: () => import('@/views/Settings.vue'),
