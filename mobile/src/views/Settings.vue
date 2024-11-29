@@ -8,7 +8,7 @@
 
     <ion-content :fullscreen="true">
       <Container>
-        <h1>Configurações</h1>
+        <Heading title="Configurações" />
         
         <ion-list lines="none" class="ion-no-padding">
           <ion-list-header class="ion-no-padding">
@@ -79,6 +79,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
@@ -111,13 +112,8 @@ const logOut = async () => {
   }
 };
 </script>
+
 <style scoped>
-h1 {
-  color: var(--font);
-  font-weight: 800;
-  font-size: 1.875rem;
-  margin: 0;
-}
 ion-list {
   background: var(--bg);
   margin-top: 1rem;

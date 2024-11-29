@@ -8,7 +8,7 @@
 
     <ion-content :fullscreen="true">      
       <Container>
-        <h1>{{ pageTitle }}</h1>
+        <Heading :title="pageTitle" />
 
         <HabitForm
           ref="habitFormRef"
@@ -33,6 +33,7 @@ import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import HabitForm from '@/components/HabitForm.vue';
@@ -128,12 +129,3 @@ const handleHabit = (formData) => {
   createHabit(formData);
 };
 </script>
-
-<style scoped>
-h1 {
-  color: var(--font);
-  font-weight: 800;
-  font-size: 1.875rem;
-  margin: 0;
-}
-</style>
