@@ -7,7 +7,7 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <div id="container">
+      <Container>
         <h1>Configurações</h1>
         
         <ion-list lines="none" class="ion-no-padding">
@@ -70,7 +70,7 @@
           message="Deseja realmente finalizar sua sessão?"
           @on-confirm="logOut"
         />
-      </div>
+      </Container>
     </ion-content>
   </ion-page>
 </template>
@@ -79,6 +79,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';

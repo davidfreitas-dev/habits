@@ -7,7 +7,7 @@
     </ion-header>
 
     <ion-content :fullscreen="true">      
-      <div id="container">
+      <Container>
         <h1>{{ pageTitle }}</h1>
 
         <HabitForm
@@ -17,11 +17,11 @@
           @on-submit="handleHabit"
           @on-error="showAlert"
         />
+      </Container>
 
-        <Alert ref="alertRef" />
-      
-        <Toast ref="toastRef" />
-      </div>
+      <Alert ref="alertRef" />
+
+      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -33,6 +33,7 @@ import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import HabitForm from '@/components/HabitForm.vue';
 import Alert from '@/components/Alert.vue';

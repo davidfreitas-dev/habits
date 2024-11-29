@@ -2,14 +2,14 @@
   <ion-page>
     <Header />
     <ion-content :fullscreen="true">
-      <div id="container">
+      <Container class="ion-margin-bottom">
         <Loading v-if="isLoading" />
         <Summary
           v-if="!isLoading"
           :dates-from-year-start="datesFromYearStart"
           :summary="summary"
         />
-      </div>
+      </Container>
       <Toast ref="toast" />
     </ion-content>
   </ion-page>
@@ -22,6 +22,7 @@ import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
 import Header from '@/components/Header.vue';
 import Loading from '@/components/Loading.vue';
 import Summary from '@/components/Summary.vue';
@@ -64,9 +65,3 @@ const getSummary = async () => {
   isLoading.value = false;
 };
 </script>
-
-<style scoped>
-div#container {
-  margin-bottom: 2rem;
-}
-</style>

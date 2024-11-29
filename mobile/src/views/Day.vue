@@ -9,10 +9,7 @@
     <ion-content :fullscreen="true">
       <Loading v-if="isLoading" />
       
-      <div
-        v-else
-        id="container"
-      >        
+      <Container v-else>        
         <Breadcrumb
           :week-day="dayOfWeek"
           :date="dayAndMonth"
@@ -37,7 +34,7 @@
         <div v-if="isDateInPast" class="message">
           Você não pode editar hábitos de uma data passada.
         </div>
-      </div>
+      </Container>
 
       <Toast ref="toastRef" />
     </ion-content>
@@ -51,6 +48,7 @@ import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
