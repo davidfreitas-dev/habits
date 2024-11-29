@@ -1,6 +1,12 @@
 <template>
   <ion-page>
-    <Header />
+    <Header>
+      <ion-row class="ion-justify-content-between ion-align-items-center">
+        <Logo />
+        <ButtonNew />
+      </ion-row>
+      <WeekDays />
+    </Header>
     <ion-content :fullscreen="true">
       <Container class="ion-margin-bottom">
         <Loading v-if="isLoading" />
@@ -18,10 +24,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonContent, IonRow, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
+import Logo from '@/components/Logo.vue';
+import ButtonNew from '@/components/ButtonNew.vue';
+import WeekDays from '@/components/WeekDays.vue';
 import Container from '@/components/Container.vue';
 import Header from '@/components/Header.vue';
 import Loading from '@/components/Loading.vue';
