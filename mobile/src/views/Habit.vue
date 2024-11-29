@@ -8,13 +8,13 @@
 
     <ion-content :fullscreen="true">      
       <div id="container">
-        <h1>Criar hábito</h1>
+        <h1>{{ pageTitle }}</h1>
 
         <HabitForm
           ref="habitFormRef"
           :habit="habit"
           :is-loading="isLoading"
-          @on-submit="handleCreateHabit"
+          @on-submit="handleHabit"
           @on-error="showAlert"
         />
 
@@ -38,27 +38,31 @@ import HabitForm from '@/components/HabitForm.vue';
 import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
 
-const route = useRoute();
 const storeSession = useSessionStore();
+
 const user = computed(() => {
   return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
     : null;
 });
 
+const route = useRoute();
+
+const pageTitle = computed(() => {
+  return route.params.id ? 'Editar hábito' : 'Criar hábito';
+});
+
 const habit = ref({
-  id: null,
+  id: route.params.id,
   title: '',
   week_days: '',
 });
 
-const habitId = ref(route.params.id);
-
 onMounted(async () => {
-  if (!habitId.value) return;
+  if (!habit.value.id) return;
   
   try {
-    const response = await axios.get('/habits/' + habitId.value);
+    const response = await axios.get('/habits/' + habit.value.id);
     habit.value = response.data;
   } catch (err) {
     const error = err.response.data;
@@ -75,7 +79,7 @@ const showAlert = (header, message) => {
   alertRef.value?.setOpen(header, message);
 };
 
-const handleCreateHabit = async (formData) => {
+const createHabit = async (formData) => {
   isLoading.value = true;
 
   try {
@@ -94,6 +98,33 @@ const handleCreateHabit = async (formData) => {
   }
 
   isLoading.value = false;
+};
+
+const updateHabit = async (formData) => {
+  isLoading.value = true;
+
+  try {
+    const response = await axios.put('/habits/update/' + habit.value.id, { 
+      title: formData.title,
+      weekDays: formData.weekDays
+    });
+    
+    showAlert('Atualização Hábito', response.message);
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
+  }
+
+  isLoading.value = false;
+};
+
+const handleHabit = (formData) => {
+  if (habit.value.id) {
+    updateHabit(formData);
+    return;
+  }
+
+  createHabit(formData);
 };
 </script>
 

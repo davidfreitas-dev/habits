@@ -6,7 +6,7 @@
       :disabled="isDisabled"
       @ion-change="$emit('handleCheckboxChange')"
     />
-    <ion-label :class="{ disabled: isDisabled }" @click="$emit('handleItem')">
+    <ion-label :class="{ disabled: isDisabled }" @click="handleItem">
       {{ label }}
     </ion-label>
   </ion-row>
@@ -25,6 +25,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['handleCheckboxChange', 'handleItem']);
+
+const handleItem = () => {
+  if (props.isDisabled) return;
+  emit('handleItem');
+};
 </script>
 
 <style scoped>
