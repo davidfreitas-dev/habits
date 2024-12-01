@@ -105,7 +105,7 @@ const toastRef = ref(undefined);
 
 const logOut = async () => {
   try {
-    localStorage.clear();
+    sessionStorage.clear();
     router.push('/signin');
   } catch (error) {
     toastRef.value?.setOpen(true, error.message);

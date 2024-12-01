@@ -13,14 +13,14 @@ export const useSessionStore = defineStore('session', () => {
     session.value = null;
   };
 
-  if (localStorage.getItem('session')) {
-    session.value = JSON.parse(localStorage.getItem('session'));
+  if (sessionStorage.getItem('session')) {
+    session.value = JSON.parse(sessionStorage.getItem('session'));
   }
   
   watch(
     session,
     newSession => {
-      localStorage.setItem('session', JSON.stringify(newSession));
+      sessionStorage.setItem('session', JSON.stringify(newSession));
     },
     { deep: true }
   );
