@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <div id="container">
+      <Container>
         <form>
           <h1>habits</h1>
 
@@ -29,7 +29,7 @@
         <router-link to="/signup">
           Criar minha conta
         </router-link>
-      </div>
+      </Container>
 
       <Toast ref="toastRef" />
     </ion-content>
@@ -44,6 +44,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import Toast from '@/components/Toast.vue';
@@ -99,10 +100,6 @@ onIonViewDidLeave(() => {
 </script>
 
 <style scoped>
-#container {
-  display: flex;
-  flex-direction: column;
-}
 form {
   display: flex;
   flex-direction: column;

@@ -5,10 +5,9 @@
 </template>
 
 <style scoped>
-h1 {
-  color: var(--font);
-  font-weight: 800;
-  font-size: 1.875rem;
-  margin: 0;
+#container {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
 }
 </style>

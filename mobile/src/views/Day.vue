@@ -27,13 +27,13 @@
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <div v-if="!dayInfo.possibleHabits.length && !isDateInPast" class="message">
-          Você ainda não criou nenhum hábito
-        </div>
+        <ion-text v-if="!dayInfo.possibleHabits.length && !isDateInPast">
+          <p>Você ainda não criou nenhum hábito.</p>
+        </ion-text>
 
-        <div v-if="isDateInPast" class="message">
-          Você não pode editar hábitos de uma data passada.
-        </div>
+        <ion-text v-if="isDateInPast">
+          <p>Você não pode editar hábitos de uma data passada.</p>
+        </ion-text>
       </Container>
 
       <Toast ref="toastRef" />
@@ -45,7 +45,7 @@
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonHeader, IonToolbar, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import Container from '@/components/Container.vue';
@@ -130,10 +130,13 @@ const progressPercentage = computed(() => {
 </script>
 
 <style>
-div.message {
+div#container {
+  display: block !important;
+}
+ion-text {
   font-size: .85rem;
   text-align: center;
   color: var(--font);
-  margin-top: 2.5rem;
+  padding: 2.5rem;
 }
 </style>

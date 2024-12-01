@@ -18,7 +18,3 @@
 ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
   --background: var(--bg);
 }
-
-div#container {
-  padding: 1rem;
-}
