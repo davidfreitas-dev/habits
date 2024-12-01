@@ -1,10 +1,8 @@
 <template>
   <ion-page ref="pageRef">
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="ion-safe-area-top">
-        <BackButton />
-      </ion-toolbar>
-    </ion-header>
+    <Header>
+      <BackButton />
+    </Header>
 
     <ion-content :fullscreen="true">
       <Container>
@@ -79,6 +77,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonHeader, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';

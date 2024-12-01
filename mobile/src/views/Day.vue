@@ -1,10 +1,8 @@
 <template>
   <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="ion-safe-area-top">
-        <BackButton />
-      </ion-toolbar>
-    </ion-header>
+    <Header>
+      <BackButton />
+    </Header>
 
     <ion-content :fullscreen="true">
       <Loading v-if="isLoading" />
@@ -48,6 +46,7 @@ import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Header from '@/components/Header.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Breadcrumb from '@/components/Breadcrumb.vue';

@@ -1,10 +1,8 @@
 <template>
   <ion-page>
-    <ion-header class="ion-no-border">
-      <ion-toolbar class="ion-safe-area-top">
-        <BackButton />
-      </ion-toolbar>
-    </ion-header>
+    <Header>
+      <BackButton />
+    </Header>
 
     <ion-content :fullscreen="true">      
       <Container>
@@ -56,6 +54,7 @@ import { trash } from 'ionicons/icons';
 import { IonPage, IonHeader, IonToolbar, IonButton, IonIcon, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
+import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
