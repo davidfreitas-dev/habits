@@ -151,6 +151,29 @@ class Habit extends Model {
     }
   }
 
+  public static function list($data) 
+  {
+
+    $date = $data['date'];
+
+    $userId = $data['userId'];
+
+    $possibleHabits = Habit::getPossibleHabits($date, $userId);
+
+    $completedHabits = Habit::getCompletedHabits($date, $userId);
+
+    return ApiResponseFormatter::formatResponse(
+      HTTPStatus::OK,  
+      "success", 
+      "Lista de hábitos possíveis e completados",
+      [
+        "possibleHabits" => $possibleHabits,
+        "completedHabits" => $completedHabits
+      ]
+    );
+
+  }
+
   public static function summary($userId) 
 	{
 
@@ -213,29 +236,6 @@ class Habit extends Model {
       );
 
     }
-
-  }
-
-  public static function list($data) 
-  {
-
-    $date = $data['date'];
-
-    $userId = $data['userId'];
-
-    $possibleHabits = Habit::getPossibleHabits($date, $userId);
-
-    $completedHabits = Habit::getCompletedHabits($date, $userId);
-
-    return ApiResponseFormatter::formatResponse(
-      HTTPStatus::OK,  
-      "success", 
-      "Lista de hábitos possíveis e completados",
-      [
-        "possibleHabits" => $possibleHabits,
-        "completedHabits" => $completedHabits
-      ]
-    );
 
   }
 
@@ -378,6 +378,39 @@ class Habit extends Model {
     }
 
   }
+
+  public static function delete($id) 
+	{
+		
+		$sql = "DELETE FROM habits WHERE id = :id";
+		
+		try {
+
+			$db = new Database();
+			
+			$db->query($sql, array(
+				':id' => $id
+			));
+
+      return ApiResponseFormatter::formatResponse(
+        HTTPStatus::OK, 
+        "success", 
+        "Hábito excluído com sucesso",
+        null
+      );
+
+		} catch (\PDOException $e) {
+
+			return ApiResponseFormatter::formatResponse(
+        HTTPStatus::INTERNAL_SERVER_ERROR, 
+        "error", 
+        "Falha ao excluir o hábito: " . $e->getMessage(),
+        null
+      );
+			
+		}		
+
+	}
 
   private function checkHabitExists($title, $id = NULL) 
   {

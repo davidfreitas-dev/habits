@@ -54,8 +54,8 @@ $app->get('/', function (Request $request, Response $response) {
 
 });
 
-require_once('auth.php');
-require_once('user.php');
-require_once('habit.php');
+require_once __DIR__ . '/../src/Routes/auth.php';
+require_once __DIR__ . '/../src/Routes/habit.php';
+require_once __DIR__ . '/../src/Routes/user.php';
 
 $app->run();

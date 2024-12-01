@@ -27,7 +27,6 @@ const props = defineProps({
 const emit = defineEmits(['handleCheckboxChange', 'handleItem']);
 
 const handleItem = () => {
-  if (props.isDisabled) return;
   emit('handleItem');
 };
 </script>

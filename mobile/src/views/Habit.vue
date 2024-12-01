@@ -17,7 +17,29 @@
           @on-submit="handleHabit"
           @on-error="showAlert"
         />
+
+        <ion-button
+          fill="clear"
+          color="danger"
+          expand="block"
+          class="ion-margin-top"
+          @click="handleDelete"
+        >
+          <ion-icon
+            slot="start"
+            size="small"
+            :icon="trash"
+            aria-hidden="true"
+          />
+          Excluir
+        </ion-button>
       </Container>
+
+      <ModalDialog
+        ref="dialogRef"
+        message="Deseja realmente excluir este hábito?"
+        @on-confirm="deleteHabit"
+      />
 
       <Alert ref="alertRef" />
 
@@ -28,15 +50,17 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonHeader, IonToolbar, IonContent } from '@ionic/vue';
+import { trash } from 'ionicons/icons';
+import { IonPage, IonHeader, IonToolbar, IonButton, IonIcon, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import HabitForm from '@/components/HabitForm.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 import Alert from '@/components/Alert.vue';
 import Toast from '@/components/Toast.vue';
 
@@ -60,6 +84,8 @@ const habit = ref({
   week_days: '',
 });
 
+const toastRef = ref(null);
+
 onMounted(async () => {
   if (!habit.value.id) return;
   
@@ -74,7 +100,6 @@ onMounted(async () => {
 
 const isLoading = ref(false);
 const alertRef = ref(null);
-const toastRef = ref(null);
 const habitFormRef = ref(null);
 
 const showAlert = (header, message) => {
@@ -127,5 +152,27 @@ const handleHabit = (formData) => {
   }
 
   createHabit(formData);
+};
+
+const dialogRef = ref(null);
+
+const handleDelete = () => {
+  dialogRef.value?.setOpen(true);
+};
+
+const router = useRouter();
+
+const deleteHabit = async (formData) => {
+  isLoading.value = true;
+
+  try {
+    const response = await axios.delete('/habits/delete/' + habit.value.id);
+    router.go(-1);
+  } catch (err) {
+    const error = err.response.data;
+    toastRef.value?.setOpen(true, error.status, error.message);
+  }
+
+  isLoading.value = false;
 };
 </script>

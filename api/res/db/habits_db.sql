@@ -372,7 +372,7 @@ ALTER TABLE `users_passwords_recoveries`
 --
 ALTER TABLE `day_habits`
   ADD CONSTRAINT `fk_day_habits_days` FOREIGN KEY (`day_id`) REFERENCES `days` (`id`),
-  ADD CONSTRAINT `fk_day_habits_habits` FOREIGN KEY (`habit_id`) REFERENCES `habits` (`id`);
+  ADD CONSTRAINT `fk_day_habits_habits` FOREIGN KEY (`habit_id`) REFERENCES `habits` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `habits`
