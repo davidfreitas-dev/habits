@@ -93,7 +93,7 @@ onMounted(async () => {
     habit.value = response.data;
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
+    toastRef.value?.setOpen(true, 'error', error.message);
   }
 });
 
@@ -120,7 +120,7 @@ const createHabit = async (formData) => {
     showAlert('Novo Hábito', response.message);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
+    toastRef.value?.setOpen(true, 'error', error.message);
   }
 
   isLoading.value = false;
@@ -138,7 +138,7 @@ const updateHabit = async (formData) => {
     showAlert('Atualização Hábito', response.message);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
+    toastRef.value?.setOpen(true, 'error', error.message);
   }
 
   isLoading.value = false;
@@ -169,7 +169,7 @@ const deleteHabit = async (formData) => {
     router.go(-1);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
+    toastRef.value?.setOpen(true, 'error', error.message);
   }
 
   isLoading.value = false;

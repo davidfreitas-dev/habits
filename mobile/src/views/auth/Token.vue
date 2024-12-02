@@ -53,7 +53,7 @@ const handleContinue = async () => {
     router.push({ name: 'Reset', query: { data } });
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, error.status, error.message);
+    toastRef.value?.setOpen(true, 'error', error.message);
   }
 
   isLoading.value = false;
