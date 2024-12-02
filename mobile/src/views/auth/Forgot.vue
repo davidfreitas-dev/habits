@@ -6,12 +6,17 @@
           <h1>habits</h1>
 
           <Input
-            type="text"
             v-model="formData.email"
-            placeholder="Endereço de e-mail"
+            type="text"
+            label="Endereço de e-mail"
+            placeholder="exemplo@email.com"
           /> 
 
-          <Button :is-loading="isLoading" @click="submitForm">
+          <Button
+            class="ion-margin-top"
+            :is-loading="isLoading"
+            @click="submitForm"
+          >
             Continuar
           </Button>
         </form>
@@ -88,7 +93,6 @@ onIonViewDidLeave(() => {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   margin-top: 5rem;
   margin-bottom: 3rem;
   padding: 0 .5rem;
@@ -103,7 +107,12 @@ form h1 {
 
 form a {
   display: block;
+  font-size: .85rem;
   text-align: right;
+  text-decoration: none;
+  letter-spacing: .25px;
+  margin: 1.25rem 0;
+  color: var(--success);
 }
 
 a {

@@ -6,18 +6,24 @@
           <h1>habits</h1>
 
           <Input
-            type="password"
             v-model="formData.password"
+            type="password"
+            label="Digite a nova senha"
             placeholder="Sua nova senha"
           /> 
 
           <Input
-            type="password"
             v-model="formData.confPassword"
-            placeholder="Confirme sua senha"
+            type="password"
+            label="Confirme a nova senha"
+            placeholder="Repita a senha"
           /> 
 
-          <Button :is-loading="isLoading" @click="submitForm">
+          <Button
+            class="ion-margin-top"
+            :is-loading="isLoading"
+            @click="submitForm"
+          >
             Confirmar
           </Button>
         </form>
@@ -115,7 +121,6 @@ onIonViewDidLeave(() => {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   margin-top: 5rem;
   margin-bottom: 3rem;
   padding: 0 .5rem;
@@ -130,7 +135,12 @@ form h1 {
 
 form a {
   display: block;
+  font-size: .85rem;
   text-align: right;
+  text-decoration: none;
+  letter-spacing: .25px;
+  margin: 1.25rem 0;
+  color: var(--success);
 }
 
 a {

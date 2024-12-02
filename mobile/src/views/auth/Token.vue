@@ -1,17 +1,22 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <div id="container">
+      <Container>
         <form>
           <h1>habits</h1>
 
           <Input
-            type="text"
             v-model="formData.token"
-            placeholder="Insira seu token aqui"
+            type="text"
+            label="Informe o token"
+            placeholder="Token de recuperação"
           /> 
 
-          <Button :is-loading="isLoading" @click="submitForm">
+          <Button
+            class="ion-margin-top"
+            :is-loading="isLoading"
+            @click="submitForm"
+          >
             Continuar
           </Button>
         </form>
@@ -19,7 +24,7 @@
         <router-link to="/signin">
           Voltar ao login
         </router-link>
-      </div>
+      </Container>
 
       <Toast ref="toastRef" />
     </ion-content>
@@ -33,6 +38,7 @@ import { IonPage, IonContent } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 import Toast from '@/components/Toast.vue';
@@ -80,14 +86,9 @@ const submitForm = async () => {
 </script>
 
 <style scoped>
-#container {
-  display: flex;
-  flex-direction: column;
-}
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   margin-top: 5rem;
   margin-bottom: 3rem;
   padding: 0 .5rem;
@@ -102,7 +103,12 @@ form h1 {
 
 form a {
   display: block;
+  font-size: .85rem;
   text-align: right;
+  text-decoration: none;
+  letter-spacing: .25px;
+  margin: 1.25rem 0;
+  color: var(--success);
 }
 
 a {

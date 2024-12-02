@@ -5,17 +5,17 @@
         <form>
           <h1>habits</h1>
 
-          <p>Seu melhor e-mail</p>
           <Input
-            type="text"
             v-model="formData.email"
+            type="text"
+            label="Seu e-mail"
             placeholder="exemplo@email.com"
           /> 
 
-          <p>Sua senha</p>
           <Input
-            type="password"
             v-model="formData.password"
+            type="password"
+            label="Sua senha"
             placeholder="Digite sua senha"
           /> 
 
@@ -119,12 +119,6 @@ form h1 {
   text-align: center;
   color: var(--font);
   font-weight: 800;
-}
-
-form p {
-  color: var(--font);
-  font-weight: 700;
-  margin-top: 1.5rem;
 }
 
 form a {

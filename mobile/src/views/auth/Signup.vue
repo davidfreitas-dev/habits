@@ -6,31 +6,40 @@
           <h1>habits</h1>
 
           <Input
-            type="text"
             v-model="formData.name"
-            placeholder="Nome e sobrenome"
-          /> 
-
-          <Input
             type="text"
-            v-model="formData.email"
-            placeholder="Endereço de e-mail"
+            label="Seu nome e sobrenome"
+            placeholder="Michael Scofield"
           /> 
 
           <Input
-            type="password"
+            v-model="formData.email"
+            type="text"
+            label="Seu e-mail"
+            placeholder="exemplo@email.com"
+          /> 
+          
+          <Input
             v-model="formData.password"
-            placeholder="Sua senha"
+            type="password"
+            label="Sua senha"
+            placeholder="Digite sua senha"
           /> 
 
-          <Button :is-loading="isLoading" @click="submitForm">
-            Criar conta
-          </Button>
-        </form>
+          <div class="ion-margin-top ion-padding-top">
+            <Button :is-loading="isLoading" @click="submitForm">
+              Criar conta
+            </Button>
 
-        <router-link to="/signin">
-          Já possuo uma conta
-        </router-link>
+            <div class="separator">
+              <span>ou</span>
+            </div>
+
+            <Button :outline="true" router-link="/signin">
+              Já tenho uma conta
+            </Button>
+          </div>
+        </form>
       </Container>
 
       <Toast ref="toastRef" />
@@ -108,7 +117,6 @@ onIonViewDidLeave(() => {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   margin-top: 5rem;
   margin-bottom: 3rem;
   padding: 0 .5rem;
@@ -123,14 +131,30 @@ form h1 {
 
 form a {
   display: block;
-  text-align: right;
-}
-
-a {
   font-size: .85rem;
-  text-align: center;
+  text-align: right;
   text-decoration: none;
   letter-spacing: .25px;
+  margin: 1.25rem 0;
   color: var(--success);
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  color: var(--font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--font);
+  margin: 0 0.75rem;
 }
 </style>
