@@ -12,12 +12,12 @@
       </ion-text>
       
       <div class="ion-padding">
-        <ion-button class="ion-margin-bottom" @click="confirmAction">
+        <Button class="ion-margin-bottom" @click="confirmAction">
           Confirmar
-        </ion-button>
-        <ion-button @click="closeModal">
+        </Button>
+        <Button :outline="true" @click="closeModal">
           Cancelar
-        </ion-button>
+        </Button>
       </div>
     </ion-content>
   </ion-modal>
@@ -62,34 +62,5 @@ const canDismiss = (data, role) => {
 <style scoped>
 ion-content {
   --background: var(--bg-accent)
-}
-
-ion-button {
-  width: 100%;
-  height: 2.75rem;
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: unset;
-  letter-spacing: .0225rem;
-  padding-left: .5rem;
-  padding-right: .5rem;
-  
-  --color: var(--font);
-  --background: var(--success);
-  --background-hover: var(--success);
-  --background-activated: var(--success);
-  --background-focused: var(--success);
-  --border-radius: 0.375rem;
-}
-
-ion-button:last-child {
-  --background: transparent;
-  --background-hover: transparent;
-  --background-activated: transparent;
-  --background-focused: transparent;
-  --border-radius: 0.375rem;
-  --border-color: #8B5CF6;
-  --border-style: solid;
-  --border-width: 1px;
 }
 </style>

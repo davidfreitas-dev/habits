@@ -5,16 +5,18 @@
         <form>
           <h1>habits</h1>
 
+          <p>Seu melhor e-mail</p>
           <Input
             type="text"
             v-model="formData.email"
-            placeholder="Endereço de e-mail"
+            placeholder="exemplo@email.com"
           /> 
 
+          <p>Sua senha</p>
           <Input
             type="password"
             v-model="formData.password"
-            placeholder="Sua senha"
+            placeholder="Digite sua senha"
           /> 
 
           <router-link to="/forgot">
@@ -24,11 +26,15 @@
           <Button :is-loading="isLoading" @click="submitForm">
             Entrar
           </Button>
-        </form>
 
-        <router-link to="/signup">
-          Criar minha conta
-        </router-link>
+          <div class="separator">
+            <span>ou</span>
+          </div>
+
+          <Button :outline="true" router-link="/signup">
+            Criar minha conta
+          </Button>
+        </form>
       </Container>
 
       <Toast ref="toastRef" />
@@ -103,7 +109,6 @@ onIonViewDidLeave(() => {
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   margin-top: 5rem;
   margin-bottom: 3rem;
   padding: 0 .5rem;
@@ -116,16 +121,38 @@ form h1 {
   font-weight: 800;
 }
 
-form a {
-  display: block;
-  text-align: right;
+form p {
+  color: var(--font);
+  font-weight: 700;
+  margin-top: 1.5rem;
 }
 
-a {
+form a {
+  display: block;
   font-size: .85rem;
-  text-align: center;
+  text-align: right;
   text-decoration: none;
   letter-spacing: .25px;
+  margin: 1.25rem 0;
   color: var(--success);
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  color: var(--font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--font);
+  margin: 0 0.75rem;
 }
 </style>

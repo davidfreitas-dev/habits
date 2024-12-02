@@ -2,12 +2,13 @@
 import { IonButton, IonSpinner } from '@ionic/vue';
 
 const props = defineProps({
-  isLoading: Boolean
+  isLoading: Boolean,
+  outline: Boolean,
 });
 </script>
 
 <template>
-  <ion-button :disabled="isLoading">
+  <ion-button :disabled="isLoading" :class="{ outline }">
     <ion-spinner v-if="isLoading" name="dots" />
     <slot v-else />
   </ion-button>
@@ -28,5 +29,16 @@ ion-button {
   --background-activated: var(--success);
   --background-focused: var(--success);
   --border-radius: 0.375rem;
+}
+
+ion-button.outline {
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --border-radius: 0.375rem;
+  --border-color: #8B5CF6;
+  --border-style: solid;
+  --border-width: 1px;
 }
 </style>
