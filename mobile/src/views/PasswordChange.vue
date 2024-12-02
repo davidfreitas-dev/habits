@@ -9,23 +9,28 @@
         <Heading title="Alteração de Senha" />
 
         <form>
-          <Input
-            v-model="formData.currentPassword"
-            type="password"
-            placeholder="Digite a senha atual"
-          />
+          <div>
+            <Input
+              v-model="formData.currentPassword"
+              type="password"
+              label="Digite a senha atual"
+              placeholder="Senha atual"
+            />
 
-          <Input
-            v-model="formData.newPassword"
-            type="password"
-            placeholder="Digite a nova senha"
-          />
+            <Input
+              v-model="formData.newPassword"
+              type="password"
+              label="Digite a nova senha"
+              placeholder="Nova senha"
+            />
 
-          <Input
-            v-model="formData.confNewPassword"
-            type="password"
-            placeholder="Confirme a nova senha"
-          />
+            <Input
+              v-model="formData.confNewPassword"
+              type="password"
+              label="Confirme a nova senha"
+              placeholder="Repita a nova senha"
+            />
+          </div>
 
           <Button :is-loading="isLoading" @click="updatePassword">
             Confirmar
@@ -110,11 +115,17 @@ const updatePassword = async () => {
 </script>
 
 <style scoped>
-form {
+form div {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 0 .5rem;
-  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+a {
+  font-size: .85rem;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: .25px;
+  color: var(--success);
 }
 </style>
