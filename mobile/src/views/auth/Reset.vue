@@ -133,16 +133,6 @@ form h1 {
   font-weight: 800;
 }
 
-form a {
-  display: block;
-  font-size: .85rem;
-  text-align: right;
-  text-decoration: none;
-  letter-spacing: .25px;
-  margin: 1.25rem 0;
-  color: var(--success);
-}
-
 a {
   font-size: .85rem;
   text-align: center;

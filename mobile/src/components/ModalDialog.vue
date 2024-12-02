@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref, watch, computed } from 'vue';
-import { IonModal, IonHeader, IonContent, IonTitle, IonGrid, IonRow, IonCol, IonButton } from '@ionic/vue';
+import { IonModal, IonHeader, IonContent, IonTitle, IonText, IonGrid, IonRow, IonCol, IonButton } from '@ionic/vue';
 import Button from '@/components/Button.vue';
 
 const props = defineProps({
