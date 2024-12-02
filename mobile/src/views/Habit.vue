@@ -17,6 +17,7 @@
         />
 
         <ion-button
+          v-if="route.params.id"
           fill="clear"
           color="danger"
           expand="block"
