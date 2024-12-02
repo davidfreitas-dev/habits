@@ -2,28 +2,23 @@
   <ion-modal
     :is-open="isOpen"
     :can-dismiss="true"
-    :initial-breakpoint="0.25"
-    :breakpoints="[0.25]"
+    :initial-breakpoint="0.35"
+    :breakpoints="[0.35]"
     backdrop-dismiss="false"
   >
-    <ion-content class="ion-padding">
-      <div class="message">
-        {{ message }}
+    <ion-content class="ion-padding-top">
+      <ion-text color="light" class="ion-text-center">
+        <p><b>{{ message }}</b></p>
+      </ion-text>
+      
+      <div class="ion-padding">
+        <ion-button class="ion-margin-bottom" @click="confirmAction">
+          Confirmar
+        </ion-button>
+        <ion-button @click="closeModal">
+          Cancelar
+        </ion-button>
       </div>
-      <ion-grid>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="6">
-            <ion-button class="outline" @click="closeModal">
-              Cancelar
-            </ion-button>
-          </ion-col>
-          <ion-col size="6">
-            <ion-button @click="confirmAction">
-              Confirmar
-            </ion-button>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
     </ion-content>
   </ion-modal>
 </template>
@@ -69,13 +64,6 @@ ion-content {
   --background: var(--bg-accent)
 }
 
-ion-content div {
-  text-align: center;
-  color: var(--font);
-  font-weight: 700;
-  padding: 1rem;
-}
-
 ion-button {
   width: 100%;
   height: 2.75rem;
@@ -87,14 +75,14 @@ ion-button {
   padding-right: .5rem;
   
   --color: var(--font);
-  --background: var(--primary);
-  --background-hover: var(--primary);
-  --background-activated: var(--primary);
-  --background-focused: var(--primary);
+  --background: var(--success);
+  --background-hover: var(--success);
+  --background-activated: var(--success);
+  --background-focused: var(--success);
   --border-radius: 0.375rem;
 }
 
-ion-button.outline {
+ion-button:last-child {
   --background: transparent;
   --background-hover: transparent;
   --background-activated: transparent;
