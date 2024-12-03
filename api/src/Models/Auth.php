@@ -257,7 +257,11 @@ class Auth {
         ":password" => PasswordHelper::hashPassword($data['password'])
       ));
 
-      self::setForgotUsed($data['recoveryId']);
+      if (isset($data['recoveryId'])) {
+        
+        self::setForgotUsed($data['recoveryId']);
+
+      }
 
       return ApiResponseFormatter::formatResponse(
         HTTPStatus::OK, 

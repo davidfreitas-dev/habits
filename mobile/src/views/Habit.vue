@@ -166,7 +166,7 @@ const deleteHabit = async (formData) => {
   isLoading.value = true;
 
   try {
-    const response = await axios.delete('/habits/delete/' + habit.value.id);
+    await axios.delete('/habits/delete/' + habit.value.id);
     router.go(-1);
   } catch (err) {
     const error = err.response.data;

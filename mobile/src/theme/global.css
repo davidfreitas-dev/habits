@@ -16,5 +16,6 @@
 }
 
 ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
+  --color: var(--font);
   --background: var(--bg);
 }

@@ -7,9 +7,9 @@
     backdrop-dismiss="false"
   >
     <ion-content class="ion-padding-top">
-      <ion-text color="light" class="ion-text-center">
+      <div class="ion-text-center">
         <p><b>{{ message }}</b></p>
-      </ion-text>
+      </div>
       
       <div class="ion-padding">
         <Button class="ion-margin-bottom" @click="confirmAction">

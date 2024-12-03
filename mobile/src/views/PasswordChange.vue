@@ -32,7 +32,11 @@
             />
           </div>
 
-          <Button :is-loading="isLoading" @click="updatePassword">
+          <Button
+            :is-disabled="isDisabled"
+            :is-loading="isLoading"
+            @click="updatePassword"
+          >
             Confirmar
           </Button>
         </form>
@@ -45,6 +49,7 @@
 
 <script setup>
 import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
 import { IonContent, IonPage, onIonViewDidLeave } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
@@ -82,6 +87,8 @@ const toastRef = ref(undefined);
 
 const storeSession = useSessionStore();
 
+const router = useRouter();
+
 const user = computed(() => {
   return storeSession.session && storeSession.session.token 
     ? jwtDecode(storeSession.session.token) 
@@ -95,6 +102,7 @@ const updatePassword = async () => {
   }
 
   const request = {
+    userId: user.value.id,
     email: user.value.email,
     password: formData.currentPassword
   };
@@ -102,9 +110,19 @@ const updatePassword = async () => {
   isLoading.value = true;
 
   try {
-    await axios.post('/signin', request);
-    // TODO: Password reset
+    await axios.post('/signin', {
+      email: user.value.email,
+      password: formData.currentPassword
+    });
+
+    await axios.post('/forgot/reset', {
+      userId: user.value.id,
+      password: formData.newPassword
+    });
+
     toastRef.value?.setOpen(true, 'success', 'Senha alterada com sucesso');
+    
+    router.push('/settings');
   } catch (err) {
     const error = err.response.data;
     toastRef.value?.setOpen(true, 'error', error.message);

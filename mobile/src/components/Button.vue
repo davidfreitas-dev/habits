@@ -2,13 +2,14 @@
 import { IonButton, IonSpinner } from '@ionic/vue';
 
 const props = defineProps({
+  isDisabled: Boolean,
   isLoading: Boolean,
   outline: Boolean,
 });
 </script>
 
 <template>
-  <ion-button :disabled="isLoading" :class="{ outline }">
+  <ion-button :disabled="isLoading || isDisabled" :class="{ outline }">
     <ion-spinner v-if="isLoading" name="dots" />
     <slot v-else />
   </ion-button>
