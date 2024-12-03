@@ -95,8 +95,7 @@ onIonViewDidLeave(() => {
 form {
   display: flex;
   flex-direction: column;
-  margin-top: 5rem;
-  margin-bottom: 3rem;
+  margin: 3rem 0;
   padding: 0 .5rem;
 }
 

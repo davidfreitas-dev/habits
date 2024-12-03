@@ -2,8 +2,8 @@
   <ion-modal
     :is-open="isOpen"
     :can-dismiss="true"
-    :initial-breakpoint="0.35"
-    :breakpoints="[0.35]"
+    :initial-breakpoint="0.40"
+    :breakpoints="[0.40]"
     backdrop-dismiss="false"
   >
     <ion-content class="ion-padding-top">

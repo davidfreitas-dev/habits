@@ -65,7 +65,7 @@
 
         <ModalDialog
           ref="modalRef"
-          message="Deseja realmente finalizar sua sessão?"
+          message="Deseja realmente finalizar a sessão?"
           @on-confirm="logOut"
         />
       </Container>
@@ -75,7 +75,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonContent, IonPage, IonHeader, IonToolbar, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
+import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
