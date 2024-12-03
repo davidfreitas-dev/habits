@@ -21,7 +21,7 @@
               <span>ou</span>
             </div>
 
-            <Button :outline="true" router-link="/signin">
+            <Button color="outline" router-link="/signin">
               Voltar ao login
             </Button>
           </div>

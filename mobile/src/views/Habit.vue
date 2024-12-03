@@ -16,11 +16,9 @@
           @on-error="showAlert"
         />
 
-        <ion-button
+        <Button
           v-if="route.params.id"
-          fill="clear"
           color="danger"
-          expand="block"
           class="ion-margin-top"
           @click="handleDelete"
         >
@@ -31,7 +29,7 @@
             aria-hidden="true"
           />
           Excluir
-        </ion-button>
+        </Button>
       </Container>
 
       <ModalDialog
@@ -58,6 +56,7 @@ import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
+import Button from '@/components/Button.vue';
 import BackButton from '@/components/BackButton.vue';
 import HabitForm from '@/components/HabitForm.vue';
 import ModalDialog from '@/components/ModalDialog.vue';

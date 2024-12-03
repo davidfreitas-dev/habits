@@ -31,7 +31,7 @@
             <span>ou</span>
           </div>
 
-          <Button :outline="true" router-link="/signup">
+          <Button color="outline" router-link="/signup">
             Criar minha conta
           </Button>
         </form>

@@ -15,7 +15,7 @@
         <Button class="ion-margin-bottom" @click="confirmAction">
           Confirmar
         </Button>
-        <Button :outline="true" @click="closeModal">
+        <Button color="outline" @click="closeModal">
           Cancelar
         </Button>
       </div>
