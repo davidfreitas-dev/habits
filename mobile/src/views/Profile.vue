@@ -6,36 +6,29 @@
 
     <ion-content :fullscreen="true">
       <Container>
-        <Heading title="Alteração de Senha" />
+        <Heading title="Edição de Perfil" />
 
         <form>
           <div>
             <Input
-              v-model="formData.currentPassword"
-              type="password"
-              label="Digite a senha atual"
-              placeholder="Senha atual"
+              v-model="formData.name"
+              type="text"
+              label="Nome"
+              placeholder="Digite seu nome"
             />
 
             <Input
-              v-model="formData.newPassword"
-              type="password"
-              label="Digite a nova senha"
-              placeholder="Nova senha"
-            />
-
-            <Input
-              v-model="formData.confNewPassword"
-              type="password"
-              label="Confirme a nova senha"
-              placeholder="Repita a nova senha"
+              v-model="formData.email"
+              type="email"
+              label="E-mail"
+              placeholder="Digite seu e-mail"
             />
           </div>
 
           <Button
             :is-disabled="isDisabled"
             :is-loading="isLoading"
-            @click="updatePassword"
+            @click="updateProfile"
           >
             <ion-icon :icon="checkmark" /> Confirmar
           </Button>
@@ -48,10 +41,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
-import { IonContent, IonPage, IonIcon, onIonViewDidLeave } from '@ionic/vue';
+import { IonPage, IonContent, IonIcon, onIonViewDidLeave } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useSessionStore } from '@/stores/session';
 import axios from '@/api/axios';
@@ -66,17 +59,15 @@ import Toast from '@/components/Toast.vue';
 const isLoading = ref(false);
 
 const formData = reactive({
-  currentPassword: null,
-  newPassword: null,
-  confNewPassword: null
+  name: null,
+  email: null
 });
 
-const isDisabled = computed(() => !formData.currentPassword || !formData.newPassword || !formData.confNewPassword);
+const isDisabled = computed(() => !formData.name || !formData.email);
 
 const resetData = () => {
-  formData.currentPassword = null;
-  formData.newPassword = null;
-  formData.confNewPassword = null;
+  formData.name = null;
+  formData.email = null;
   isLoading.value = false;
 };
 
@@ -96,38 +87,29 @@ const user = computed(() => {
     : null;
 });
 
-const updatePassword = async () => { 
-  if (formData.newPassword !== formData.confNewPassword) {
-    toastRef.value?.setOpen(true, 'error', 'A nova senha não coincide com a confirmação');
-    return;
+onMounted(async () => {
+  if (user.value) {
+    formData.name = user.value.name || '';
+    formData.email = user.value.email || '';
   }
+});
 
-  const request = {
-    userId: user.value.id,
-    email: user.value.email,
-    password: formData.currentPassword
-  };
-
+const updateProfile = async () => {
   isLoading.value = true;
 
   try {
-    await axios.post('/signin', {
-      email: user.value.email,
-      password: formData.currentPassword
+    const response = await axios.put('/users/update/' + user.value.id, {
+      name: formData.name,
+      email: formData.email
     });
 
-    await axios.post('/forgot/reset', {
-      userId: user.value.id,
-      password: formData.newPassword
-    });
+    await storeSession.setSession({ token: response.data });
 
-    toastRef.value?.setOpen(true, 'success', 'Senha alterada com sucesso');
-    
-    router.push('/settings');
+    toastRef.value?.setOpen(true, 'success', 'Perfil atualizado com sucesso');
   } catch (err) {
-    const error = err.response.data;
+    const error = err.response?.data || { message: 'Erro ao atualizar perfil' };
     toastRef.value?.setOpen(true, 'error', error.message);
-  }
+  } 
   
   isLoading.value = false;
 };
