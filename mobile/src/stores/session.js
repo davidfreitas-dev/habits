@@ -9,18 +9,18 @@ export const useSessionStore = defineStore('session', () => {
   };
 
   const clearSession = async () => {
-    sessionStorage.clear();
+    localStorage.clear();
     session.value = null;
   };
 
-  if (sessionStorage.getItem('session')) {
-    session.value = JSON.parse(sessionStorage.getItem('session'));
+  if (localStorage.getItem('session')) {
+    session.value = JSON.parse(localStorage.getItem('session'));
   }
   
   watch(
     session,
     newSession => {
-      sessionStorage.setItem('session', JSON.stringify(newSession));
+      localStorage.setItem('session', JSON.stringify(newSession));
     },
     { deep: true }
   );

@@ -11,19 +11,21 @@
             label="Informe o token"
             placeholder="Token de recuperação"
           /> 
+          
+          <div class="ion-margin-top ion-padding-top">
+            <Button :is-loading="isLoading" @click="submitForm">
+              Continuar
+            </Button>
 
-          <Button
-            class="ion-margin-top"
-            :is-loading="isLoading"
-            @click="submitForm"
-          >
-            Continuar
-          </Button>
+            <div class="separator">
+              <span>ou</span>
+            </div>
+
+            <Button :outline="true" router-link="/signin">
+              Voltar ao login
+            </Button>
+          </div>
         </form>
-
-        <router-link to="/signin">
-          Voltar ao login
-        </router-link>
       </Container>
 
       <Toast ref="toastRef" />
@@ -101,11 +103,22 @@ form h1 {
   font-weight: 800;
 }
 
-a {
-  font-size: .85rem;
-  text-align: center;
-  text-decoration: none;
-  letter-spacing: .25px;
-  color: var(--success);
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  color: var(--font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--font);
+  margin: 0 0.75rem;
 }
 </style>

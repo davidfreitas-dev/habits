@@ -13,6 +13,9 @@ Thumbs.db
 UserInterfaceState.xcuserstate
 $RECYCLE.BIN/
 
+.env
+.env.development
+.env.production
 *.local
 *.log
 log.txt

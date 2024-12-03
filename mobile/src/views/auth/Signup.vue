@@ -9,13 +9,13 @@
             v-model="formData.name"
             type="text"
             label="Seu nome e sobrenome"
-            placeholder="Michael Scofield"
+            placeholder="Fulano de Tal"
           /> 
 
           <Input
             v-model="formData.email"
             type="text"
-            label="Seu e-mail"
+            label="Seu melhor e-mail"
             placeholder="exemplo@email.com"
           /> 
           
