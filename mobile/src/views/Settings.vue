@@ -27,6 +27,12 @@
             </ion-label>
             <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
+          <ion-item class="ion-no-padding" router-link="/delete-account">
+            <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
+              Excluir conta
+            </ion-label>
+            <ion-icon slot="end" :icon="chevronForwardOutline" />
+          </ion-item>
         </ion-list>
 
         <br>
@@ -106,8 +112,8 @@ const logOut = async () => {
   try {
     localStorage.clear();
     router.push('/signin');
-  } catch (error) {
-    toastRef.value?.setOpen(true, error.message);
+  } catch (err) {
+    toastRef.value?.setOpen(true, err.message);
   }
 };
 </script>
