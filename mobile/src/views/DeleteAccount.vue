@@ -41,15 +41,16 @@
             </ion-item>
           </ion-list>
           <p><strong>Esta ação é irreversível!</strong></p>
-          <p>Se desejar continuar, clique no botão abaixo. Caso tenha dúvidas ou precise de assistência, entre em contato com nosso suporte.</p>
+          <p>Caso tenha dúvidas ou precise de assistência, clique em <strong>Cancelar</strong> e entre em contato com nosso suporte.</p>
         </div>
 
-        <Button class="ion-margin-top ion-margin-bottom" @click="cancelDelete">
+        <Button class="ion-margin-top" @click="cancelDelete">
           Cancelar
         </Button>
 
         <Button
           color="danger"
+          class="ion-margin-top ion-margin-bottom"
           :is-loading="isLoading"
           @click="confirmDelete"
         >
