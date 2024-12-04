@@ -13,8 +13,6 @@ import { add } from 'ionicons/icons';
 <style scoped>
 ion-button {
   height: 3rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
   text-transform: unset;
   
   --background: transparent;

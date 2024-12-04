@@ -1,8 +1,8 @@
 <template>
   <ion-page>
     <Header>
-      <ion-row class="ion-justify-content-between ion-align-items-center">
-        <Logo />
+      <ion-row class="ion-justify-content-between ion-align-items-center ion-padding">
+        <Avatar :name="user.name" />
         <ButtonNew />
       </ion-row>
       <WeekDays />
@@ -29,7 +29,7 @@ import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
-import Logo from '@/components/Logo.vue';
+import Avatar from '@/components/Avatar.vue';
 import ButtonNew from '@/components/ButtonNew.vue';
 import WeekDays from '@/components/WeekDays.vue';
 import Container from '@/components/Container.vue';
