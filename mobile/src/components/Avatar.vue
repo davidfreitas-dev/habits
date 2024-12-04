@@ -25,14 +25,13 @@ const currentDate = dayjs().format('dddd, D MMM');
 <template>
   <router-link to="/settings">
     <ion-row class="ion-justify-content-start ion-align-items-center">
-      <ion-avatar v-if="image">
-        <img alt="Silhouette of a person's head" :src="image">
+      <ion-avatar class="ion-margin-end">
+        <img v-if="image" :src="image">
+        <img v-else src="../assets/avatar.png">
       </ion-avatar>
       <div>
-        <h3>Olá, {{ firstName || 'Visitante' }}!</h3>
-        <ion-text color="medium">
-          {{ currentDate }}
-        </ion-text>
+        <h5>Olá, {{ firstName || 'Visitante' }}!</h5>
+        <span>{{ currentDate }}</span>
       </div>
     </ion-row>
   </router-link>
@@ -43,15 +42,24 @@ a {
   text-decoration: none;
 }
 
-ion-avatar {
-  margin-right: .75rem;
-}
-
-div h3 {
+div h5 {
   color: var(--font);
   font-weight: 800;
-  font-size: 1.25rem;
   line-height: 1.75rem;
+  max-width: 200px;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div span {
+  color: var(--secondary);
+  font-size: .9rem;
+}
+
+ion-avatar {
+  width: 52px;
+  height: 52px;
 }
 </style>
