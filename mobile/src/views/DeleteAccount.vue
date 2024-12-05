@@ -100,7 +100,7 @@ const confirmDelete = async () => {
 
   try {
     if (user.value.id) {
-      await axios.delete('/users/delete' + user.value.id);
+      await axios.delete('/users/delete/' + user.value.id);
       toastRef.value?.setOpen(true, 'success', 'Conta excluída com sucesso');
       storeSession.clearSession();
       router.push('/signin');
