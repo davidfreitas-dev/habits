@@ -105,7 +105,7 @@ form h1 {
 .separator {
   display: flex;
   align-items: center;
-  margin: 2rem 0;
+  margin: 1.25rem 0;
   color: var(--font);
   font-size: 0.85rem;
   font-weight: 700;

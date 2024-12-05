@@ -121,19 +121,18 @@ form h1 {
 }
 
 form a {
-  display: block;
   font-size: .85rem;
-  text-align: right;
   text-decoration: none;
   letter-spacing: .25px;
-  margin: 1.25rem 0;
+  width: fit-content;
+  margin: 1.25rem 0 1.25rem auto;
   color: var(--success);
 }
 
 .separator {
   display: flex;
   align-items: center;
-  margin: 2rem 0;
+  margin: 1.25rem 0;
   color: var(--font);
   font-size: 0.85rem;
   font-weight: 700;

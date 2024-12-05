@@ -136,9 +136,10 @@ form h1 {
 }
 
 form div {
-  text-align: center;
-  margin: 1rem 0;
   font-size: .85rem;
+  text-align: center;
+  line-height: 1.6;
+  margin: 1rem 0;
 }
 
 form a {
@@ -152,7 +153,7 @@ form a {
 .separator {
   display: flex;
   align-items: center;
-  margin: 2rem 0;
+  margin: 1.25rem 0;
   color: var(--font);
   font-size: 0.85rem;
   font-weight: 700;
