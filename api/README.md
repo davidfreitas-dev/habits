@@ -42,6 +42,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 - [Users Registration](#users-registration)
 - [Users Authentication](#users-authentication)
 - [Users Update](#users-update)
+- [Users Delete](#users-delete)
 - [Users Forgot Password](#users-forgot-password)
 - [Users Forgot Token](#users-forgot-token)
 - [Users Reset Password](#users-reset-password)
@@ -51,6 +52,7 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 - [Habits Summary](#habits-summary)
 - [Habits Day](#habits-day)
 - [Habits Toggle](#habits-toggle)
+- [Habits Delete](#habits-delete)
 
 #### Users Registration
 
@@ -97,6 +99,16 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 **Observation:** The parameters should be passed within a single JSON object.
 
 **Response:** JWT with user data
+
+#### Users Delete
+
+```http
+  DELETE /users/delete/{id}
+```
+
+**Observation:** No parameters needed.
+
+**Response:** Void.
 
 #### Users Forgot Password
 
@@ -221,5 +233,15 @@ The HOSTNAME in .env file should be the same of docker-compose file db:container
 | Parameter | Type       | Description                                        |
 | :-------- | :--------- | :------------------------------------------------- |
 | `userId`  | `integer`  | **Required**. Logged user ID                       |
+
+**Response:** Void
+
+#### Habits Delete
+
+```http
+  DELETE /habits/delete/{id}
+```
+
+**Observation:** No parameters needed.
 
 **Response:** Void
