@@ -38,6 +38,13 @@
             <Button color="outline" router-link="/signin">
               Já tenho uma conta
             </Button>
+
+            <div>
+              Ao criar uma conta, você concorda com nossos 
+              <router-link to="/about">
+                Termos de Uso e Política de Privacidade
+              </router-link>.
+            </div>
           </div>
         </form>
       </Container>
@@ -128,10 +135,14 @@ form h1 {
   font-weight: 800;
 }
 
-form a {
-  display: block;
+form div {
+  text-align: center;
+  margin: 1rem 0;
   font-size: .85rem;
-  text-align: right;
+}
+
+form a {
+  font-size: .85rem;
   text-decoration: none;
   letter-spacing: .25px;
   margin: 1.25rem 0;

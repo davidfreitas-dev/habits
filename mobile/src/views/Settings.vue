@@ -44,15 +44,9 @@
               Mais
             </ion-label>
           </ion-list-header>
-          <ion-item class="ion-no-padding" router-link="/terms-and-conditions">
+          <ion-item class="ion-no-padding" router-link="/about">
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
-              Termos e condições de uso
-            </ion-label>
-            <ion-icon slot="end" :icon="chevronForwardOutline" />
-          </ion-item>
-          <ion-item class="ion-no-padding" router-link="/privacy-policy">
-            <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
-              Política de privacidade
+              Sobre o app
             </ion-label>
             <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
