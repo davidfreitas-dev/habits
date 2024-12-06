@@ -26,10 +26,11 @@ Habits is a powerful habit management application designed to help you track and
     <td><img src="mobile/src/assets/screenshots/new.png" alt="Login Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/edit.png" alt="Home Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/settings.png" alt="Shopping List Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/about.png" alt="Shopping List Screen" width="200"></td>
   </tr>
 </table>
 
-*Figure 1: Login Screen. Figure 2: Home Screen. Figure 3: Habits List Screen. Figure 4: New Habits Screen.*
+*Figure 1: Login Screen. Figure 2: Signup Screen. Figure 3: Home Screen. Figure 4: Habits List Screen. Figure 5: New Habit Screen. Figure 6: Edit Habit Screen. Figure 7: Settings Screen. Figure 8: About Screen.*
 
 ## How to Use
 

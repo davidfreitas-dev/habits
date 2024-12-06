@@ -1,77 +1,155 @@
-# Habits
+# 🛠️ Habits - Habit Tracking App
 
-## Technologies used:
+Seja bem-vindo ao **Habits**, um aplicativo para rastrear e gerenciar seus hábitos diários. 🚀
 
-- Ionic
-- Vue 3
+## 🌟 Tecnologias Utilizadas
 
-## Project Setup
+- **[Ionic](https://ionicframework.com/):** Framework para desenvolvimento de aplicativos híbridos.
+- **[Vue 3](https://vuejs.org/):** Framework JavaScript progressivo para interfaces de usuário.
 
-```sh
-npm install
-```
+---
 
-### Compile and Hot-Reload for Development
+## 🚀 Guia de Configuração
 
+### 1. Instale as Dependências Principais
+
+#### Instale o Node.js (versão 18)
+
+1. Acesse [Node.js](https://nodejs.org/) e baixe a versão 18.x.
+2. Verifique se o Node.js foi instalado corretamente:
+   ```sh
+   node -v
+   ```
+   A saída deve exibir algo como `v18.x.x`.
+
+#### Instale o Ionic CLI
+
+1. Instale o Ionic CLI globalmente:
+   ```sh
+   npm install -g @ionic/cli
+   ```
+2. Verifique se a instalação foi bem-sucedida:
+   ```sh
+   ionic --version
+   ```
+
+---
+
+### 2. Configure o Projeto
+
+1. Clone este repositório:
+   ```sh
+   git clone https://github.com/davidfreitas-dev/habits.git
+   cd habits
+   ```
+
+2. Instale as dependências:
+   ```sh
+   npm install
+   ```
+
+---
+
+## 🛠️ Comandos Principais
+
+### 🔧 Desenvolvimento Local
+
+Para iniciar o servidor de desenvolvimento com recarregamento automático (Hot-Reload):
 ```sh
 ionic serve
 ```
 
-### Add iOS and Android
+---
 
+### 📱 Adicionar Plataformas
+
+Adicione plataformas para iOS e Android:
 ```sh
 npx cap add ios
 npx cap add android
 ```
 
-### Sync Files
+---
 
+### 🔄 Sincronizar Arquivos
+
+Para garantir que os arquivos do projeto estejam atualizados nas plataformas:
 ```sh
 npx cap sync
 ```
 
-### Running iOS and Android
+---
 
+### ▶️ Executar no Dispositivo ou Emulador
+
+#### Executar no iOS:
 ```sh
 npx cap run ios
+```
+
+#### Executar no Android:
+```sh
 npx cap run android
 ```
 
 ---
 
-### Step-by-Step Guide: Creating an `.ipa` for Development Testing
+### 🔄 Live Reload
 
-This guide explains how to build and package an app as an `.ipa` file using Xcode for development testing purposes.
+Para usar o modo de recarregamento ao vivo em dispositivos ou emuladores:
 
-#### Requirements
-- Xcode installed on macOS.
-- A configured and buildable project in Xcode.
+#### iOS:
+```sh
+ionic capacitor run ios -l --external
+```
 
-#### Steps
+#### Android:
+```sh
+ionic capacitor run android -l --external
+```
 
-1. **Build the Project**
-   - Open Xcode and load your project.
-   - Press `⌘ + B` to build the project.
-   - Ensure the build completes without errors.
+---
 
-2. **Locate the `.app` File**
-   - In the left sidebar of Xcode, navigate to the `Products` folder.
-   - Inside the folder, find the `.app` file corresponding to your project.
-   - Right-click on the `.app` file and select **Show in Finder**.
+## 📚 Recursos Adicionais
 
-3. **Create the Payload Folder**
-   - In Finder, create a new folder named **Payload**.
-   - Drag and drop the `.app` file into the **Payload** folder.
+- Documentação do [Ionic](https://ionicframework.com/docs).
+- Documentação do [Vue 3](https://vuejs.org/guide/).
 
-4. **Compress the Payload Folder**
-   - Right-click on the **Payload** folder.
-   - Select **Compress**.
-   - A compressed `.zip` file will be created.
+---
 
-5. **Rename the File**
-   - Rename the generated `.zip` file, changing the `.zip` extension to `.ipa`.
+### Guia Passo a Passo: Criando um `.ipa` para Testes de Desenvolvimento
 
-Now the `.ipa` file is ready to be used for development testing.
+Este guia explica como construir e empacotar um aplicativo como um arquivo `.ipa` usando o Xcode, para fins de testes de desenvolvimento.
 
-### Note
-- This method is intended for internal testing only and should not be used for App Store distribution. For official distribution, use the **Archive** method and sign the app with the appropriate certificate.
+#### Requisitos
+- Xcode instalado no macOS.
+- Um projeto configurado e compilável no Xcode.
+
+#### Passos
+
+1. **Compile o Projeto**
+   - Abra o Xcode e carregue seu projeto.
+   - Pressione `⌘ + B` para compilar o projeto.
+   - Certifique-se de que a compilação seja concluída sem erros.
+
+2. **Localize o Arquivo `.app`**
+   - Na barra lateral esquerda do Xcode, navegue até a pasta `Products`.
+   - Dentro da pasta, encontre o arquivo `.app` correspondente ao seu projeto.
+   - Clique com o botão direito no arquivo `.app` e selecione **Show in Finder** (Mostrar no Finder).
+
+3. **Crie a Pasta Payload**
+   - No Finder, crie uma nova pasta chamada **Payload**.
+   - Arraste e solte o arquivo `.app` dentro da pasta **Payload**.
+
+4. **Compacte a Pasta Payload**
+   - Clique com o botão direito na pasta **Payload**.
+   - Selecione **Compress** (Compactar).
+   - Um arquivo `.zip` será criado.
+
+5. **Renomeie o Arquivo**
+   - Renomeie o arquivo `.zip` gerado, alterando a extensão `.zip` para `.ipa`.
+
+Agora o arquivo `.ipa` está pronto para ser usado em testes de desenvolvimento.
+
+### Nota
+- Este método é destinado apenas para testes internos e não deve ser usado para distribuição na App Store. Para distribuição oficial, utilize o método **Archive** e assine o aplicativo com o certificado apropriado.
