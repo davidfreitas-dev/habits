@@ -27,8 +27,6 @@
           </div>
         </form>
       </Container>
-
-      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -36,32 +34,34 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
-import Toast from '@/components/Toast.vue';
 
 const router = useRouter();
 const isLoading = ref(false);
-const toastRef = ref(undefined);
 const formData = reactive({
   email: ''
 });
+
+const { showToast } = useToast();
 
 const handleContinue = async () => {
   isLoading.value = true;
 
   try {
     const response = await axios.post('/forgot', formData);
-    toastRef.value?.setOpen(true, response.status, response.message);
+    showToast(response.status, response.message);
     router.push('/forgot/token'); 
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;
@@ -79,7 +79,7 @@ const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido');
+    showToast('error', 'Informe um e-mail válido');
     return;
   } 
   

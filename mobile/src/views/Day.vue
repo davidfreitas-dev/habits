@@ -33,8 +33,6 @@
           <p>Você não pode editar hábitos de uma data passada.</p>
         </ion-text>
       </Container>
-
-      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -45,6 +43,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Container from '@/components/Container.vue';
@@ -53,7 +53,6 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import Loading from '@/components/Loading.vue';
-import Toast from '@/components/Toast.vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
@@ -80,7 +79,8 @@ const dayInfo = ref({
 });
 
 const isLoading = ref(true);
-const toastRef = ref(undefined);
+
+const { showToast } = useToast();
 
 const getDayInfo = async () => {
   try {
@@ -94,7 +94,7 @@ const getDayInfo = async () => {
     dayInfo.value = response.data;
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;
@@ -113,7 +113,7 @@ const handleToggleHabit = async (habitId) => {
     await getDayInfo();
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 };
 

@@ -16,7 +16,6 @@
           :summary="summary"
         />
       </Container>
-      <Toast ref="toast" />
     </ion-content>
   </ion-page>
 </template>
@@ -25,8 +24,10 @@
 import { ref, computed } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonContent, IonRow, onIonViewWillEnter } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
 import { useGenerateRange } from '@/use/useGenerateRange';
+import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Avatar from '@/components/Avatar.vue';
@@ -35,7 +36,6 @@ import WeekDays from '@/components/WeekDays.vue';
 import Container from '@/components/Container.vue';
 import Loading from '@/components/Loading.vue';
 import Summary from '@/components/Summary.vue';
-import Toast from '@/components/Toast.vue';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
 const amountOfDaysToFill = ref(0);
@@ -56,8 +56,9 @@ const user = computed(() => {
 });
 
 const isLoading = ref(true);
-const toastRef = ref(undefined);
 const summary = ref([]);
+
+const { showToast } = useToast();
 
 const getSummary = async () => {
   try {
@@ -68,7 +69,7 @@ const getSummary = async () => {
     summary.value = Array.isArray(response.data) ? response.data : [];
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
   
   isLoading.value = false;

@@ -56,8 +56,6 @@
         >
           Confirmar Exclusão
         </Button>
-
-        <Toast ref="toastRef" />
       </Container>
     </ion-content>
   </ion-page>
@@ -69,13 +67,14 @@ import { useRouter } from 'vue-router';
 import { jwtDecode } from 'jwt-decode';
 import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
-import Toast from '@/components/Toast.vue';
 
 const storeSession = useSessionStore();
 
@@ -93,7 +92,7 @@ const cancelDelete = () => {
 
 const isLoading = ref(false);
 
-const toastRef = ref(null);
+const { showToast } = useToast();
 
 const confirmDelete = async () => {
   isLoading.value = true;
@@ -101,13 +100,13 @@ const confirmDelete = async () => {
   try {
     if (user.value.id) {
       await axios.delete('/users/delete/' + user.value.id);
-      toastRef.value?.setOpen(true, 'success', 'Conta excluída com sucesso');
+      showToast('success', 'Conta excluída com sucesso');
       storeSession.clearSession();
       router.push('/signin');
     }
   } catch (err) {
     const error = err.response?.data || { message: 'Erro ao excluir conta' };
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   } 
   
   isLoading.value = false;

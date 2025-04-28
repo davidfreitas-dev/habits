@@ -33,8 +33,6 @@
             <ion-icon :icon="checkmark" /> Confirmar
           </Button>
         </form>
-
-        <Toast ref="toastRef" />
       </Container>
     </ion-content>
   </ion-page>
@@ -47,6 +45,8 @@ import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonContent, IonIcon, onIonViewDidLeave } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
@@ -54,7 +54,6 @@ import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
-import Toast from '@/components/Toast.vue';
 
 const isLoading = ref(false);
 
@@ -75,8 +74,6 @@ onIonViewDidLeave(() => {
   resetData();
 });
 
-const toastRef = ref(undefined);
-
 const storeSession = useSessionStore();
 
 const router = useRouter();
@@ -94,6 +91,8 @@ onMounted(async () => {
   }
 });
 
+const { showToast } = useToast();
+
 const updateProfile = async () => {
   isLoading.value = true;
 
@@ -105,10 +104,10 @@ const updateProfile = async () => {
 
     await storeSession.setSession({ token: response.data });
 
-    toastRef.value?.setOpen(true, 'success', 'Perfil atualizado com sucesso');
+    showToast('success', 'Perfil atualizado com sucesso');
   } catch (err) {
     const error = err.response?.data || { message: 'Erro ao atualizar perfil' };
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   } 
   
   isLoading.value = false;

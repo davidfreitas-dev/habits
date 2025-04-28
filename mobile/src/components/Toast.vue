@@ -3,27 +3,37 @@ import { ref } from 'vue';
 import { IonToast } from '@ionic/vue';
 import { alertCircleOutline } from 'ionicons/icons';
 
-const isOpenRef = ref(false);
-const color = ref('');
-const message = ref(false);
+const props = defineProps({
+  toastData: {
+    type: Object,
+    default: () => ({
+      color: '',
+      message: ''
+    })
+  }
+});
 
-const setOpen = (state, type, msg) => {
-  isOpenRef.value = state;
-  message.value = msg;
-  color.value = type === 'error' ? 'danger' : 'success';
+const isOpenRef = ref(false);
+
+const showToast = () => {
+  isOpenRef.value = true;
 };
 
-defineExpose({setOpen});
+const hideToast = () => {
+  isOpenRef.value = false;
+};
+
+defineExpose({ showToast });
 </script>
 
 <template>
   <ion-toast
     :icon="alertCircleOutline"
     :is-open="isOpenRef"
-    :message="message"
-    :color="color"
+    :message="props.toastData.message"
+    :color="props.toastData.color"
     :duration="2500"
-    @did-dismiss="setOpen(false)"
+    @did-dismiss="hideToast"
   />
 </template>
 

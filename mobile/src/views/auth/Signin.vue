@@ -1,3 +1,68 @@
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
+import axios from '@/api/axios';
+import Container from '@/components/Container.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const router = useRouter();
+const storeSession = useSessionStore();
+const isLoading = ref(false);
+const formData = reactive({
+  email: '',
+  password: ''
+});
+
+const { showToast } = useToast();
+
+const signIn = async () => {
+  isLoading.value = true;
+
+  try {
+    const response = await axios.post('/signin', formData);
+    await storeSession.setSession({ token: response.data });
+    router.push('/'); 
+  } catch (err) {
+    const error = err.response.data;
+    showToast('error', error.message);
+  }
+  
+  isLoading.value = false;
+};
+
+const rules = computed(() => {
+  return {
+    email: { required, email },
+    password: { required }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    showToast('error', 'Informe um e-mail válido e a senha');
+    return;
+  } 
+  
+  signIn();
+};
+
+onIonViewDidLeave(() => {
+  formData.email = '';
+  formData.password = '';
+});
+</script>
+
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
@@ -36,74 +101,9 @@
           </Button>
         </form>
       </Container>
-
-      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
-import { useVuelidate } from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
-import { useSessionStore } from '@/stores/session';
-import axios from '@/api/axios';
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-import Toast from '@/components/Toast.vue';
-
-const router = useRouter();
-const storeSession = useSessionStore();
-const isLoading = ref(false);
-const toastRef = ref(undefined);
-const formData = reactive({
-  email: '',
-  password: ''
-});
-
-const signIn = async () => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.post('/signin', formData);
-    await storeSession.setSession({ token: response.data });
-    router.push('/'); 
-  } catch (err) {
-    const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
-  }
-  
-  isLoading.value = false;
-};
-
-const rules = computed(() => {
-  return {
-    email: { required, email },
-    password: { required }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Informe um e-mail válido e a senha');
-    return;
-  } 
-  
-  signIn();
-};
-
-onIonViewDidLeave(() => {
-  formData.email = '';
-  formData.password = '';
-});
-</script>
 
 <style scoped>
 form {

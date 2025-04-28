@@ -39,8 +39,6 @@
       />
 
       <Alert ref="alertRef" />
-
-      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -52,6 +50,8 @@ import { jwtDecode } from 'jwt-decode';
 import { trash } from 'ionicons/icons';
 import { IonPage, IonHeader, IonToolbar, IonButton, IonIcon, IonContent } from '@ionic/vue';
 import { useSessionStore } from '@/stores/session';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
@@ -61,7 +61,6 @@ import BackButton from '@/components/BackButton.vue';
 import HabitForm from '@/components/HabitForm.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
 import Alert from '@/components/Alert.vue';
-import Toast from '@/components/Toast.vue';
 
 const storeSession = useSessionStore();
 
@@ -83,7 +82,7 @@ const habit = ref({
   week_days: '',
 });
 
-const toastRef = ref(null);
+const { showToast } = useToast();
 
 onMounted(async () => {
   if (!habit.value.id) return;
@@ -93,7 +92,7 @@ onMounted(async () => {
     habit.value = response.data;
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 });
 
@@ -120,7 +119,7 @@ const createHabit = async (formData) => {
     showAlert('Novo Hábito', response.message);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;
@@ -138,7 +137,7 @@ const updateHabit = async (formData) => {
     showAlert('Atualização Hábito', response.message);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;
@@ -169,7 +168,7 @@ const deleteHabit = async (formData) => {
     router.go(-1);
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;

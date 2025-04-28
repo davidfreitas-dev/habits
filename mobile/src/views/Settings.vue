@@ -61,8 +61,6 @@
 
         <Alert ref="alertRef" @on-alert="logOut" />
 
-        <Toast ref="toastRef" />
-
         <ModalDialog
           ref="modalRef"
           message="Deseja realmente finalizar a sessão?"
@@ -77,13 +75,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import { useToast } from '@/use/useToast';
+
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
 import Alert from '@/components/Alert.vue';
-import Toast from '@/components/Toast.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
 
 const alertRef = ref(null);
@@ -100,14 +99,14 @@ const handleLogOut = (item) => {
 
 const router = useRouter();
 
-const toastRef = ref(undefined);
+const { showToast } = useToast();
 
 const logOut = async () => {
   try {
     localStorage.clear();
     router.push('/signin');
   } catch (err) {
-    toastRef.value?.setOpen(true, err.message);
+    showToast('error', err.message);
   }
 };
 </script>

@@ -34,8 +34,6 @@
           </div>
         </form>
       </Container>
-
-      <Toast ref="toastRef" />
     </ion-content>
   </ion-page>
 </template>
@@ -43,14 +41,15 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, sameAs } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useToast } from '@/use/useToast';
+
 import axios from '@/api/axios';
 import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
-import Toast from '@/components/Toast.vue';
 
 const props = defineProps({
   data: {
@@ -61,11 +60,12 @@ const props = defineProps({
 
 const router = useRouter();
 const isLoading = ref(false);
-const toastRef = ref(undefined);
 const formData = reactive({
   password: '',
   confPassword: ''
 });
+
+const { showToast } = useToast();
 
 const handleConfirm = async () => {
   isLoading.value = true;
@@ -79,12 +79,12 @@ const handleConfirm = async () => {
       userId: data.userId
     });
 
-    toastRef.value?.setOpen(true, response.status, response.message);
+    showToast(response.status, response.message);
 
     router.push('/');
   } catch (err) {
     const error = err.response.data;
-    toastRef.value?.setOpen(true, 'error', error.message);
+    showToast('error', error.message);
   }
 
   isLoading.value = false;  
@@ -106,7 +106,7 @@ const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {
-    toastRef.value?.setOpen(true, 'error', 'Preencha os campos com senhas idênticas');
+    showToast('error', 'Preencha os campos com senhas idênticas');
     return;
   } 
   
