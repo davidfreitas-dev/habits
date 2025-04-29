@@ -102,12 +102,12 @@ const router = useRouter();
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <ion-text v-if="!dayInfo.possibleHabits.length && !isDateInPast">
+        <ion-text v-if="!isLoading && !dayInfo.possibleHabits.length && !isDateInPast" class="ion-text-center ion-padding">
           <p>Você ainda não criou nenhum hábito.</p>
         </ion-text>
 
-        <ion-text v-if="isDateInPast">
-          <p>Você não pode editar hábitos de uma data passada.</p>
+        <ion-text v-if="!isLoading && isDateInPast" class="ion-text-center ion-padding">
+          Você não pode editar hábitos de datas passadas.
         </ion-text>
       </Container>
     </ion-content>
@@ -115,13 +115,8 @@ const router = useRouter();
 </template>
 
 <style>
-div#container {
-  display: block !important;
-}
 ion-text {
   font-size: .85rem;
-  text-align: center;
-  color: var(--font);
-  padding: 2.5rem;
+  line-height: 1.5;
 }
 </style>
