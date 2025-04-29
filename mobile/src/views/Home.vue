@@ -1,3 +1,52 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { jwtDecode } from 'jwt-decode';
+import { IonPage, IonContent, IonRow, onIonViewWillEnter, IonText } from '@ionic/vue';
+import { useGenerateRange } from '@/use/useGenerateRange';
+import { useSessionStore } from '@/stores/session';
+import { useLoading } from '@/use/useLoading';
+
+import axios from '@/api/axios';
+import Header from '@/components/Header.vue';
+import Avatar from '@/components/Avatar.vue';
+import ButtonNew from '@/components/ButtonNew.vue';
+import WeekDays from '@/components/WeekDays.vue';
+import Container from '@/components/Container.vue';
+import Summary from '@/components/Summary.vue';
+
+const { generateDatesFromYearBeginning } = useGenerateRange();
+
+const { withLoading, isLoading } = useLoading();
+
+const storeSession = useSessionStore();
+
+const user = computed(() => {
+  return storeSession.session && storeSession.session.token 
+    ? jwtDecode(storeSession.session.token) 
+    : null;
+});
+
+const summary = ref([]);
+
+const getSummary = async () => {
+  const response = await axios.post('/habits/summary', {
+    userId: user.value.id
+  });
+
+  summary.value = Array.isArray(response.data) ? response.data : [];
+};
+
+const amountOfDaysToFill = ref(0);
+const datesFromYearStart = ref([]);
+const minimumSummaryDatesSize = ref(18 * 5);
+
+onIonViewWillEnter(() => {
+  datesFromYearStart.value = generateDatesFromYearBeginning();
+  amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
+  withLoading(getSummary, 'Erro ao carregar o resumo de hábitos.');
+});
+</script>
+
 <template>
   <ion-page>
     <Header>
@@ -9,69 +58,19 @@
     </Header>
     <ion-content :fullscreen="true">
       <Container class="ion-margin-bottom">
-        <Loading v-if="isLoading" />
         <Summary
-          v-if="!isLoading"
+          v-if="!isLoading && summary.length"
           :dates-from-year-start="datesFromYearStart"
           :summary="summary"
         />
+        <ion-text
+          v-if="!isLoading && !summary.length"
+          color="medium"
+          class="ion-text-center ion-padding"
+        >
+          Nenhum dado encontrado.
+        </ion-text>
       </Container>
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue';
-import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonContent, IonRow, onIonViewWillEnter } from '@ionic/vue';
-import { useGenerateRange } from '@/use/useGenerateRange';
-import { useSessionStore } from '@/stores/session';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Header from '@/components/Header.vue';
-import Avatar from '@/components/Avatar.vue';
-import ButtonNew from '@/components/ButtonNew.vue';
-import WeekDays from '@/components/WeekDays.vue';
-import Container from '@/components/Container.vue';
-import Loading from '@/components/Loading.vue';
-import Summary from '@/components/Summary.vue';
-
-const { generateDatesFromYearBeginning } = useGenerateRange();
-const amountOfDaysToFill = ref(0);
-const datesFromYearStart = ref([]);
-const minimumSummaryDatesSize = ref(18 * 5);
-const storeSession = useSessionStore();
-
-onIonViewWillEnter(() => {
-  datesFromYearStart.value = generateDatesFromYearBeginning();
-  amountOfDaysToFill.value = minimumSummaryDatesSize.value - datesFromYearStart.value.length;
-  getSummary();
-});
-
-const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
-});
-
-const isLoading = ref(true);
-const summary = ref([]);
-
-const { showToast } = useToast();
-
-const getSummary = async () => {
-  try {
-    const response = await axios.post('/habits/summary', { 
-      userId: user.value.id 
-    });
-    
-    summary.value = Array.isArray(response.data) ? response.data : [];
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-  
-  isLoading.value = false;
-};
-</script>
