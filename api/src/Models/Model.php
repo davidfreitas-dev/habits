@@ -2,9 +2,20 @@
 
 namespace App\Models;
 
+use App\DB\Database;
+
 class Model {
 
 	private $values = [];
+  
+  protected Database $db;
+
+  public function __construct(Database $db)
+  {
+      
+    $this->db = $db;
+    
+  }
 
 	public function __call($name, $args)
 	{

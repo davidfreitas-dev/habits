@@ -11,6 +11,8 @@ This template should help get you started developing with this API in Docker.
 - PHP DotEnv: Library for loading environment variables from `.env` files to configure the application.
 - PHP Mailer: Library for sending emails from PHP applications.
 
+---
+
 ## Build Containers
 
 ```sh
@@ -36,6 +38,62 @@ See:
 ## Conecting to Database
 
 The HOSTNAME in .env file should be the same of docker-compose file db:container_name
+
+---
+
+## Authentication and Security
+
+The API uses **JWT** for authentication and authorization.
+
+### 1. **Obtaining the Token**
+
+To obtain a JWT, the client must send valid credentials to the authentication endpoint:
+
+```http
+POST /signin
+```
+
+### **Request Body (JSON)**
+
+```json
+{
+  "email": "user@email.com",
+  "password": "YourPassword123"
+}
+```
+
+### **Successful Response**
+
+A valid response returns a **JWT token** with the following information:
+
+```json
+{
+  "sub": "user-auth",
+  "user": {
+    "id": 3,
+    "name": "User",
+    "email": "user@email.com"
+  },
+  "iat": 1763490158,
+  "exp": 1763493758
+}
+```
+
+This token is required for accessing protected routes.
+
+### 2. **Including the Token in Requests**
+
+Include the token in all protected requests:
+
+```
+Authorization: Bearer <token>
+```
+
+### 3. **Token Expiration**
+
+JWT tokens have an expiration time. After expiration, a new login is required.
+
+---
 
 ## API Documentation
 

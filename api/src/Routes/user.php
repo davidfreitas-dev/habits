@@ -1,53 +1,64 @@
 <?php
 
+use App\Models\User;
+use App\Utils\ApiResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use App\Models\User;
 
-$app->get('/users/{id}', function (Request $request, Response $response, array $args) {
+$app->get('/users/me', function (Request $request, Response $response, array $args) {
 
-  $id = (int)$args['id'];
+  $user = $this->get(User::class);
 
-  $results = User::get($id);
+  $jwt = $request->getAttribute('jwt');
+
+  $id = (int)$jwt['user']->id;
+
+  $userData = $user->get($id);
+
+  $results = ApiResponse::success('Dados do usuário.', $userData);
 
   $response->getBody()->write(json_encode($results));
 
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus($results['code']);
+  return $response->withStatus($results['code']);
 
 });
 
-$app->put('/users/update/{id}', function (Request $request, Response $response, array $args) {
+$app->put('/users/me', function (Request $request, Response $response, array $args) {
 
-  $data = $request->getParsedBody();
+  $user = $this->get(User::class);
 
-  $data['id'] = (int)$args['id'];
+  $jwt = $request->getAttribute('jwt');
 
-  $user = new User();
+  $requestData = $request->getParsedBody();
+  
+  $requestData['id'] = (int)$jwt['user']->id;
 
-  $user->setAttributes($data);
+  $user->setAttributes($requestData);
 
-  $results = $user->update();
+  $user->update();
+
+  $results = ApiResponse::success('Dados do usuário atualizados com sucesso.');
 
   $response->getBody()->write(json_encode($results));
 
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus($results['code']);
+  return $response->withStatus($results['code']);
 
 });
 
-$app->delete('/users/delete/{id}', function (Request $request, Response $response, array $args) {
+$app->delete('/users/me', function (Request $request, Response $response, array $args) {
 
-  $id = $args['id'];
+  $user = $this->get(User::class);
 
-  $results = User::delete($id);
+  $jwt = $request->getAttribute('jwt');
+
+  $id = (int)$jwt['user']->id;
+
+  $user->delete($id);
+  
+  $results = ApiResponse::success('Conta excluída com sucesso.');
 
   $response->getBody()->write(json_encode($results));
 
-  return $response
-    ->withHeader('content-type', 'application/json')
-    ->withStatus($results['code']);
+  return $response->withStatus($results['code']);
 
 });

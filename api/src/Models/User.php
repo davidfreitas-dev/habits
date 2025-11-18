@@ -5,186 +5,106 @@ namespace App\Models;
 use App\DB\Database;
 use App\Models\Model;
 use App\Utils\PasswordHelper;
-use App\Traits\TokenGenerator;
-use App\Utils\ApiResponseFormatter;
 use App\Enums\HttpStatus as HTTPStatus;
 
 class User extends Model {
-
-  use TokenGenerator;
+  
+  public function __construct(Database $db)
+  {
+    
+    $this->db = $db; // Já existe na classe Model
+    
+    parent::__construct($db);
+    
+  }
   
   public function create()
   {
 
-    $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
+    $this->checkUserExists($this->getEmail());
 
-    try {
+    PasswordHelper::checkPasswordStrength($this->getPassword());
 
-      if (!filter_var(strtolower($this->getEmail()), FILTER_VALIDATE_EMAIL)) {
+    $hashedPassword = PasswordHelper::hashPassword($this->getPassword());
 
-        throw new \Exception("O e-mail informado não é válido.", HTTPStatus::BAD_REQUEST);
-        
-      }
+    $userId = $this->db->insert(
+      "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)",
+      [
+        ":name"     => $this->getName(),
+        ":email"    => $this->getEmail(),
+        ":password" => $hashedPassword
+      ]
+    );
 
-      PasswordHelper::checkPasswordStrength($this->getPassword());
+    $this->setId($userId);
+    
+    $this->setPassword($hashedPassword);
 
-      $this->checkUserExists(strtolower($this->getEmail()));
-      
-      $db = new Database();
-
-			$userId = $db->insert($sql, array(
-				":name"     => $this->getName(),
-				":email"    => strtolower($this->getEmail()),
-				":password" => PasswordHelper::hashPassword($this->getPassword())
-			));
-
-      $this->setId($userId);
-      
-      $this->setPassword(PasswordHelper::hashPassword($this->getPassword()));
-
-      return $this->getAttributes();
-
-    } catch (\PDOException $e) {
-			
-			throw new \Exception($e->getMessage(), HTTPStatus::INTERNAL_SERVER_ERROR);
-			
-		}	catch (\Exception $e) {
-			
-			throw new \Exception($e->getMessage(), $e->getCode());
-			
-		}			
+    return $this->getAttributes();
 
   }
 
   public function update()
   {
 
-    $sql = "UPDATE users 
-            SET name = :name, email = :email
-            WHERE id = :id";
-
-    try {
-
-        if (!filter_var(strtolower($this->getEmail()), FILTER_VALIDATE_EMAIL)) {
-            
-          throw new \Exception("O e-mail informado não é válido.", HTTPStatus::BAD_REQUEST);
+    $email = strtolower(trim($this->getEmail()));
+      
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           
-        }
-
-        $this->checkUserExists(strtolower($this->getEmail()), $this->getId());
-
-        $db = new Database();
-
-        $db->query($sql, array(
-          ":id"       => $this->getId(),
-          ":name"     => $this->getName(),
-          ":email"    => strtolower($this->getEmail())
-        ));
-
-        $jwt = self::generateToken($this->getAttributes());
-
-        return ApiResponseFormatter::formatResponse(
-          HTTPStatus::OK, 
-          "success", 
-          "Usuário atualizado com sucesso",
-          $jwt
-        );
-
-    } catch (\PDOException $e) {
-        
-      return ApiResponseFormatter::formatResponse(
-        HTTPStatus::INTERNAL_SERVER_ERROR, 
-        "error", 
-        "Falha ao atualizar dados do usuário: " . $e->getMessage(),
-        NULL
-      );
-
-    } catch (\Exception $e) {
-        
-      return ApiResponseFormatter::formatResponse(
-        $e->getCode(), 
-        "error", 
-        $e->getMessage(),
-        NULL
-      );
-
+      throw new \Exception("O e-mail informado não é válido.", HTTPStatus::BAD_REQUEST);
+      
     }
+
+    $this->checkUserExists($email, $this->getId());
+
+    $this->db->query(
+      "UPDATE users SET name = :name, email = :email WHERE id = :id", 
+      [
+        ":id"       => $this->getId(),
+        ":name"     => $this->getName(),
+        ":email"    => $email
+      ]
+    );
+
+    return $this->getAttributes();
 
   }
 
-  public static function get($id)
+  public function get($id)
   {
 
-    $sql = "SELECT * FROM users WHERE id = :id";
-
-    try {
-      
-      $db = new Database();
-
-      $results = $db->select($sql, array(
+    $results = $this->db->select(
+      "SELECT id, name, email FROM users WHERE id = :id", 
+      [
         ":id" => $id
-      ));
+      ]
+    );
 
-      if (empty($results)) {
-        
-        return ApiResponseFormatter::formatResponse(
-          HTTPStatus::NOT_FOUND, 
-          "error", 
-          "Usuário não encontrado.",
-          NULL
-        );
-
-      }
-
-      return ApiResponseFormatter::formatResponse(
-        HTTPStatus::OK,
-        "success", 
-        "Dados do usuário",
-        $results[0]
-      );
-
-    } catch (\PDOException $e) {
+    if (empty($results)) {
       
-      return ApiResponseFormatter::formatResponse(
-        HTTPStatus::INTERNAL_SERVER_ERROR, 
-        "error", 
-        "Falha ao obter dados do usuário: " . $e->getMessage(),
-        NULL
-      );
+      throw new \Exception("Usuário não encontrado.", HTTPStatus::NOT_FOUND);
 
     }
+
+    return $results[0];
+
   }
 
-  public static function delete($id) 
-	{
+  public function delete($id) 
+	{	
 		
-		$sql = "DELETE FROM users WHERE id = :id";		
-		
-		try {
+		$affectedRows = $this->db->query(
+      "DELETE FROM users WHERE id = :id", 
+      [
+        ":id" => $id
+      ]
+    );
 
-			$db = new Database();
-			
-			$db->query($sql, array(
-				":id" => $id
-			));
-			
-			return ApiResponseFormatter::formatResponse(
-        HTTPStatus::OK, 
-        "success", 
-        "Usuário excluído com sucesso",
-        null
-      );
-
-		} catch (\PDOException $e) {
-
-			return ApiResponseFormatter::formatResponse(
-        HTTPStatus::INTERNAL_SERVER_ERROR, 
-        "error", 
-        "Falha ao excluir usuário: " . $e->getMessage(),
-        null
-      );
-			
-		}		
+    if ($affectedRows === 0) {
+        
+      throw new \Exception("Usuário não encontrado.", HTTPStatus::NOT_FOUND);
+      
+    }
 
 	}
 
@@ -199,36 +119,22 @@ class User extends Model {
 
     }
 
-    try {
+    $params = [
+      ":email" => $email
+    ];
 
-      $db = new Database();
+    if ($id) {
 
-      $params = [
-        ":email" => $email
-      ];
+      $params[":id"] = $id;
 
-      if ($id) {
-
-        $params[":id"] = $id;
-  
-      }
-        
-      $results = $db->select($sql, $params);
-
-      if (count($results) > 0) {
-        
-        throw new \Exception("O email informado já está sendo utilizado por outro usuário", HTTPStatus::BAD_REQUEST);
-
-      }
-
-    } catch (\PDOException $e) {
-
-      throw new \Exception($e->getMessage(), HTTPStatus::INTERNAL_SERVER_ERROR);
+    }
       
-    } catch (\Exception $e) {
+    $results = $this->db->select($sql, $params);
 
-      throw new \Exception($e->getMessage(), $e->getCode());
+    if (count($results) > 0) {
       
+      throw new \Exception("O email informado já está sendo utilizado por outro usuário", HTTPStatus::BAD_REQUEST);
+
     }
 
   }

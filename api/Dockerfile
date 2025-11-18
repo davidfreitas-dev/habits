@@ -24,11 +24,6 @@ RUN apt-get update && \
 # Define diretório de trabalho
 WORKDIR /var/www/html
 
-# Copia o código da aplicação
-COPY . /var/www/html
-
-# Garante que o Apache tenha acesso
-RUN chown -R www-data:www-data /var/www/html
-
-# Expõe porta 80 (Apache)
-EXPOSE 80
+# Ajusta permissões para www-data
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
