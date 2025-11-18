@@ -6,6 +6,7 @@ date_default_timezone_set('America/Sao_Paulo');
 
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
+use App\Middleware\CorsMiddleware;
 use App\Middleware\GlobalErrorHandler;
 use App\Middleware\AddJsonResponseHeader;
 use Selective\BasePath\BasePathMiddleware;
@@ -37,6 +38,8 @@ $app->addRoutingMiddleware();
 $app->add(new BasePathMiddleware($app));
 
 $app->add(new AddJsonResponseHeader);
+
+$app->add(new CorsMiddleware());
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
   "path" => "/",

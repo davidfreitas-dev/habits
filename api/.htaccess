@@ -12,18 +12,8 @@ RewriteRule (.*) public/$1 [L]
 # Segurança básica
 Header always set X-Frame-Options "DENY"
 Header always set X-Content-Type-Options "nosniff"
-Header always set X-XSS-Protection "1; mode=block"
 Header always set Referrer-Policy "no-referrer-when-downgrade"
 Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-
-# OPCIONAL: CSP (muito forte — ajuste se quebrar algo)
-# Header always set Content-Security-Policy "default-src 'self';"
-
-# CORS (ideal: substitua pelo domínio do seu app)
-Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Headers "Origin, X-Token, Content-Type, Authorization"
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Credentials "true"
 
 # Bloqueia TRACE/TRACK
 RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)

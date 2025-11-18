@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Bloqueia TRACE / TRACK
+RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+RewriteRule .* - [F]
+
 # Se não for arquivo ou pasta, redireciona para index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
