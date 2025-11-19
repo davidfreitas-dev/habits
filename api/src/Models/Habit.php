@@ -104,27 +104,26 @@ class Habit extends Model {
               D.id,
               D.date,
               (
-                SELECT
-                  COUNT(*)
+                SELECT COUNT(*)
                 FROM day_habits DH
                 JOIN habits H1 ON DH.habit_id = H1.id
                 WHERE DH.day_id = D.id
-                  AND H1.user_id = :userId
+                  AND H1.user_id = :userId1
               ) AS completed,
               (
-                SELECT 
-                  COUNT(*)
+                SELECT COUNT(*)
                 FROM habit_week_days HWD
                 JOIN habits H2 ON HWD.habit_id = H2.id
                 WHERE WEEKDAY(D.date) = HWD.week_day
                   AND H2.created_at <= D.date
-                  AND H2.user_id = :userId
+                  AND H2.user_id = :userId2
               ) AS amount
             FROM days D";
 
-    $results = $this->db->select($sql, array(
-      ":userId" => $userId
-    ));
+    $results = $this->db->select($sql, [
+      ":userId1" => $userId,
+      ":userId2" => $userId
+    ]);
 
     if (empty($results)) {
 
