@@ -33,13 +33,17 @@ $app = AppFactory::create();
 
 $app->addBodyParsingMiddleware();
 
-$app->addRoutingMiddleware();
-
 $app->add(new BasePathMiddleware($app));
 
-$app->add(new AddJsonResponseHeader);
+$app->addRoutingMiddleware();
+
+$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'] === 'true', true, true);
+
+$errorMiddleware->setDefaultErrorHandler(new GlobalErrorHandler());
 
 $app->add(new CorsMiddleware());
+
+$app->add(new AddJsonResponseHeader);
 
 $app->add(new Tuupola\Middleware\JwtAuthentication([
   "path" => "/",
@@ -67,14 +71,6 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
       ->withStatus(401);
   }
 ]));
-
-$errorMiddleware = $app->addErrorMiddleware(
-  $_ENV['APP_DEBUG'] === 'true', // exibe detalhes no modo dev
-  true,
-  true
-);
-
-$errorMiddleware->setDefaultErrorHandler(new GlobalErrorHandler());
 
 $app->get('/', function (Request $request, Response $response) {
 

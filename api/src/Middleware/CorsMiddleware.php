@@ -2,30 +2,20 @@
 
 namespace App\Middleware;
 
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Factory\ResponseFactory;
 
-class CorsMiddleware {
-
-  private array $allowedOrigins = [
-    'https://habits.davidfreitas.dev.br',
-    'capacitor://localhost',      // app mobile – recomendado
-    'ionic://localhost',          // webview ionic
-    'http://localhost',           // ambiente dev 
-    'http://localhost:8100',      // ionic serve (opcional)
-  ];
-    
-  public function __invoke(Request $request, RequestHandler $handler): Response
+class CorsMiddleware
+{
+  
+  public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
   {
-    
-    $origin = $request->getHeaderLine('Origin');
-
-    $allowOrigin = in_array($origin, $this->allowedOrigins) ? $origin : 'null';
 
     if ($request->getMethod() === 'OPTIONS') {
         
-      $response = new \Slim\Psr7\Response(204);
+      $response = (new ResponseFactory())->createResponse(204);
       
     } else {
         
@@ -34,12 +24,12 @@ class CorsMiddleware {
     }
 
     return $response
-      ->withHeader('Access-Control-Allow-Origin', $allowOrigin)
-      ->withHeader('Vary', 'Origin')
-      ->withHeader('Access-Control-Allow-Credentials', 'true')
-      ->withHeader('Access-Control-Allow-Headers', 'Origin, X-Token, Content-Type, Authorization')
-      ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  
+      ->withHeader('Access-Control-Allow-Origin', '*')
+      ->withHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization')
+      ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+      ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+      ->withHeader('Pragma', 'no-cache');
+      
   }
 
 }
