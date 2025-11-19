@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\DB;
 
+use PDO;
+use PDOException;
+
 class Database {
 
-	private $host;
-  private $dbname;
-  private $user;
-  private $pass;
-  private $pdo;
+	private string $host;
+  private string $dbname;
+  private string $user;
+  private string $pass;
+  private PDO $pdo;
 
   public function __construct()
   {
@@ -27,17 +30,28 @@ class Database {
   private function connect()
   {
     
-    $this->pdo = new \PDO(
-      "mysql:host={$this->host};dbname={$this->dbname};charset=utf8",
-      $this->user,
-      $this->pass,
-      [
-        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
-      ]
-    );
+    try {
+      
+      $this->pdo = new PDO(
+        "mysql:host={$this->host};dbname={$this->dbname};charset=utf8",
+        $this->user,
+        $this->pass,
+        [
+          PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+          PDO::ATTR_EMULATE_PREPARES   => false,
+        ]
+      );
 
-    $this->pdo->exec("SET time_zone = 'America/Sao_Paulo'");
+      $this->pdo->exec("SET time_zone = '+00:00'");
+
+    } catch (PDOException $e) {
+      
+      error_log("Erro na conexão com o banco de dados: " . $e->getMessage());
+      
+      throw new PDOException("Database connection failed.");
+      
+    }
     
   }
 
@@ -85,7 +99,7 @@ class Database {
 
       return $lastInsertId;
 
-    } catch (\PDOException $e) {
+    } catch (PDOException $e) {
         
       $this->pdo->rollBack();
       
@@ -105,13 +119,13 @@ class Database {
 
       $stmt->execute();
 
-      $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+      $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
       $stmt->closeCursor();
 
       return $results;
 
-    } catch (\PDOException $e) {
+    } catch (PDOException $e) {
       
       throw $e;
 
@@ -136,7 +150,7 @@ class Database {
 
       return $stmt->rowCount();
 
-    } catch (\PDOException $e) {
+    } catch (PDOException $e) {
       
       $this->pdo->rollBack();
       
