@@ -99,18 +99,18 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 
 - [Users Registration](#users-registration)
 - [Users Authentication](#users-authentication)
+- [Users Forgot Password](#users-forgot-password)
+- [Users Verify Token](#users-verify-token)
+- [Users Reset Password](#users-reset-password)
 - [Users Update](#users-update)
 - [Users Delete](#users-delete)
-- [Users Forgot Password](#users-forgot-password)
-- [Users Forgot Token](#users-forgot-token)
-- [Users Reset Password](#users-reset-password)
-- [Habits Details](#habits-details)
 - [Habits Create](#habits-create)
+- [Habits Details](#habits-details)
 - [Habits Update](#habits-update)
-- [Habits Summary](#habits-summary)
-- [Habits Day](#habits-day)
 - [Habits Toggle](#habits-toggle)
 - [Habits Delete](#habits-delete)
+- [Habits Summary](#habits-summary)
+- [Habits Day](#habits-day)
 
 #### Users Registration
 
@@ -143,31 +143,6 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 
 **Response:** JWT with user data
 
-#### Users Update
-
-```http
-  PUT /users/update/{id}
-```
-
-| Parameter | Type     | Description                                             |
-| :-------- | :------- | :------------------------------------------------------ |
-| `name`    | `string` | **Required**. User's name                               |
-| `email`   | `string` | **Required**. User's email address                      |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** JWT with user data
-
-#### Users Delete
-
-```http
-  DELETE /users/delete/{id}
-```
-
-**Observation:** No parameters needed.
-
-**Response:** Void.
-
 #### Users Forgot Password
 
 ```http
@@ -184,10 +159,10 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 
 **Response:** Void.
 
-#### Users Forgot Token
+#### Users Verify Token
 
 ```http
-  POST /forgot/token
+  POST /verify
 ```
 
 | Parameter  | Type     | Description                                             |
@@ -201,7 +176,7 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 #### Users Reset Password
 
 ```http
-  POST /forgot/reset
+  POST /reset
 ```
 
 | Parameter    | Type      | Description                                             |
@@ -214,20 +189,35 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 
 **Response:** Void
 
-#### Habits Details
+#### Users Update
 
 ```http
-  POST /habits/{id}
+  PUT /users/{id}
+```
+
+| Parameter | Type     | Description                                             |
+| :-------- | :------- | :------------------------------------------------------ |
+| `name`    | `string` | **Required**. User's name                               |
+| `email`   | `string` | **Required**. User's email address                      |
+
+**Observation:** The parameters should be passed within a single JSON object.
+
+**Response:** JWT with user data
+
+#### Users Delete
+
+```http
+  DELETE /users/{id}
 ```
 
 **Observation:** No parameters needed.
 
-**Response:** Habit data
+**Response:** Void.
 
 #### Habits Create
 
 ```http
-  POST /habits/create
+  POST /habits
 ```
 
 | Parameter  | Type      | Description                                         |
@@ -240,10 +230,20 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 
 **Response:** Habit data
 
+#### Habits Details
+
+```http
+  POST /habits/{id}
+```
+
+**Observation:** No parameters needed.
+
+**Response:** Habit data
+
 #### Habits Update
 
 ```http
-  POST /habits/update/{id}
+  POST /habits/{id}
 ```
 
 | Parameter  | Type      | Description                                         |
@@ -254,6 +254,28 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 **Observation:** The parameters should be passed within a single JSON object.
 
 **Response:** Habit data
+
+#### Habits Toggle
+
+```http
+  PUT /habits/{id}/toggle
+```
+
+| Parameter | Type       | Description                                        |
+| :-------- | :--------- | :------------------------------------------------- |
+| `userId`  | `integer`  | **Required**. Logged user ID                       |
+
+**Response:** Void
+
+#### Habits Delete
+
+```http
+  DELETE /habits/delete/{id}
+```
+
+**Observation:** No parameters needed.
+
+**Response:** Void
 
 #### Habits Summary
 
@@ -281,25 +303,3 @@ JWT tokens have an expiration time. After expiration, a new login is required.
 | `date`    | `datetime` | **Required**. Selected day date                    |
 
 **Response:** Possible and completed habits list.
-
-#### Habits Toggle
-
-```http
-  PUT /habits/{id}/toggle
-```
-
-| Parameter | Type       | Description                                        |
-| :-------- | :--------- | :------------------------------------------------- |
-| `userId`  | `integer`  | **Required**. Logged user ID                       |
-
-**Response:** Void
-
-#### Habits Delete
-
-```http
-  DELETE /habits/delete/{id}
-```
-
-**Observation:** No parameters needed.
-
-**Response:** Void
