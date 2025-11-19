@@ -51,7 +51,7 @@ class User extends Model {
       
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
           
-      throw new \Exception("O e-mail informado não é válido.", HTTPStatus::BAD_REQUEST);
+      throw new \Exception("E-mail inválido.", HTTPStatus::BAD_REQUEST);
       
     }
 

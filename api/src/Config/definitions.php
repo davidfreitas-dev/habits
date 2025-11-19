@@ -7,7 +7,9 @@ use App\Models\Habit;
 use App\Services\AuthService;
 use App\Services\MailService;
 use App\Services\TokenService;
+use App\Services\ErrorLogService;
 use App\Interfaces\MailerInterface;
+use App\Middleware\GlobalErrorHandler;
 
 return [
 
@@ -30,6 +32,10 @@ return [
   User::class => DI\autowire()->constructor(DI\get(Database::class)),
 
   // Habit recebe Database via autowire (sem passar no construtor manualmente)
-  Habit::class => DI\autowire()->constructor(DI\get(Database::class))
+  Habit::class => DI\autowire()->constructor(DI\get(Database::class)),
+
+  ErrorLogService::class => DI\autowire(),
+
+  GlobalErrorHandler::class => DI\autowire(),
   
 ];

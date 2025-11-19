@@ -39,7 +39,7 @@ $app->addRoutingMiddleware();
 
 $errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'] === 'true', true, true);
 
-$errorMiddleware->setDefaultErrorHandler(new GlobalErrorHandler());
+$errorMiddleware->setDefaultErrorHandler($container->get(GlobalErrorHandler::class));
 
 $app->add(new CorsMiddleware());
 
