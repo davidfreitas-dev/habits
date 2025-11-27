@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\User;
-use App\Utils\ApiResponse;
+use App\Utils\Responder;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -13,13 +13,9 @@ $app->get('/users/me', function (Request $request, Response $response, array $ar
 
   $id = (int)$jwt['user']->id;
 
-  $userData = $user->get($id);
+  $result = $user->get($id);
 
-  $results = ApiResponse::success('Dados do usuário.', $userData);
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response->withStatus($results['code']);
+  return Responder::success('Dados do usuário.', $result);
 
 });
 
@@ -37,11 +33,7 @@ $app->put('/users/me', function (Request $request, Response $response, array $ar
 
   $user->update();
 
-  $results = ApiResponse::success('Dados do usuário atualizados com sucesso.');
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response->withStatus($results['code']);
+  return Responder::success('Dados do usuário atualizados com sucesso.');
 
 });
 
@@ -55,10 +47,6 @@ $app->delete('/users/me', function (Request $request, Response $response, array 
 
   $user->delete($id);
   
-  $results = ApiResponse::success('Conta excluída com sucesso.');
-
-  $response->getBody()->write(json_encode($results));
-
-  return $response->withStatus($results['code']);
+  return Responder::success('Conta excluída com sucesso.');
 
 });

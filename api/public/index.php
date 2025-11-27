@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 date_default_timezone_set('America/Sao_Paulo');
 
+use App\Utils\Responder;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use App\Middleware\CorsMiddleware;
 use App\Middleware\GlobalErrorHandler;
-use App\Middleware\AddJsonResponseHeader;
 use Selective\BasePath\BasePathMiddleware;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -43,44 +43,20 @@ $errorMiddleware->setDefaultErrorHandler($container->get(GlobalErrorHandler::cla
 
 $app->add(new CorsMiddleware());
 
-$app->add(new AddJsonResponseHeader);
-
 $app->add(new Tuupola\Middleware\JwtAuthentication([
   "path" => "/",
-  "ignore" => [
-    "/($|/)",
-    "/signin", 
-    "/signup",
-    "/forgot",
-    "/verify",
-    "/reset"    
-  ],
+  "ignore" => ["/($|/)", "/signin", "/signup", "/forgot", "/verify", "/reset"],
   "secret" => $_ENV['JWT_SECRET_KEY'],
   "algorithm" => "HS256",
   "attribute" => "jwt",
   "error" => function ($response, $arguments) {
-    $data = [
-      "status"  => "error",
-      "message" => $arguments["message"]
-    ];
-
-    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
-
-    return $response
-      ->withHeader('content-type', 'application/json')
-      ->withStatus(401);
+    return Responder::error($arguments["message"], 401);
   }
 ]));
 
 $app->get('/', function (Request $request, Response $response) {
 
-  $welcomeMessage = [
-    'message' => 'Welcome to the Habits API!'
-  ];
-
-  $response->getBody()->write(json_encode($welcomeMessage));
-
-  return $response;
+  return Responder::success('Welcome to the Habits API!');
 
 });
 

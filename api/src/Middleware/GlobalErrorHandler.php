@@ -3,10 +3,9 @@
 namespace App\Middleware;
 
 use Throwable;
-use App\Utils\ApiResponse;
+use App\Utils\Responder;
 use App\Services\ErrorLogService;
 use Slim\Interfaces\ErrorHandlerInterface;
-use Slim\Psr7\Response as SlimResponse;
 use Psr\Http\Message\ResponseInterface as Response;
 
 class GlobalErrorHandler implements ErrorHandlerInterface
@@ -38,15 +37,7 @@ class GlobalErrorHandler implements ErrorHandlerInterface
     
     }
 
-    $error = ApiResponse::error($message, $status);
-
-    $response = new SlimResponse();
-    
-    $response->getBody()->write(json_encode($error));
-
-    return $response
-      ->withHeader('Content-Type', 'application/json')
-      ->withStatus($status);
+    return Responder::error($message, $status);
 
   }
 
