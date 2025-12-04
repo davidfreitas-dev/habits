@@ -12,8 +12,7 @@ class GlobalErrorHandler implements ErrorHandlerInterface
 {
 
   public function __construct(
-    private ErrorLogService $logger,
-    private bool $displayErrorDetails = false
+    private ErrorLogService $logger
   ) {}
 
   public function __invoke(
@@ -26,7 +25,7 @@ class GlobalErrorHandler implements ErrorHandlerInterface
 
     $status = $this->resolveStatus($exception->getCode());
 
-    $message = $this->resolveMessage($exception, $status);
+    $message = $this->resolveMessage($exception, $status, $displayErrorDetails);
 
     if ($this->shouldLog($exception, $status)) {
       
@@ -50,10 +49,10 @@ class GlobalErrorHandler implements ErrorHandlerInterface
   
   }
 
-  private function resolveMessage(Throwable $exception, int $status): string
+  private function resolveMessage(Throwable $exception, int $status, bool $displayErrorDetails): string
   {
 
-    if ($status >= 500 && !$this->displayErrorDetails) {
+    if ($status >= 500 && !$displayErrorDetails) {
       
       return "Erro interno no servidor.";
       

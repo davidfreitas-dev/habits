@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-date_default_timezone_set('America/Sao_Paulo');
-
 use App\Utils\Responder;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
