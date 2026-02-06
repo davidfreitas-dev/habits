@@ -25,4 +25,4 @@ jobs:
           REMOTE_HOST: ${{ secrets.API_REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.API_REMOTE_USER }}
           REMOTE_PORT: ${{ secrets.API_REMOTE_PORT }}
-          EXCLUDE: "/.git/,docker/,docker-compose.yml,.dockerignore,.env.example,README.md,vendor/,.env,.idea/,.vscode/,logs/,config/keys/,tools/,docs/,storage/"
+          EXCLUDE: "/.git/,.docker/,database/,tests/,docker-compose.yml,.dockerignore,.env.example,GEMINI.md,README.md,vendor/,.env,.idea/,.vscode/,logs/,config/keys/,tools/,docs/,storage/"
