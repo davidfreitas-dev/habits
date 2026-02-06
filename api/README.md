@@ -1,305 +1,326 @@
-# Habits API - PHP 8 with Slim Framework 4 and JWT Auth 
+# API REST com Slim Framework e Arquitetura Limpa
 
-This template should help get you started developing with this API in Docker.
+API REST moderna construída com Slim Framework 4, PHP 8.4, e fortemente inspirada em princípios de Arquitetura Limpa (Clean Architecture) e Domain-Driven Design (DDD).
 
-## Technologies Used
+Esta API serve como uma base robusta para novos projetos, incluindo autenticação completa com JWT (Access e Refresh tokens), cache com Redis, e uma estrutura de código organizada para escalabilidade e manutenção.
 
-- Slim Framework 4: A micro-framework for PHP that helps you quickly write simple yet powerful web applications and APIs.
-- JWT Auth: JSON Web Token authentication mechanism for securing API endpoints.
-- Docker: Containerization platform used to ensure consistency and portability across environments.
-- MySQL: Database management system utilized for storing application data.
-- PHP DotEnv: Library for loading environment variables from `.env` files to configure the application.
-- PHP Mailer: Library for sending emails from PHP applications.
+## ✨ Features
+
+- **Autenticação Completa**: Fluxo de Registro, Login, Logout, Refresh Token e Reset de Senha.
+- **Verificação de E-mail**: Permite ao usuário logar imediatamente após o registro com acesso limitado até a verificação do e-mail. Após a verificação, um novo token de acesso é emitido automaticamente.
+- **Acesso Imediato com Funcionalidades Limitadas**: Usuários registrados podem acessar o sistema imediatamente, mas funcionalidades críticas (como atualização de perfil sensível e ações administrativas) são bloqueadas até a verificação do e-mail.
+- **Controle de Acesso por Função (RBAC)**: Sistema de permissões baseado em funções (`user`, `admin`).
+- **Cache Inteligente com Redis**: Usa o padrão **Decorator** para adicionar uma camada de cache ao repositório de usuários, melhorando a performance em leituras.
+- **Segurança**:
+  - Tokens JWT **RS256 (assimétrico)** com tempo de vida curto para acesso.
+  - Senhas com hash usando Argon2ID.
+  - Uso de **DTOs (Data Transfer Objects)** para garantir que dados sensíveis (como senhas) nunca sejam expostos nos endpoints.
+  - Rate Limiting para proteção contra ataques de força bruta.
+  - CORS configurável.
+- **Arquitetura Robusta**:
+  - Separação clara de responsabilidades em camadas (Presentation, Application, Domain, Infrastructure).
+  - Uso de **Enums** para evitar "magic strings", tornando o código mais seguro e legível.
+  - Injeção de Dependência com PHP-DI.
+- **Ambiente de Desenvolvimento com Docker**: Ambiente 100% containerizado para consistência e facilidade de configuração.
+- **Banco de Dados Isolado para Testes**: Ambiente de testes com banco de dados dedicado, garantindo que os testes nunca afetem os dados de desenvolvimento.
+
+## 🚀 Tecnologias
+
+- **PHP 8.4+**
+- **Slim Framework 4**
+- **PHP-DI** (Injeção de Dependência)
+- **MySQL 8.0** (Banco de Dados)
+- **Redis 7.0** (Cache, Rate Limiting, Armazenamento de Refresh Tokens)
+- **JWT (Firebase)** (Autenticação)
+- **Monolog** (Logging)
+- **Docker & Docker Compose**
 
 ---
 
-## Build Containers
+## 🔧 Instalação e Execução (Docker)
 
-```sh
+O uso de Docker é o **único método recomendado** para garantir que o ambiente de desenvolvimento seja idêntico ao de produção.
+
+#### 1. Pré-requisitos
+- Docker
+- Docker Compose
+
+#### 2. Clone o repositório
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+#### 3. Configure o ambiente
+Copie o arquivo de exemplo `.env.example` e o personalize conforme necessário.
+```bash
+cp .env.example .env
+```
+
+O arquivo `.env` deve conter as configurações para **dois bancos de dados**:
+- **Banco de Desenvolvimento** (`DB_*`): Para uso durante o desenvolvimento
+- **Banco de Testes** (`DB_TEST_*`): Usado exclusivamente pelos testes automatizados
+
+> **Importante:** Certifique-se de preencher todas as variáveis de ambiente no arquivo `.env`, especialmente as senhas de banco de dados e Redis.
+
+#### 4. Gere as Chaves de Criptografia
+Para a autenticação JWT com RS256, você precisa de um par de chaves pública/privada.
+
+```bash
+# Crie o diretório se não existir
+mkdir -p config/keys
+
+# Gere a chave privada
+openssl genrsa -out config/keys/private_key.pem 2048
+
+# Extraia a chave pública
+openssl rsa -in config/keys/private_key.pem -pubout -out config/keys/public_key.pem
+```
+
+#### 5. Inicie os containers
+```bash
+docker compose up -d --build
+```
+
+#### 6. Instale as dependências do Composer
+```bash
+docker compose exec api composer install
+```
+
+#### 7. Acesse a aplicação
+- **API**: `http://localhost:8000`
+- **PHPMyAdmin**: `http://localhost:8080`
+
+### Acessando o PHPMyAdmin
+
+O PHPMyAdmin está configurado para permitir acesso a ambos os bancos de dados. Na tela de login:
+
+**Para o banco de desenvolvimento:**
+- Servidor: `database`
+- Usuário: `user` (ou o valor de `DB_USER` do seu `.env`)
+- Senha: `resu` (ou o valor de `DB_PASS` do seu `.env`)
+
+**Para o banco de testes:**
+- Servidor: `database_test`
+- Usuário: `test_user` (ou o valor de `DB_TEST_USER` do seu `.env`)
+- Senha: `test_resu` (ou o valor de `DB_TEST_PASS` do seu `.env`)
+
+---
+
+## 🧪 Testes
+
+Este projeto utiliza **PHPUnit** para garantir a qualidade e a estabilidade do código através de um conjunto de testes automatizados. Os testes estão organizados em três categorias principais:
+
+- **Testes Unitários**: Verificam o funcionamento de classes individuais e isoladas, como `Entities`, `ValueObjects` e `UseCases` (com suas dependências mockadas).
+- **Testes de Integração**: Garantem que diferentes componentes do sistema funcionam corretamente em conjunto (ex: `UseCase` com um repositório real).
+- **Testes Funcionais (API)**: Testam os endpoints da API de ponta a ponta, simulando requisições HTTP e validando as respostas.
+
+### Banco de Dados de Testes
+
+O ambiente Docker inclui um banco de dados MySQL dedicado exclusivamente para testes (`database_test`). Isso garante que:
+
+- ✅ **Seus dados de desenvolvimento nunca sejam afetados** pelos testes
+- ✅ Os testes podem limpar e recriar dados livremente sem preocupações
+- ✅ Testes de integração e funcionais rodam em um ambiente isolado e previsível
+
+O PHPUnit está configurado para usar automaticamente o banco de testes através do arquivo `tools/phpunit.xml`, que sobrescreve as variáveis de ambiente `DB_*` para apontar para `database_test`.
+
+### Teste de E-mails com MailHog
+
+Para testar o envio de e-mails sem depender de serviços externos como o Mailtrap, integramos o **MailHog** no ambiente Docker. Durante a execução dos testes (incluindo testes de integração e funcionais), todos os e-mails são interceptados pelo MailHog.
+
+- ✅ **Intercepta todos os e-mails** enviados pelos testes
+- ✅ Proporciona um ambiente de teste isolado e rápido para e-mails
+- ✅ Não consome créditos de serviços de e-mail reais
+
+**Como acessar o MailHog:**
+
+-   **Interface Web (visualizar e-mails):** `http://localhost:8025`
+-   **Servidor SMTP (para configuração interna):** `mailhog:1025` (acessível de dentro dos containers Docker, por exemplo, do serviço `api`)
+
+### Como Executar os Testes
+
+Os testes devem ser executados dentro do contêiner de serviço da `api` para garantir o ambiente correto com todas as extensões PHP necessárias.
+
+Execute os comandos a partir do diretório raiz do projeto.
+
+#### 1. Executar todos os testes
+Para rodar a suíte de testes completa (unitários, integração e funcionais):
+
+```bash
+docker compose exec api composer test
+```
+
+Para uma saída mais detalhada e legível (testdox):
+```bash
+docker compose exec api composer test:testdox
+```
+
+#### 2. Executar suítes específicas de testes
+
+```bash
+# Apenas testes unitários
+docker compose exec api composer test:unit
+
+# Apenas testes de integração
+docker compose exec api composer test:integration
+
+# Apenas testes funcionais (API)
+docker compose exec api composer test:functional
+```
+
+#### 3. Executar um arquivo de teste específico
+Se você precisa validar um arquivo de teste em particular:
+
+```bash
+docker compose exec api vendor/bin/phpunit tests/Unit/Domain/Entity/UserTest.php
+```
+
+#### 4. Gerar relatório de cobertura de código
+Para gerar um relatório HTML de cobertura de código:
+
+```bash
+docker compose exec api composer test:coverage
+```
+
+O relatório será gerado em `tools/coverage/index.html`.
+
+#### 5. Limpar o banco de dados de testes
+Se precisar resetar completamente o banco de dados de testes:
+
+```bash
+docker compose down database_test -v
+docker compose up -d database_test
+```
+
+> **Nota:** O banco de testes é automaticamente limpo entre cada teste pela classe `DatabaseTestCase`, então raramente você precisará fazer isso manualmente.
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue uma arquitetura em camadas inspirada na Arquitetura Limpa e DDD.
+
+- **Domain Layer**: O coração da aplicação. Contém as entidades de negócio (`User`, `Person`), exceções de domínio e as interfaces dos repositórios (ports). Não depende de nenhum framework.
+- **Application Layer**: Orquestra a lógica de negócio através de Casos de Uso (`UseCases`). Usa DTOs para transferência de dados.
+- **Infrastructure Layer**: Contém as implementações concretas das interfaces do domínio (adapters). Aqui ficam o acesso ao banco de dados (MySQL), a implementação do cache (Redis), o serviço de email, etc.
+- **Presentation Layer**: A camada mais externa, responsável por lidar com HTTP. Contém os Controllers, Middlewares e a definição das rotas.
+
+### Estrutura de Pastas
+```
+project/
+├── config/                # Configurações da aplicação
+│   ├── bootstrap.php
+│   ├── container.php      # Injeção de dependências
+│   ├── routes.php
+│   └── settings.php
+├── database/
+│   └── schema.sql         # Schema do banco de dados
+├── docs/                  # Documentação do projeto
+│   ├── API.md
+│   └── postman_collection.json
+├── public/
+│   └── index.php          # Entry point
+├── src/
+│   ├── Application/       # Casos de uso e lógica de aplicação
+│   │   ├── DTO/
+│   │   ├── UseCase/
+│   │   └── Validation/
+│   ├── Domain/            # Lógica de negócio
+│   │   ├── Entity/
+│   │   ├── Repository/
+│   │   └── Exception/
+│   ├── Infrastructure/    # Implementações técnicas
+│   │   ├── Http/
+│   │   ├── Persistence/
+│   │   ├── Security/
+│   │   └── Mailer/
+│   └── Presentation/      # Camada de API
+│       └── Api/V1/
+├── tests/
+│   ├── Unit/
+│   ├── Integration/
+│   └── Functional/
+├── tools/                 # Ferramentas de desenvolvimento
+│   ├── .php-cs-fixer.dist.php
+│   ├── phpunit.xml
+│   └── rector.php
+└── composer.json
+```
+
+### Destaques Arquiteturais
+- **Padrão Decorator para Cache**: O `UserRepositoryInterface` é decorado pelo `CachingUserRepository`. Isso adiciona a lógica de cache de forma transparente, sem que a camada de Aplicação precise saber se o dado vem do cache ou do banco.
+- **DTOs para Segurança e Contratos**: DTOs são usados para validar dados de entrada (`RegisterUserRequestDTO`) e para formatar dados de saída (`UserProfileResponseDTO`), garantindo que apenas informações seguras sejam expostas pela API.
+- **Enums para Robustez**: Tipos de token (`JwtTokenType`) e chaves de resposta (`JsonResponseKey`) são definidos como Enums para evitar erros com "magic strings" e facilitar a manutenção.
+
+---
+
+## 📡 Documentação da API
+
+**Ver documentação completa:** [docs/API.md](./docs/API.md)
+
+**Importar no Postman:** `docs/postman_collection.json`
+
+---
+
+## 🛠️ Qualidade de Código
+
+### PHP-CS-Fixer (Formatação de Código)
+
+```bash
+# Verificar problemas de formatação (sem fazer alterações)
+docker compose exec api composer cs-check
+
+# Corrigir automaticamente problemas de formatação
+docker compose exec api composer cs-fix
+```
+
+### Rector (Refatoração Automática)
+
+```bash
+# Executar refatorações automáticas
+docker compose exec api composer rector
+
+# Simular refatorações sem aplicar (dry-run)
+docker compose exec api composer rector:dry
+```
+
+---
+
+## 🛠️ Troubleshooting e Comandos Úteis
+
+### Solução de Problemas
+- **Dados desatualizados ou incorretos sendo retornados pela API?** Isso é provavelmente um problema de cache obsoleto (stale cache). Para forçar a busca de dados novos do banco de dados, limpe o cache do Redis com o comando abaixo.
+- **Testes falhando com erro de conexão?** Verifique se ambos os bancos de dados estão rodando: `docker compose ps`. Certifique-se de que o banco `database_test` está saudável antes de executar os testes.
+- **PHPMyAdmin não mostra o banco de testes?** Use o modo de servidor arbitrário (já configurado) e digite manualmente o servidor `database_test` na tela de login.
+
+### Comandos Docker
+
+```bash
+# Iniciar ambiente
 docker compose up -d
+
+# Parar ambiente (mantém volumes/dados)
+docker compose down
+
+# Parar ambiente e remover volumes (limpa tudo)
+docker compose down -v 
+
+# Acessar o terminal do container da API
+docker compose exec api sh
+
+# Limpar o cache do Redis (substitua pela sua senha)
+docker compose exec redis redis-cli -a SUA_SENHA_DO_REDIS FLUSHALL
+
+# Ver logs da API em tempo real
+docker compose logs -f api
+
+# Reconstruir a imagem da API sem cache
+docker compose build --no-cache api
+
+# Acessar o MySQL do banco de desenvolvimento
+docker compose exec database mysql -uuser -presu slim_base_api_db
+
+# Acessar o MySQL do banco de testes
+docker compose exec database_test mysql -utest_user -ptest_resu slim_base_api_test_db
 ```
-
-### Install Composer Dependencies
-
-```sh
-docker run --rm --interactive --tty \
-  --volume $PWD:/app \
-  composer install
-```
-
-## Set Enviroment Variables
-
-Create a .env file using .env.example and set variables. This variables are configs to connect to the database(MySQL), sending email(PHP Mailer) and JWT config tokens
-
-See: 
-[PHP DotEnv Configuration Reference](https://github.com/vlucas/phpdotenv)
-[PHP Mailer Configuration Reference](https://github.com/PHPMailer/PHPMailer)
-
-## Conecting to Database
-
-The HOSTNAME in .env file should be the same of docker-compose file db:container_name
-
----
-
-## Authentication and Security
-
-The API uses **JWT** for authentication and authorization.
-
-### 1. **Obtaining the Token**
-
-To obtain a JWT, the client must send valid credentials to the authentication endpoint:
-
-```http
-POST /signin
-```
-
-### **Request Body (JSON)**
-
-```json
-{
-  "email": "user@email.com",
-  "password": "YourPassword123"
-}
-```
-
-### **Successful Response**
-
-A valid response returns a **JWT token** with the following information:
-
-```json
-{
-  "sub": "user-auth",
-  "user": {
-    "id": 3,
-    "name": "User",
-    "email": "user@email.com"
-  },
-  "iat": 1763490158,
-  "exp": 1763493758
-}
-```
-
-This token is required for accessing protected routes.
-
-### 2. **Including the Token in Requests**
-
-Include the token in all protected requests:
-
-```
-Authorization: Bearer <token>
-```
-
-### 3. **Token Expiration**
-
-JWT tokens have an expiration time. After expiration, a new login is required.
-
----
-
-## API Documentation
-
-- [Users Registration](#users-registration)
-- [Users Authentication](#users-authentication)
-- [Users Forgot Password](#users-forgot-password)
-- [Users Verify Token](#users-verify-token)
-- [Users Reset Password](#users-reset-password)
-- [Users Update](#users-update)
-- [Users Delete](#users-delete)
-- [Habits Create](#habits-create)
-- [Habits Details](#habits-details)
-- [Habits Update](#habits-update)
-- [Habits Toggle](#habits-toggle)
-- [Habits Delete](#habits-delete)
-- [Habits Summary](#habits-summary)
-- [Habits Day](#habits-day)
-
-#### Users Registration
-
-```http
-  POST /signup
-```
-
-| Parameter  | Type     | Description                                             |
-| :--------  | :------- | :------------------------------------------------------ |
-| `name`     | `string` | **Required**. User's full name                          |
-| `email`    | `string` | **Required**. User's e-mail address                     |
-| `password` | `string` | **Required**. User's password                           |
-
-**Observation:** The parameters above should be passed within a single JSON object.
-
-**Response:** JWT with user data
-
-#### Users Authentication
-
-```http
-  POST /signin
-```
-
-| Parameter  | Type     | Description                                             |
-| :--------  | :------- | :------------------------------------------------------ |
-| `email`    | `string` | **Required**. User's email address                      |
-| `password` | `string` | **Required**. User's password                           |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** JWT with user data
-
-#### Users Forgot Password
-
-```http
-  POST /forgot
-```
-
-| Parameter  | Type     | Description                                             |
-| :--------  | :------- | :------------------------------------------------------ |
-| `email`    | `string` | **Required**. User's email address                      |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Note:** Send reset token to user e-mail.
-
-**Response:** Void.
-
-#### Users Verify Token
-
-```http
-  POST /verify
-```
-
-| Parameter  | Type     | Description                                             |
-| :--------  | :------- | :------------------------------------------------------ |
-| `token`    | `string` | **Required**. Token sent by email to the user           |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** Void
-
-#### Users Reset Password
-
-```http
-  POST /reset
-```
-
-| Parameter    | Type      | Description                                             |
-| :----------- | :-------- | :------------------------------------------------------ |
-| `password`   | `string`  | **Required**. User's password                           |
-| `userId`     | `integer` | **Required**. Logged user ID                            |
-| `recoveryId` | `integer` | **Required**. Requested recovery ID                     |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** Void
-
-#### Users Update
-
-```http
-  PUT /users/{id}
-```
-
-| Parameter | Type     | Description                                             |
-| :-------- | :------- | :------------------------------------------------------ |
-| `name`    | `string` | **Required**. User's name                               |
-| `email`   | `string` | **Required**. User's email address                      |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** JWT with user data
-
-#### Users Delete
-
-```http
-  DELETE /users/{id}
-```
-
-**Observation:** No parameters needed.
-
-**Response:** Void.
-
-#### Habits Create
-
-```http
-  POST /habits
-```
-
-| Parameter  | Type      | Description                                         |
-| :--------- | :-------- | :-------------------------------------------------- |
-| `title`    | `string`  | **Required**. Habit title                           |
-| `weekDays` | `string`  | **Required**. Days of week string (Ex.: "0, 1, 2")  |
-| `userId`   | `integer` | **Required**. Logged user ID                        |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** Habit data
-
-#### Habits Details
-
-```http
-  POST /habits/{id}
-```
-
-**Observation:** No parameters needed.
-
-**Response:** Habit data
-
-#### Habits Update
-
-```http
-  POST /habits/{id}
-```
-
-| Parameter  | Type      | Description                                         |
-| :--------- | :-------- | :-------------------------------------------------- |
-| `title`    | `string`  | **Required**. Habit title                           |
-| `weekDays` | `string`  | **Required**. Days of week string (Ex.: "0, 1, 2")  |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** Habit data
-
-#### Habits Toggle
-
-```http
-  PUT /habits/{id}/toggle
-```
-
-| Parameter | Type       | Description                                        |
-| :-------- | :--------- | :------------------------------------------------- |
-| `userId`  | `integer`  | **Required**. Logged user ID                       |
-
-**Response:** Void
-
-#### Habits Delete
-
-```http
-  DELETE /habits/delete/{id}
-```
-
-**Observation:** No parameters needed.
-
-**Response:** Void
-
-#### Habits Summary
-
-```http
-  POST /habits/summary
-```
-
-| Parameter  | Type      | Description                                        |
-| :--------- | :-------- | :------------------------------------------------- |
-| `userId`   | `integer` | **Required**. Logged user ID                       |
-
-**Observation:** The parameters should be passed within a single JSON object.
-
-**Response:** Summary of habits
-
-#### Habits Day
-
-```http
-  POST /habits/day
-```
-
-| Parameter | Type       | Description                                        |
-| :-------- | :--------- | :------------------------------------------------- |
-| `userId`  | `integer`  | **Required**. Logged user ID                       |
-| `date`    | `datetime` | **Required**. Selected day date                    |
-
-**Response:** Possible and completed habits list.

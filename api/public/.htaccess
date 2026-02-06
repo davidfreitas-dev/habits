@@ -1,13 +1,18 @@
 RewriteEngine On
 
-# Bloqueia TRACE / TRACK
-RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
-RewriteRule .* - [F]
+# Handle Authorization Header
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-# Se não for arquivo ou pasta, redireciona para index.php
+# Redirect to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
 
-# Passa Authorization header para PHP
-RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+# Security Headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

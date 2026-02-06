@@ -2,64 +2,41 @@
 
 declare(strict_types=1);
 
-use App\Utils\Responder;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
-use App\Middleware\CorsMiddleware;
-use App\Middleware\GlobalErrorHandler;
-use Selective\BasePath\BasePathMiddleware;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseFactoryInterface;
 
-define('APP_ROOT', dirname(__DIR__));
+require dirname(__DIR__) . '/config/bootstrap.php';
 
-require APP_ROOT . '/vendor/autoload.php';
-
-$dotenv = Dotenv\Dotenv::createImmutable(APP_ROOT);
-
-$dotenv->load();
-
+// Build PHP-DI Container
 $containerBuilder = new ContainerBuilder();
 
-$containerBuilder->addDefinitions(APP_ROOT . '/src/Config/definitions.php');
+// Set up settings
+$containerBuilder->addDefinitions(APP_ROOT . '/config/settings.php');
 
+// Add container definitions
+$containerBuilder->addDefinitions(APP_ROOT . '/config/container.php');
+
+// Build container
 $container = $containerBuilder->build();
 
+// Create App instance
 AppFactory::setContainer($container);
 
 $app = AppFactory::create();
 
-$app->addBodyParsingMiddleware();
+// Register the response factory
+$container->set(ResponseFactoryInterface::class, $app->getResponseFactory());
 
-$app->add(new BasePathMiddleware($app));
+// Register middleware
+$middleware = require APP_ROOT . '/config/middleware.php';
 
-$app->addRoutingMiddleware();
+$middleware($app);
 
-$errorMiddleware = $app->addErrorMiddleware($_ENV['APP_DEBUG'] === 'true', true, true);
+// Register routes
+$routes = require APP_ROOT . '/config/routes.php';
 
-$errorMiddleware->setDefaultErrorHandler($container->get(GlobalErrorHandler::class));
+$routes($app);
 
-$app->add(new CorsMiddleware());
-
-$app->add(new Tuupola\Middleware\JwtAuthentication([
-  "path" => "/",
-  "ignore" => ["/($|/)", "/signin", "/signup", "/forgot", "/verify", "/reset"],
-  "secret" => $_ENV['JWT_SECRET_KEY'],
-  "algorithm" => "HS256",
-  "attribute" => "jwt",
-  "error" => function ($response, $arguments) {
-    return Responder::error($arguments["message"], 401);
-  }
-]));
-
-$app->get('/', function (Request $request, Response $response) {
-
-  return Responder::success('Welcome to the Habits API!');
-
-});
-
-require APP_ROOT . '/src/Routes/auth.php';
-require APP_ROOT . '/src/Routes/habit.php';
-require APP_ROOT . '/src/Routes/user.php';
-
+// Run app
 $app->run();
