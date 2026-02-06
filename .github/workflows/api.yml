@@ -18,9 +18,9 @@ jobs:
       - name: Debug Current Directory
         run: ls -la
       
-      - name: Install Dependencies
-        run: composer install
-        working-directory: api
+    #   - name: Install Dependencies
+    #     run: composer install
+    #     working-directory: api
       
       - name: Deploy API to Server
         uses: easingthemes/ssh-deploy@main
