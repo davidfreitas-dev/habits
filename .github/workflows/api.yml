@@ -13,20 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v1
-
-    #   - name: Debug Current Directory
-    #     run: ls -la
-      
-    #   - name: Install Dependencies
-    #     run: composer install
-    #     working-directory: api
+        uses: actions/checkout@v4
       
       - name: Deploy API to Server
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.API_SERVER_SSH_KEY }}
-          ARGS: "-rlgoDzvc -i"
+          ARGS: "-rltvz"
           SOURCE: "./api/"
           TARGET: ${{ secrets.API_REMOTE_TARGET }}
           REMOTE_HOST: ${{ secrets.API_REMOTE_HOST }}
