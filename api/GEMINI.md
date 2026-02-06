@@ -6,7 +6,7 @@
 - **Development Environment**: Docker-based (all tools run through Docker containers)
 - **PHP Version**: 8.4
 - **Framework**: Slim Framework 4.x
-- **Language**: English (code and documentation)
+- **Language**: Portuguese (validation messages, error messages, test output) and English (code and documentation comments)
 
 ### Key Characteristics
 - RESTful API architecture
