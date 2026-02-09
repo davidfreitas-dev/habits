@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
-use App\Application\DTO\HabitSummaryResponseDTO;
+use App\Application\DTO\HabitSummaryItemDTO;
+use App\Application\DTO\HabitsSummaryResponseDTO;
 use App\Domain\Repository\HabitRepositoryInterface;
-use DateTimeImmutable;
 
 class GetHabitsSummaryUseCase
 {
@@ -17,25 +17,21 @@ class GetHabitsSummaryUseCase
 
     /**
      * @param int $userId
-     * @return HabitSummaryResponseDTO
+     * @return HabitsSummaryResponseDTO
      */
-    public function execute(int $userId, ?DateTimeImmutable $date = null): HabitSummaryResponseDTO
+    public function execute(int $userId): HabitsSummaryResponseDTO
     {
-        $currentDate = $date ?? new DateTimeImmutable();
-        $summary = $this->habitRepository->getHabitSummary($userId, $currentDate);
-
-        if ($summary === null) {
-            return new HabitSummaryResponseDTO(
-                date: $currentDate->format('Y-m-d'),
-                completed: 0,
-                total: 0,
-            );
-        }
-
-        return new HabitSummaryResponseDTO(
-            date: $summary['date'],
-            completed: (int) $summary['completed'],
-            total: (int) $summary['total'],
+        $summaryData = $this->habitRepository->getHabitsSummary($userId);
+        
+        $items = array_map(
+            fn(array $item) => new HabitSummaryItemDTO(
+                date: $item['date'],
+                completed: (int) $item['completed'],
+                total: (int) $item['total'],
+            ),
+            $summaryData
         );
+        
+        return new HabitsSummaryResponseDTO($items);
     }
 }

@@ -87,7 +87,14 @@ docker compose up -d --build
 docker compose exec api composer install
 ```
 
-#### 7. Acesse a aplicação
+#### 7. Popule o Banco de Dados (Seeders)
+As tabelas `days` e `habits` precisam ser preenchidas com dados iniciais para que os endpoints de resumo e listagem de hábitos funcionem corretamente, especialmente em um novo ambiente de desenvolvimento.
+
+```bash
+docker compose exec api composer seed
+```
+
+#### 8. Acesse a aplicação
 - **API**: `http://localhost:8000`
 - **PHPMyAdmin**: `http://localhost:8080`
 

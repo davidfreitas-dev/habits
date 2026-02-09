@@ -84,11 +84,10 @@ interface HabitRepositoryInterface
      * Retrieves a summary of habits, including completed and total habits, for a given user and date.
      *
      * @param int $userId The ID of the user.
-     * @param DateTimeImmutable $date The date for which to retrieve the summary.
      *
      * @return array|null An array of habit summary data (date, completed count, total count) for the specified date, or null if no summary is found.
      */
-    public function getHabitSummary(int $userId, DateTimeImmutable $date): ?array;
+    public function getHabitsSummary(int $userId): array;
 
 
 }

@@ -6,7 +6,7 @@ namespace App\Application\DTO;
 
 use JsonSerializable;
 
-class HabitSummaryResponseDTO implements JsonSerializable
+class HabitSummaryItemDTO implements JsonSerializable
 {
     public function __construct(
         public readonly string $date,

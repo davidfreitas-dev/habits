@@ -450,7 +450,7 @@ GET /api/v1/habits/day?date=YYYY-MM-DD
 
 #### Resumo de Hábitos
 
-Retorna um resumo de hábitos, incluindo a quantidade de hábitos possíveis e completados por dia.
+Retorna um resumo de hábitos, incluindo a quantidade de hábitos possíveis e completados para todos os dias do ano atual até a data presente.
 
 ```http
 GET /api/v1/habits/summary
@@ -460,11 +460,24 @@ GET /api/v1/habits/summary
 ```json
 {
   "status": "success",
-  "data": {
-    "date": "2026-02-04",
-    "completed": 1,
-    "total": 2
-  }
+  "data": [
+    {
+      "date": "YYYY-MM-DD",
+      "completed": 0,
+      "total": 0
+    },
+    {
+      "date": "YYYY-MM-DD",
+      "completed": 1,
+      "total": 2
+    },
+    // ... (mais entradas para outros dias)
+    {
+      "date": "YYYY-MM-DD",
+      "completed": 0,
+      "total": 1
+    }
+  ]
 }
 ```
 

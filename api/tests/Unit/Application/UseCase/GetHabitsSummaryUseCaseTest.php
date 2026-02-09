@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Application\UseCase;
 
-use App\Application\DTO\HabitSummaryResponseDTO;
+use App\Application\DTO\HabitsSummaryResponseDTO;
 use App\Application\UseCase\GetHabitsSummaryUseCase;
 use App\Domain\Repository\HabitRepositoryInterface;
 use DateTimeImmutable;
@@ -19,36 +19,33 @@ class GetHabitsSummaryUseCaseTest extends TestCase
     public function testShouldReturnHabitSummarySuccessfully(): void
     {
         $userId = 1;
-        $fixedDate = new DateTimeImmutable('2024-02-07 10:00:00'); // Use a fixed date for testability
         $summaryData = [
-            'date' => $fixedDate->format('Y-m-d'),
+            'date' => (new DateTimeImmutable())->format('Y-m-d'), // Use current date for testability
             'completed' => 5,
             'total' => 10,
         ];
 
-        $this->habitRepository->expects($this->once())->method('getHabitSummary')->with($userId, $fixedDate)->willReturn($summaryData);
+        $this->habitRepository->expects($this->once())->method('getHabitsSummary')->with($userId)->willReturn([$summaryData]);
 
-        $response = $this->getHabitsSummaryUseCase->execute($userId, $fixedDate);
+        $response = $this->getHabitsSummaryUseCase->execute($userId);
 
-        $this->assertInstanceOf(HabitSummaryResponseDTO::class, $response);
-        $this->assertEquals($fixedDate->format('Y-m-d'), $response->date);
-        $this->assertEquals(5, $response->completed);
-        $this->assertEquals(10, $response->total);
+        $this->assertInstanceOf(HabitsSummaryResponseDTO::class, $response);
+        $this->assertCount(1, $response->items);
+        $this->assertEquals($summaryData['date'], $response->items[0]->date);
+        $this->assertEquals(5, $response->items[0]->completed);
+        $this->assertEquals(10, $response->items[0]->total);
     }
 
     public function testShouldReturnZeroSummaryIfNoSummaryFound(): void
     {
         $userId = 1;
-        $fixedDate = new DateTimeImmutable('2024-02-07 10:00:00'); // Use a fixed date for testability
 
-        $this->habitRepository->expects($this->once())->method('getHabitSummary')->with($userId, $fixedDate)->willReturn(null);
+        $this->habitRepository->expects($this->once())->method('getHabitsSummary')->with($userId)->willReturn([]);
 
-        $response = $this->getHabitsSummaryUseCase->execute($userId, $fixedDate);
+        $response = $this->getHabitsSummaryUseCase->execute($userId);
 
-        $this->assertInstanceOf(HabitSummaryResponseDTO::class, $response);
-        $this->assertEquals($fixedDate->format('Y-m-d'), $response->date);
-        $this->assertEquals(0, $response->completed);
-        $this->assertEquals(0, $response->total);
+        $this->assertInstanceOf(HabitsSummaryResponseDTO::class, $response);
+        $this->assertEmpty($response->items);
     }
 
     protected function setUp(): void

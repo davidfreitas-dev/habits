@@ -48,7 +48,8 @@
         "cs-check": "php-cs-fixer fix --config=tools/.php-cs-fixer.dist.php --dry-run --diff",
         "cs-fix": "php-cs-fixer fix --config=tools/.php-cs-fixer.dist.php --verbose --allow-risky=yes",
         "rector": "rector process --config=tools/rector.php",
-        "rector:dry": "rector process --config=tools/rector.php --dry-run"
+        "rector:dry": "rector process --config=tools/rector.php --dry-run",
+        "seed": "php bin/seed.php"
     },
     "scripts-descriptions": {
         "start": "Inicia o servidor de desenvolvimento embutido do PHP",
@@ -61,6 +62,7 @@
         "cs-check": "Verifica o código sem fazer alterações (dry-run)",
         "cs-fix": "Formata o código seguindo o padrão PSR-12",
         "rector": "Executa refatorações automáticas com Rector",
-        "rector:dry": "Simula refatorações do Rector sem aplicar mudanças"
+        "rector:dry": "Simula refatorações do Rector sem aplicar mudanças",
+        "seed": "Populates the database with initial data (days, habits, etc.)"
     }
 }

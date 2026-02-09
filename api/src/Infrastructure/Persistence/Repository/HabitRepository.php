@@ -145,42 +145,52 @@ class HabitRepository implements HabitRepositoryInterface
         return $this->hydrateMultiple($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    public function getHabitSummary(int $userId, DateTimeImmutable $date): ?array
+    public function getHabitsSummary(int $userId): array
     {
-        $weekDay = (int) $date->format(self::WEEK_DAY_FORMAT); // Calculate weekDay here
+        $currentDate = (new DateTimeImmutable())->format(self::DATE_ONLY_FORMAT);
+        $startOfYear = (new DateTimeImmutable('first day of January this year'))->format(self::DATE_ONLY_FORMAT);
 
         $sql = "
             SELECT
-            :date AS date,
-            (SELECT COUNT(DISTINCT h_c.id)
-                FROM habits h_c
-                INNER JOIN day_habits dh ON h_c.id = dh.habit_id
-                INNER JOIN days d_c ON dh.day_id = d_c.id
-                WHERE h_c.user_id = :user_id_completed AND d_c.date = :date_completed
-            ) AS completed,
-            (SELECT COUNT(DISTINCT h_p.id)
-                FROM habits h_p
-                INNER JOIN habit_week_days hwd ON h_p.id = hwd.habit_id
-                WHERE h_p.user_id = :user_id_possible
-                AND hwd.week_day = :week_day_possible
-                AND DATE(h_p.created_at) <= :date_created_at
-            ) AS total
+                D.id,
+                D.date,
+                (
+                    SELECT COUNT(*)
+                    FROM day_habits DH
+                    JOIN habits H1 ON DH.habit_id = H1.id
+                    WHERE DH.day_id = D.id
+                      AND H1.user_id = :userId1
+                ) AS completed,
+                (
+                    SELECT COUNT(*)
+                    FROM habit_week_days HWD
+                    JOIN habits H2 ON HWD.habit_id = H2.id
+                    WHERE HWD.week_day = (WEEKDAY(D.date) + 1) % 7
+                      AND DATE(H2.created_at) <= D.date
+                      AND H2.user_id = :userId2
+                ) AS total
+            FROM days D
+            WHERE D.date BETWEEN :start_of_year AND :current_date
+            ORDER BY D.date ASC
         ";
 
         $stmt = $this->pdo->prepare($sql);
-
         $stmt->execute([
-            'date' => $date->format(self::DATE_ONLY_FORMAT), // For the main SELECT
-            'user_id_completed' => $userId,
-            'date_completed' => $date->format(self::DATE_ONLY_FORMAT),
-            'user_id_possible' => $userId,
-            'week_day_possible' => $weekDay,
-            'date_created_at' => $date->format(self::DATE_ONLY_FORMAT),
+            'userId1' => $userId,
+            'userId2' => $userId,
+            'start_of_year' => $startOfYear,
+            'current_date' => $currentDate,
         ]);
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        return $result ?: null;
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        return array_map(function ($row) {
+            return [
+                'date' => $row['date'],
+                'completed' => (int) $row['completed'],
+                'total' => (int) $row['total'],
+            ];
+        }, $results);
     }
 
     private function syncWeekDays(Habit $habit, array $weekDays): void

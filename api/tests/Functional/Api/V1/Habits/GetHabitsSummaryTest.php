@@ -148,9 +148,9 @@ class GetHabitsSummaryTest extends FunctionalTestCase
 
         // Toggle habit 1 for today
         $this->sendRequest(
-            'PATCH', // Changed from PUT to PATCH
+            'PATCH',
             "/api/v1/habits/{$habitId1}/toggle",
-            ['date' => $today->format('Y-m-d')],
+            ['date' => $todayFormatted],
             ['Authorization' => 'Bearer ' . $this->accessToken]
         );
 
@@ -168,10 +168,26 @@ class GetHabitsSummaryTest extends FunctionalTestCase
         $this->assertEquals('success', $body['status']);
         $this->assertEquals('Resumo de hábitos obtido com sucesso.', $body['message']);
         $this->assertArrayHasKey('data', $body);
-        $this->assertArrayHasKey('completed', $body['data']);
-        $this->assertArrayHasKey('total', $body['data']);
+        $this->assertIsArray($body['data']);
+        $this->assertNotEmpty($body['data']);
 
-        $this->assertEquals(1, $body['data']['completed']); // Based on the test's arrange section where one habit is toggled
-        $this->assertGreaterThanOrEqual(1, $body['data']['total']); // At least one habit should be possible
+        // Find today's summary in the array
+        $todaySummary = null;
+        foreach ($body['data'] as $summaryItem) {
+            if ($summaryItem['date'] === $todayFormatted) {
+                $todaySummary = $summaryItem;
+                break;
+            }
+        }
+
+        $this->assertNotNull($todaySummary, "Summary for today ($todayFormatted) not found in the response.");
+        $this->assertArrayHasKey('completed', $todaySummary);
+        $this->assertArrayHasKey('total', $todaySummary);
+
+        $this->assertEquals(1, $todaySummary['completed']); // Based on the test's arrange section where one habit is toggled
+        // Assuming habit1 and habit2 are both possible today (Monday).
+        // This might need adjustment based on the actual week_days created for habit1 and habit2
+        // and the current day of the week. For now, assuming they are both possible.
+        $this->assertGreaterThanOrEqual(1, $todaySummary['total']);
     }
 }

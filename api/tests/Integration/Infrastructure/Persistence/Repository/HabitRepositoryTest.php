@@ -198,28 +198,47 @@ class HabitRepositoryTest extends DatabaseTestCase
         $this->assertEquals('Completed Habit 2', $completedHabits[1]->getTitle());
     }
 
-    public function testGetHabitSummary(): void
+    public function testGetHabitsSummary(): void
     {
-        $date = new DateTimeImmutable(self::TEST_DATE_MONDAY);
-        $dayId = $this->ensureDayExists($date);
+        // Ensure a user exists (already done in setUp)
+        $userId = $this->testUser->getId();
 
+        // Create some habits that should appear in the summary
+        // Habit 1: Daily habit, completed on a specific day
         $habit1 = new Habit('Daily Habit', $this->testUser);
         $createdHabit1 = $this->habitRepository->create($habit1, self::ALL_WEEK_DAYS);
 
+        // Habit 2: Monday habit
         $habit2 = new Habit('Monday Habit', $this->testUser);
         $this->habitRepository->create($habit2, [self::MONDAY]);
 
-        $habit3 = new Habit('Tuesday Habit', $this->testUser);
-        $this->habitRepository->create($habit3, [self::TUESDAY]);
-
+        // Mark habit1 as completed on TEST_DATE_MONDAY
+        $dateForCompletion = new DateTimeImmutable(self::TEST_DATE_MONDAY);
+        $dayId = $this->ensureDayExists($dateForCompletion);
         $this->markHabitAsCompleted($dayId, $createdHabit1->getId());
 
-        $summary = $this->habitRepository->getHabitSummary($this->testUser->getId(), $date);
+        // Get the summary for the user
+        $summary = $this->habitRepository->getHabitsSummary($userId);
 
-        $this->assertNotNull($summary);
-        $this->assertEquals($date->format('Y-m-d'), $summary['date']);
-        $this->assertEquals(1, $summary['completed']);
-        $this->assertEquals(2, $summary['total']);
+        // Assert that the summary is an array and not empty
+        $this->assertIsArray($summary);
+        $this->assertNotEmpty($summary);
+
+        // Find the summary entry for TEST_DATE_MONDAY
+        $mondaySummary = null;
+        foreach ($summary as $item) {
+            if ($item['date'] === self::TEST_DATE_MONDAY) {
+                $mondaySummary = $item;
+                break;
+            }
+        }
+
+        // Assert that the summary for TEST_DATE_MONDAY is found and has expected values
+        $this->assertNotNull($mondaySummary, "Summary for " . self::TEST_DATE_MONDAY . " not found.");
+        $this->assertEquals(1, $mondaySummary['completed']);
+        // Daily habit (habit1) + Monday habit (habit2) = 2 total possible habits
+        // This relies on the current date logic of the getHabitsSummary method
+        $this->assertEquals(2, $mondaySummary['total']);
     }
 
     private function createTestUser(string $name, string $email): User

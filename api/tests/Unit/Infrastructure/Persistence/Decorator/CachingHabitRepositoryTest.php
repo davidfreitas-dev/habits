@@ -449,13 +449,14 @@ class CachingHabitRepositoryTest extends TestCase
         $this->assertEquals($habits, $result);
     }
 
-    public function testGetHabitSummaryReturnsCached(): void
+    public function testGetHabitsSummaryReturnsCached(): void
     {
-        $date = new DateTimeImmutable('2024-01-01');
-        $dateString = $date->format('Y-m-d');
-        $summary = ['date' => $dateString, 'completed' => 5, 'total' => 10];
+        $summary = [
+            ['date' => '2024-01-01', 'completed' => 2, 'total' => 3],
+            ['date' => '2024-01-02', 'completed' => 1, 'total' => 2],
+        ];
         $serializedSummary = serialize($summary);
-        $cacheKey = 'habit:summary:' . $this->userId . ':' . $dateString;
+        $cacheKey = 'habit:summary:' . $this->userId . ':all';
 
         $this->redisCache->expects($this->once())
             ->method('get')
@@ -464,44 +465,75 @@ class CachingHabitRepositoryTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('info')
-            ->with('Cache de sumário de hábitos encontrado para ' . $dateString);
+            ->with('Cache de sumário completo de hábitos encontrado para o usuário: ' . $this->userId);
 
         $this->decoratedRepository->expects($this->never())
-            ->method('getHabitSummary');
+            ->method('getHabitsSummary');
 
         $this->redisCache->expects($this->never())
             ->method('set');
 
-        $result = $this->cachingHabitRepository->getHabitSummary($this->userId, $date);
+        $result = $this->cachingHabitRepository->getHabitsSummary($this->userId);
 
         $this->assertEquals($summary, $result);
     }
 
-    public function testGetHabitSummaryFetchesAndCaches(): void
+    public function testGetHabitsSummaryFetchesAndCaches(): void
     {
-        $date = new DateTimeImmutable('2024-01-01');
-        $dateString = $date->format('Y-m-d');
-        $summary = ['date' => $dateString, 'completed' => 5, 'total' => 10];
-        $cacheKey = 'habit:summary:' . $this->userId . ':' . $dateString;
+        $summary = [
+            ['date' => '2024-01-01', 'completed' => 2, 'total' => 3],
+            ['date' => '2024-01-02', 'completed' => 1, 'total' => 2],
+        ];
+        $cacheKey = 'habit:summary:' . $this->userId . ':all';
 
         $this->redisCache->expects($this->once())
             ->method('get')
             ->with($cacheKey)
             ->willReturn(null);
 
+        $this->logger->expects($this->once())
+            ->method('info')
+            ->with('Cache de sumário completo de hábitos não encontrado para o usuário: ' . $this->userId);
+
         $this->decoratedRepository->expects($this->once())
-            ->method('getHabitSummary')
-            ->with($this->userId, $date)
+            ->method('getHabitsSummary')
+            ->with($this->userId)
             ->willReturn($summary);
 
         $this->redisCache->expects($this->once())
             ->method('set')
-            ->with($cacheKey, $this->isType('string'), $this->cacheTtl) // Use isType('string')
+            ->with($cacheKey, $this->isType('string'), $this->cacheTtl)
             ->willReturn(true);
 
-        $result = $this->cachingHabitRepository->getHabitSummary($this->userId, $date);
+        $result = $this->cachingHabitRepository->getHabitsSummary($this->userId);
 
         $this->assertEquals($summary, $result);
+    }
+
+    public function testGetHabitsSummaryReturnsEmptyArrayWhenNoData(): void
+    {
+        $cacheKey = 'habit:summary:' . $this->userId . ':all';
+
+        $this->redisCache->expects($this->once())
+            ->method('get')
+            ->with($cacheKey)
+            ->willReturn(null);
+
+        $this->logger->expects($this->once())
+            ->method('info')
+            ->with('Cache de sumário completo de hábitos não encontrado para o usuário: ' . $this->userId);
+
+        $this->decoratedRepository->expects($this->once())
+            ->method('getHabitsSummary')
+            ->with($this->userId)
+            ->willReturn([]);
+
+        $this->redisCache->expects($this->never())
+            ->method('set'); // Não deve cachear array vazio
+
+        $result = $this->cachingHabitRepository->getHabitsSummary($this->userId);
+
+        $this->assertEquals([], $result);
     }
 
     public function testInvalidateUserHabitsCacheInvalidatesSummaryAndPossibleHabits(): void

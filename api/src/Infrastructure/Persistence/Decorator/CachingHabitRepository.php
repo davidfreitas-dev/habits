@@ -167,9 +167,31 @@ class CachingHabitRepository implements HabitRepositoryInterface
             return unserialize((string) $cachedSummary);
         }
 
-        $summary = $this->decoratedRepository->getHabitSummary($userId, $date);
+        $summary = $this->decoratedRepository->getHabitsSummary($userId, $date);
 
         if ($summary !== null) {
+            $this->cache->set($cacheKey, serialize($summary), self::CACHE_TTL);
+        }
+
+        return $summary;
+    }
+
+    public function getHabitsSummary(int $userId): array
+    {
+        $cacheKey = self::CACHE_PREFIX_SUMMARY . $userId . ':all';
+
+        $cachedSummary = $this->cache->get($cacheKey);
+        if ($cachedSummary) {
+            $this->logger->info('Cache de sumário completo de hábitos encontrado para o usuário: ' . $userId);
+
+            return unserialize((string) $cachedSummary);
+        }
+
+        $this->logger->info('Cache de sumário completo de hábitos não encontrado para o usuário: ' . $userId);
+
+        $summary = $this->decoratedRepository->getHabitsSummary($userId);
+
+        if (!empty($summary)) {
             $this->cache->set($cacheKey, serialize($summary), self::CACHE_TTL);
         }
 
