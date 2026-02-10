@@ -235,5 +235,10 @@ class CachingHabitRepository implements HabitRepositoryInterface
         $possiblePattern = self::CACHE_PREFIX_POSSIBLE . $userId . ':*';
         $deletedPossibleKeys = $this->cache->deleteByPattern($possiblePattern);
         $this->logger->info('Invalidados ' . $deletedPossibleKeys . ' entradas de cache de hábitos possíveis para o usuário: ' . $userId);
+
+        // Invalidate all completed habits entries for the user
+        $completedPattern = self::CACHE_PREFIX_COMPLETED . $userId . ':*';
+        $deletedCompletedKeys = $this->cache->deleteByPattern($completedPattern);
+        $this->logger->info('Invalidados ' . $deletedCompletedKeys . ' entradas de cache de hábitos completados para o usuário: ' . $userId);
     }
 }
