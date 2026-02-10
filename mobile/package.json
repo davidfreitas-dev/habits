@@ -33,9 +33,9 @@
     "dayjs": "^1.11.10",
     "es6-promise-plugin": "4.2.2",
     "ionicons": "^7.0.0",
-    "jwt-decode": "^4.0.0",
-    "pinia": "^2.1.7",
-    "vue": "^3.2.45",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "vue": "^3.5.28",
     "vue-axios": "^3.5.2",
     "vue-router": "^4.1.6"
   },

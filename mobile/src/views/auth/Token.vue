@@ -1,3 +1,57 @@
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+import { required } from '@vuelidate/validators';
+import { IonPage, IonContent } from '@ionic/vue';
+import { useToast } from '@/use/useToast';
+import { useAuthStore } from '@/stores/auth'; // Import useAuthStore
+
+import Container from '@/components/Container.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const router = useRouter();
+const authStore = useAuthStore(); // Initialize auth store
+const isLoading = ref(false);
+const formData = reactive({
+  token: ''
+});
+
+const { showToast } = useToast();
+
+const handleContinue = async () => {
+  isLoading.value = true;
+
+  try {
+    await authStore.validateResetCode(formData.token); // Use auth store's validateResetCode method
+  } catch (err) {
+    console.error('Token validation failed:', err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const rules = computed(() => {
+  return {
+    token: { required }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    showToast('error', 'Informe o token de redefinição de senha');
+    return;
+  } 
+  
+  handleContinue();
+};
+</script>
+
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
@@ -30,62 +84,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
-import { IonPage, IonContent } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-
-const router = useRouter();
-const isLoading = ref(false);
-const formData = reactive({
-  token: ''
-});
-
-const { showToast } = useToast();
-
-const handleContinue = async () => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.post('/forgot/token', formData);
-    const data = JSON.stringify(response.data);
-    router.push({ name: 'Reset', query: { data } });
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-
-const rules = computed(() => {
-  return {
-    token: { required }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    showToast('error', 'Informe o token de redefinição de senha');
-    return;
-  } 
-  
-  handleContinue();
-};
-</script>
 
 <style scoped>
 form {

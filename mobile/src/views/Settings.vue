@@ -1,3 +1,46 @@
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
+import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import { useAuthStore } from '@/stores/auth';
+import { useToast } from '@/use/useToast';
+
+import Header from '@/components/Header.vue';
+import Heading from '@/components/Heading.vue';
+import Container from '@/components/Container.vue';
+import BackButton from '@/components/BackButton.vue';
+import Button from '@/components/Button.vue';
+import Alert from '@/components/Alert.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
+
+const alertRef = ref(null);
+
+const showAlert = (header, message) => {
+  alertRef.value?.setOpen(header, message);
+};
+
+const modalRef = ref(null);
+    
+const handleLogOut = (item) => {
+  modalRef.value?.setOpen(true);
+};
+
+const router = useRouter();
+
+const { showToast } = useToast();
+
+const authStore = useAuthStore();
+
+const logOut = async () => {
+  try {
+    await authStore.logout();
+  } catch (err) {
+    console.error('Error during logout:', err);
+  }
+};
+</script>
+
 <template>
   <ion-page ref="pageRef">
     <Header>
@@ -70,46 +113,6 @@
     </ion-content>
   </ion-page>
 </template>
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
-import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
-import { useToast } from '@/use/useToast';
-
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Button from '@/components/Button.vue';
-import Alert from '@/components/Alert.vue';
-import ModalDialog from '@/components/ModalDialog.vue';
-
-const alertRef = ref(null);
-
-const showAlert = (header, message) => {
-  alertRef.value?.setOpen(header, message);
-};
-
-const modalRef = ref(null);
-    
-const handleLogOut = (item) => {
-  modalRef.value?.setOpen(true);
-};
-
-const router = useRouter();
-
-const { showToast } = useToast();
-
-const logOut = async () => {
-  try {
-    localStorage.clear();
-    router.push('/signin');
-  } catch (err) {
-    showToast('error', err.message);
-  }
-};
-</script>
 
 <style scoped>
 ion-list {

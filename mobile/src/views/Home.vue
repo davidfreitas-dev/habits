@@ -1,12 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { jwtDecode } from 'jwt-decode';
 import { IonPage, IonContent, IonRow, onIonViewWillEnter, IonText } from '@ionic/vue';
 import { useGenerateRange } from '@/use/useGenerateRange';
-import { useSessionStore } from '@/stores/session';
+import { useProfileStore } from '@/stores/profile';
+import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/use/useLoading';
-
-import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Avatar from '@/components/Avatar.vue';
 import ButtonNew from '@/components/ButtonNew.vue';
@@ -15,25 +13,20 @@ import Container from '@/components/Container.vue';
 import Summary from '@/components/Summary.vue';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
-
 const { withLoading, isLoading } = useLoading();
 
-const storeSession = useSessionStore();
+const profileStore = useProfileStore();
+const habitStore = useHabitStore();
 
 const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
+  return profileStore.user;
 });
 
 const summary = ref([]);
 
 const getSummary = async () => {
-  const response = await axios.post('/habits/summary', {
-    userId: user.value.id
-  });
-
-  summary.value = Array.isArray(response.data) ? response.data : [];
+  const response = await habitStore.getHabitsSummary();
+  summary.value = Array.isArray(response) ? response : [];
 };
 
 const amountOfDaysToFill = ref(0);
@@ -51,7 +44,7 @@ onIonViewWillEnter(() => {
   <ion-page>
     <Header>
       <ion-row class="ion-justify-content-between ion-align-items-center ion-padding">
-        <Avatar :name="user.name" />
+        <Avatar :name="user?.name || 'Convidado'" />
         <ButtonNew />
       </ion-row>
       <WeekDays />

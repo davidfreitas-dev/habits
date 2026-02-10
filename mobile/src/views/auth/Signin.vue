@@ -1,19 +1,15 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
+import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
 import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 
-const router = useRouter();
-const storeSession = useSessionStore();
+const authStore = useAuthStore();
 const isLoading = ref(false);
 const formData = reactive({
   email: '',
@@ -26,15 +22,12 @@ const signIn = async () => {
   isLoading.value = true;
 
   try {
-    const response = await axios.post('/signin', formData);
-    await storeSession.setSession({ token: response.data });
-    router.push('/'); 
+    await authStore.login(formData);
   } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
+    console.error('Login failed:', err);
+  } finally {
+    isLoading.value = false;
   }
-  
-  isLoading.value = false;
 };
 
 const rules = computed(() => {

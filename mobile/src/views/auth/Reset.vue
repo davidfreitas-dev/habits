@@ -1,3 +1,66 @@
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, sameAs } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useAuthStore } from '@/stores/auth';
+import { useToast } from '@/use/useToast';
+import Container from '@/components/Container.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const authStore = useAuthStore();
+const isLoading = ref(false);
+const formData = reactive({
+  password: '',
+  confPassword: ''
+});
+
+const { showToast } = useToast();
+
+const handleConfirm = async () => {
+  isLoading.value = true;
+
+  try {
+    // The authStore.resetPassword method will handle retrieving email and code from localStorage
+    await authStore.resetPassword(formData.password, formData.confPassword);
+    // Navigation is handled by the authStore after successful reset
+  } catch (err) {
+    console.error('Password reset failed:', err);
+  } finally {
+    isLoading.value = false;  
+  }
+};
+
+const rules = computed(() => {
+  return {
+    password: { required },
+    confPassword: {
+      required,
+      sameAsPassword: sameAs(computed(() => formData.password))
+    }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    showToast('error', 'Preencha os campos com senhas idênticas');
+    return;
+  } 
+  
+  handleConfirm();
+};
+
+onIonViewDidLeave(() => {
+  formData.password = '';
+  formData.confPassword = '';
+});
+</script>
+
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
@@ -37,87 +100,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required, sameAs } from '@vuelidate/validators';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-
-const props = defineProps({
-  data: {
-    type: String,
-    default: ''
-  }
-});
-
-const router = useRouter();
-const isLoading = ref(false);
-const formData = reactive({
-  password: '',
-  confPassword: ''
-});
-
-const { showToast } = useToast();
-
-const handleConfirm = async () => {
-  isLoading.value = true;
-
-  try {
-    const data = JSON.parse(props.data);
-
-    const response = await axios.post('/forgot/reset', {
-      password: formData.password,
-      recoveryId: data.recoveryId,
-      userId: data.userId
-    });
-
-    showToast(response.status, response.message);
-
-    router.push('/');
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;  
-};
-
-const rules = computed(() => {
-  return {
-    password: { required },
-    confPassword: {
-      required,
-      sameAsPassword: sameAs(formData.password)
-    }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    showToast('error', 'Preencha os campos com senhas idênticas');
-    return;
-  } 
-  
-  handleConfirm();
-};
-
-onIonViewDidLeave(() => {
-  formData.password = '';
-  formData.confPassword = '';
-});
-</script>
 
 <style scoped>
 form {

@@ -1,3 +1,61 @@
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useAuthStore } from '@/stores/auth';
+import { useToast } from '@/use/useToast';
+
+import Container from '@/components/Container.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const router = useRouter();
+const authStore = useAuthStore();
+const isLoading = ref(false);
+const formData = reactive({
+  email: ''
+});
+
+const { showToast } = useToast();
+
+const handleContinue = async () => {
+  isLoading.value = true;
+
+  try {
+    await authStore.forgotPassword(formData.email);
+  } catch (err) {
+    console.error('Forgot password failed:', err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const rules = computed(() => {
+  return {
+    email: { required, email }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    showToast('error', 'Informe um e-mail válido');
+    return;
+  } 
+  
+  handleContinue();
+};
+
+onIonViewDidLeave(() => {
+  formData.email = '';
+});
+</script>
+
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
@@ -30,66 +88,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-
-const router = useRouter();
-const isLoading = ref(false);
-const formData = reactive({
-  email: ''
-});
-
-const { showToast } = useToast();
-
-const handleContinue = async () => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.post('/forgot', formData);
-    showToast(response.status, response.message);
-    router.push('/forgot/token'); 
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-
-const rules = computed(() => {
-  return {
-    email: { required, email }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    showToast('error', 'Informe um e-mail válido');
-    return;
-  } 
-  
-  handleContinue();
-};
-
-onIonViewDidLeave(() => {
-  formData.email = '';
-});
-</script>
 
 <style scoped>
 form {

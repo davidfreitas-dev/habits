@@ -1,30 +1,3 @@
-<template>
-  <form>    
-    <p>Qual seu comprometimento?</p>
-    <Input
-      v-model="formData.title"
-      placeholder="Exercícios, dormir bem, etc..."
-    /> 
-
-    <p>Qual a recorrência?</p>
-    <Checkbox
-      v-for="(weekDay, index) in availableWeekDays"
-      :key="index"
-      :label="weekDay"
-      :is-checked="isDayChecked(index)"
-      @handle-checkbox-change="toggleWeekDay(index)"
-    />
-
-    <Button
-      class="ion-margin-top"
-      :is-loading="isLoading"
-      @click="submitForm"
-    >
-      <ion-icon :icon="checkmark" /> Confirmar
-    </Button>
-  </form>
-</template>
-
 <script setup>
 import { ref, watch } from 'vue';
 import { IonIcon } from '@ionic/vue';
@@ -56,9 +29,14 @@ watch(
   (newHabit) => {
     if (newHabit) {
       formData.value.title = newHabit.title || '';
-      formData.value.weekDays = newHabit.week_days
-        ? newHabit.week_days.split(',').map(Number)
-        : [];
+      formData.value.weekDays = []; // Initialize to empty array
+      if (newHabit.week_days) {
+        if (Array.isArray(newHabit.week_days)) {
+          formData.value.weekDays = newHabit.week_days.map(Number);
+        } else if (typeof newHabit.week_days === 'string' && newHabit.week_days.length > 0) {
+          formData.value.weekDays = newHabit.week_days.split(',').map(Number);
+        }
+      }
     }
   },
   { immediate: true } // Executa imediatamente para sincronizar ao montar
@@ -96,7 +74,6 @@ const submitForm = () => {
 
   const formattedData = {
     ...formData.value,
-    weekDays: formData.value.weekDays.join(','), // Formata os dias como string para envio
   };
 
   emit('onSubmit', formattedData);
@@ -112,6 +89,33 @@ const availableWeekDays = [
   'Sábado',
 ];
 </script>
+
+<template>
+  <form>    
+    <p>Qual seu comprometimento?</p>
+    <Input
+      v-model="formData.title"
+      placeholder="Exercícios, dormir bem, etc..."
+    /> 
+
+    <p>Qual a recorrência?</p>
+    <Checkbox
+      v-for="(weekDay, index) in availableWeekDays"
+      :key="index"
+      :label="weekDay"
+      :is-checked="isDayChecked(index)"
+      @handle-checkbox-change="toggleWeekDay(index)"
+    />
+
+    <Button
+      class="ion-margin-top"
+      :is-loading="isLoading"
+      @click="submitForm"
+    >
+      <ion-icon :icon="checkmark" /> Confirmar
+    </Button>
+  </form>
+</template>
 
 <style scoped>
 p {

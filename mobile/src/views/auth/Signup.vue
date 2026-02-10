@@ -1,3 +1,64 @@
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useVuelidate } from '@vuelidate/core';
+import { required, email } from '@vuelidate/validators';
+import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
+import { useAuthStore } from '@/stores/auth';
+import { useToast } from '@/use/useToast';
+import Container from '@/components/Container.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const authStore = useAuthStore();
+const isLoading = ref(false);
+const formData = reactive({
+  name: '',
+  email: '',
+  password: ''
+});
+
+const { showToast } = useToast();
+
+const signUp = async () => {
+  isLoading.value = true;
+
+  try {
+    await authStore.register(formData);
+  } catch (err) {
+    console.error('Registration failed:', err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const rules = computed(() => {
+  return {
+    name: { required },
+    email: { required, email },
+    password: { required }
+  };
+});
+
+const v$ = useVuelidate(rules, formData);
+
+const submitForm = async () => {
+  const isFormCorrect = await v$.value.$validate();
+
+  if (!isFormCorrect) {
+    showToast('error', 'Preencha todos os campos corretamente');
+    return;
+  } 
+  
+  signUp();
+};
+
+onIonViewDidLeave(() => {
+  formData.name = '';
+  formData.email = '';
+  formData.password = '';
+});
+</script>
+
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
@@ -51,74 +112,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required, email } from '@vuelidate/validators';
-import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-
-const storeSession = useSessionStore();
-const router = useRouter();
-const isLoading = ref(false);
-const formData = reactive({
-  name: '',
-  email: '',
-  password: ''
-});
-
-const { showToast } = useToast();
-
-const signUp = async () => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.post('/signup', formData);
-    await storeSession.setSession({ token: response.data });
-    router.push('/'); 
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-
-const rules = computed(() => {
-  return {
-    name: { required },
-    email: { required, email },
-    password: { required }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    showToast('error', 'Preencha todos os campos corretamente');
-    return;
-  } 
-  
-  signUp();
-};
-
-onIonViewDidLeave(() => {
-  formData.name = '';
-  formData.email = '';
-  formData.password = '';
-});
-</script>
 
 <style scoped>
 form {

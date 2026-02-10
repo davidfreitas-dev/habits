@@ -1,10 +1,44 @@
+<script setup>
+import { ref } from 'vue';
+import { IonModal, IonContent } from '@ionic/vue';
+import Button from '@/components/Button.vue';
+
+const props = defineProps({
+  message: {
+    type: String,
+    default: ''
+  },
+});
+
+const modal = ref();
+
+const setOpen = (status) => {
+  if (status) {
+    modal.value.$el.present();
+  } else {
+    modal.value.$el.dismiss();
+  }
+};
+
+defineExpose({ setOpen });
+
+const closeModal = () => {
+  modal.value.$el.dismiss();
+};
+
+const emit = defineEmits(['on-confirm']);
+
+const confirmAction = () => {
+  emit('on-confirm');
+  closeModal();
+};
+</script>
+
 <template>
   <ion-modal
-    :is-open="isOpen"
-    :can-dismiss="true"
+    ref="modal"
     :initial-breakpoint="0.35"
-    :breakpoints="[0.35]"
-    backdrop-dismiss="false"
+    :breakpoints="[0, 0.35]"
   >
     <ion-content class="ion-padding-top">
       <div class="ion-text-center">
@@ -22,42 +56,6 @@
     </ion-content>
   </ion-modal>
 </template>
-
-<script setup>
-import { ref, watch, computed } from 'vue';
-import { IonModal, IonHeader, IonContent, IonTitle, IonText, IonGrid, IonRow, IonCol, IonButton } from '@ionic/vue';
-import Button from '@/components/Button.vue';
-
-const props = defineProps({
-  message: {
-    type: String,
-    default: ''
-  },
-});
-
-const isOpen = ref(false);
-
-const setOpen = (status) => {
-  isOpen.value = status;
-};
-
-defineExpose({setOpen});
-
-const closeModal = () => {
-  isOpen.value = false;
-};
-
-const emit = defineEmits(['onConfirm']);
-
-const confirmAction = () => {
-  emit('onConfirm');
-  closeModal();
-};
-
-const canDismiss = (data, role) => {
-  return role !== 'gesture' && role !== 'backdrop';
-};
-</script>
 
 <style scoped>
 ion-content {

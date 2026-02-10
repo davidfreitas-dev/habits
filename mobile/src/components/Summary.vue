@@ -20,8 +20,8 @@ import HabitDay from '@/components/HabitDay.vue';
 
 const props = defineProps({
   summary: {
-    type: Object,
-    default: () => {},
+    type: Array,
+    default: () => [],
     required: true
   },
   datesFromYearStart: {
@@ -53,7 +53,7 @@ const getAmount = (date) => {
     return dayjs(date).isSame(day.date, 'day');
   });
   
-  return dayWithHabits ? dayWithHabits.amount : 0;
+  return dayWithHabits ? dayWithHabits.total : 0;
 };
 
 const getCompleted = (date) => {

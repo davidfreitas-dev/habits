@@ -1,3 +1,70 @@
+<script setup>
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { IonPage, IonContent, IonIcon, onIonViewWillEnter } from '@ionic/vue';
+import { checkmark } from 'ionicons/icons';
+import { useProfileStore } from '@/stores/profile'; // Use the new profile store
+import { useToast } from '@/use/useToast';
+
+import Header from '@/components/Header.vue';
+import Heading from '@/components/Heading.vue';
+import Container from '@/components/Container.vue';
+import BackButton from '@/components/BackButton.vue';
+import Input from '@/components/Input.vue';
+import Button from '@/components/Button.vue';
+
+const profileStore = useProfileStore();
+const isLoading = ref(false);
+
+const formData = reactive({
+  name: '',
+  phone: '',
+  cpfcnpj: '',
+});
+
+const isDisabled = computed(() => !formData.name); // Only name is required for now
+
+const { showToast } = useToast();
+
+const loadProfileData = () => {
+  if (profileStore.user) {
+    formData.name = profileStore.user.name || '';
+    formData.phone = profileStore.user.phone || '';
+    formData.cpfcnpj = profileStore.user.cpfcnpj || '';
+  }
+};
+
+onIonViewWillEnter(async () => {
+  isLoading.value = true;
+  await profileStore.fetchProfile();
+  loadProfileData();
+  isLoading.value = false;
+});
+
+// Watch for changes in profileStore.user to update formData
+watch(() => profileStore.user, (newUser) => {
+  if (newUser) {
+    loadProfileData();
+  }
+}, { deep: true });
+
+const updateProfile = async () => {
+  isLoading.value = true;
+
+  try {
+    const dataToUpdate = {
+      name: formData.name,
+      phone: formData.phone,
+      cpfcnpj: formData.cpfcnpj,
+    };
+    await profileStore.updateProfile(dataToUpdate);
+  } catch (err) {
+    console.error('Profile update failed:', err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+</script>
+
 <template>
   <ion-page>
     <Header>
@@ -37,82 +104,6 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonContent, IonIcon, onIonViewDidLeave } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
-import { useSessionStore } from '@/stores/session';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
-
-const isLoading = ref(false);
-
-const formData = reactive({
-  name: null,
-  email: null
-});
-
-const isDisabled = computed(() => !formData.name || !formData.email);
-
-const resetData = () => {
-  formData.name = null;
-  formData.email = null;
-  isLoading.value = false;
-};
-
-onIonViewDidLeave(() => {
-  resetData();
-});
-
-const storeSession = useSessionStore();
-
-const router = useRouter();
-
-const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
-});
-
-onMounted(async () => {
-  if (user.value) {
-    formData.name = user.value.name || '';
-    formData.email = user.value.email || '';
-  }
-});
-
-const { showToast } = useToast();
-
-const updateProfile = async () => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.put('/users/update/' + user.value.id, {
-      name: formData.name,
-      email: formData.email
-    });
-
-    await storeSession.setSession({ token: response.data });
-
-    showToast('success', 'Perfil atualizado com sucesso');
-  } catch (err) {
-    const error = err.response?.data || { message: 'Erro ao atualizar perfil' };
-    showToast('error', error.message);
-  } 
-  
-  isLoading.value = false;
-};
-</script>
 
 <style scoped>
 form div {

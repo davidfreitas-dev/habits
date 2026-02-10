@@ -1,3 +1,114 @@
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { trash } from 'ionicons/icons';
+import { IonPage, IonIcon, IonContent } from '@ionic/vue';
+import { useProfileStore } from '@/stores/profile';
+import { useToast } from '@/use/useToast';
+import { useHabitStore } from '@/stores/habits';
+import Header from '@/components/Header.vue';
+import Heading from '@/components/Heading.vue';
+import Container from '@/components/Container.vue';
+import Button from '@/components/Button.vue';
+import BackButton from '@/components/BackButton.vue';
+import HabitForm from '@/components/HabitForm.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
+import Alert from '@/components/Alert.vue';
+
+const profileStore = useProfileStore();
+const habitStore = useHabitStore();
+
+const route = useRoute();
+
+const pageTitle = computed(() => {
+  return route.params.id ? 'Editar hábito' : 'Criar hábito';
+});
+
+const habit = ref({
+  id: route.params.id,
+  title: '',
+  week_days: '',
+});
+
+const { showToast } = useToast();
+
+onMounted(async () => {
+  await profileStore.fetchProfile();
+  if (!habit.value.id) return;
+  
+  try {
+    habit.value = await habitStore.getHabitDetails(habit.value.id);
+  } catch (err) {
+    showToast('error', err.message);
+  }
+});
+
+const isLoading = ref(false);
+const alertRef = ref(null);
+const habitFormRef = ref(null);
+
+const showAlert = (header, message) => {
+  alertRef.value?.setOpen(header, message);
+};
+
+const createHabit = async (formData) => {
+  isLoading.value = true;
+
+  try {
+    await habitStore.createHabit(formData.title, formData.weekDays);
+    habitFormRef.value?.clearFormData();
+    showAlert('Novo Hábito', 'Hábito criado com sucesso!');    
+  } catch (err) {
+    showToast('error', err.message);
+  }
+
+  isLoading.value = false;
+};
+
+const updateHabit = async (formData) => {
+  isLoading.value = true;
+
+  try {
+    await habitStore.updateHabit(habit.value.id, formData.title, formData.weekDays);
+    showAlert('Atualização Hábito', 'Hábito atualizado com sucesso!');
+  } catch (err) {
+    showToast('error', err.message);
+  }
+
+  isLoading.value = false;
+};
+
+const handleHabit = (formData) => {
+  if (habit.value.id) {
+    updateHabit(formData);
+    return;
+  }
+
+  createHabit(formData);
+};
+
+const dialogRef = ref(null);
+
+const handleDelete = () => {
+  dialogRef.value?.setOpen(true);
+};
+
+const router = useRouter();
+
+const deleteHabit = async () => {
+  isLoading.value = true;
+
+  try {
+    await habitStore.deleteHabit(habit.value.id);
+    router.go(-1);
+  } catch (err) {
+    showToast('error', err.message);
+  }
+
+  isLoading.value = false;
+};
+</script>
+
 <template>
   <ion-page>
     <Header>
@@ -9,6 +120,7 @@
         <Heading :title="pageTitle" />
 
         <HabitForm
+          v-if="!route.params.id || habit.title"
           ref="habitFormRef"
           :habit="habit"
           :is-loading="isLoading"
@@ -42,135 +154,3 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { jwtDecode } from 'jwt-decode';
-import { trash } from 'ionicons/icons';
-import { IonPage, IonHeader, IonToolbar, IonButton, IonIcon, IonContent } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import Button from '@/components/Button.vue';
-import BackButton from '@/components/BackButton.vue';
-import HabitForm from '@/components/HabitForm.vue';
-import ModalDialog from '@/components/ModalDialog.vue';
-import Alert from '@/components/Alert.vue';
-
-const storeSession = useSessionStore();
-
-const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
-});
-
-const route = useRoute();
-
-const pageTitle = computed(() => {
-  return route.params.id ? 'Editar hábito' : 'Criar hábito';
-});
-
-const habit = ref({
-  id: route.params.id,
-  title: '',
-  week_days: '',
-});
-
-const { showToast } = useToast();
-
-onMounted(async () => {
-  if (!habit.value.id) return;
-  
-  try {
-    const response = await axios.get('/habits/' + habit.value.id);
-    habit.value = response.data;
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-});
-
-const isLoading = ref(false);
-const alertRef = ref(null);
-const habitFormRef = ref(null);
-
-const showAlert = (header, message) => {
-  alertRef.value?.setOpen(header, message);
-};
-
-const createHabit = async (formData) => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.post('/habits/create', { 
-      title: formData.title,
-      weekDays: formData.weekDays,
-      userId: user.value.id 
-    });
-
-    habitFormRef.value?.clearFormData();
-    
-    showAlert('Novo Hábito', response.message);
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-
-const updateHabit = async (formData) => {
-  isLoading.value = true;
-
-  try {
-    const response = await axios.put('/habits/update/' + habit.value.id, { 
-      title: formData.title,
-      weekDays: formData.weekDays
-    });
-    
-    showAlert('Atualização Hábito', response.message);
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-
-const handleHabit = (formData) => {
-  if (habit.value.id) {
-    updateHabit(formData);
-    return;
-  }
-
-  createHabit(formData);
-};
-
-const dialogRef = ref(null);
-
-const handleDelete = () => {
-  dialogRef.value?.setOpen(true);
-};
-
-const router = useRouter();
-
-const deleteHabit = async (formData) => {
-  isLoading.value = true;
-
-  try {
-    await axios.delete('/habits/delete/' + habit.value.id);
-    router.go(-1);
-  } catch (err) {
-    const error = err.response.data;
-    showToast('error', error.message);
-  }
-
-  isLoading.value = false;
-};
-</script>

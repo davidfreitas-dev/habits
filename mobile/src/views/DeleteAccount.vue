@@ -1,3 +1,54 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
+import { useAuthStore } from '@/stores/auth';
+import { useProfileStore } from '@/stores/profile';
+import { useToast } from '@/use/useToast';
+
+import axios from '@/api/axios';
+import Header from '@/components/Header.vue';
+import Heading from '@/components/Heading.vue';
+import Container from '@/components/Container.vue';
+import BackButton from '@/components/BackButton.vue';
+import Button from '@/components/Button.vue';
+
+const authStore = useAuthStore();
+const profileStore = useProfileStore();
+
+const user = computed(() => {
+  return profileStore.profile;
+});
+
+const router = useRouter();
+
+const cancelDelete = () => {
+  router.back();
+};
+
+const isLoading = ref(false);
+
+const { showToast } = useToast();
+
+const confirmDelete = async () => {
+  isLoading.value = true;
+
+  try {
+    if (profileStore.profile.id) {
+      await axios.delete('/users/delete/' + profileStore.profile.id);
+      showToast('success', 'Conta excluída com sucesso');
+      authStore.clearTokens();
+      router.push('/signin');
+    }
+  } catch (err) {
+    const error = err.response?.data || { message: 'Erro ao excluir conta' };
+    showToast('error', error.message);
+  } 
+  
+  isLoading.value = false;
+};
+</script>
+
 <template>
   <ion-page>
     <Header>
@@ -60,55 +111,3 @@
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { jwtDecode } from 'jwt-decode';
-import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
-import { useToast } from '@/use/useToast';
-
-import axios from '@/api/axios';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Button from '@/components/Button.vue';
-
-const storeSession = useSessionStore();
-
-const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
-});
-
-const router = useRouter();
-
-const cancelDelete = () => {
-  router.back();
-};
-
-const isLoading = ref(false);
-
-const { showToast } = useToast();
-
-const confirmDelete = async () => {
-  isLoading.value = true;
-
-  try {
-    if (user.value.id) {
-      await axios.delete('/users/delete/' + user.value.id);
-      showToast('success', 'Conta excluída com sucesso');
-      storeSession.clearSession();
-      router.push('/signin');
-    }
-  } catch (err) {
-    const error = err.response?.data || { message: 'Erro ao excluir conta' };
-    showToast('error', error.message);
-  } 
-  
-  isLoading.value = false;
-};
-</script>

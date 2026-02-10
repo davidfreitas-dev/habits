@@ -1,13 +1,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { jwtDecode } from 'jwt-decode';
-import { IonPage, IonHeader, IonToolbar, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
-import { useSessionStore } from '@/stores/session';
+import { IonPage, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
+import { useProfileStore } from '@/stores/profile';
+import { useHabitStore } from '@/stores/habits';
 import { useParsedDate } from '@/use/useParsedDate';
 import { useLoading } from '@/use/useLoading';
-
-import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
@@ -15,17 +13,16 @@ import Breadcrumb from '@/components/Breadcrumb.vue';
 import ProgressBar from '@/components/ProgressBar.vue';
 import Checkbox from '@/components/Checkbox.vue';
 
-const storeSession = useSessionStore();
+const profileStore = useProfileStore();
+const habitStore = useHabitStore();
 
 const user = computed(() => {
-  return storeSession.session && storeSession.session.token 
-    ? jwtDecode(storeSession.session.token) 
-    : null;
+  return profileStore.user;
 });
 
 const dayInfo = ref({
-  possibleHabits: [],
-  completedHabits: []
+  possible_habits: [],
+  completed_habits: []
 });
 
 const route = useRoute();
@@ -38,39 +35,45 @@ const {
 } = useParsedDate(date.value);
 
 const getDayInfo = async () => {
-  const date = parsedDate.value.toDate();
-
-  const response = await axios.post('/habits/day', {
-    userId: user.value.id,
-    date: date
-  });
-
-  dayInfo.value = response.data;
+  const formattedDate = parsedDate.value.format('YYYY-MM-DD');
+  const response = await habitStore.getDayInfo(formattedDate);
+  dayInfo.value = response;
 };
 
 const { isLoading, withLoading } = useLoading();
 
 onIonViewWillEnter(() => {
-  withLoading(getDayInfo, 'Erro ao carregar os hábitos do dia.');
+  withLoading(async () => {
+    await profileStore.fetchProfile();
+    await getDayInfo();
+  }, 'Erro ao carregar os dados do dia.');
 });
 
 const handleToggleHabit = async (habitId) => {
   await withLoading(async () => {
-    await axios.put(`/habits/${habitId}/toggle`, { 
-      userId: user.value.id 
-    });
-    
+    await habitStore.toggleHabit(habitId);
     await getDayInfo();
   }, 'Erro ao atualizar o hábito.');
 };
 
 const isHabitChecked = (habitId) => {
-  return dayInfo.value.completedHabits.some(habit => habit.habit_id === habitId);
+  if (!dayInfo.value.completed_habits) {
+    return false;
+  }
+  // Check if completed_habits contains objects or just IDs
+  if (dayInfo.value.completed_habits.length > 0 && typeof dayInfo.value.completed_habits[0] === 'object') {
+    return dayInfo.value.completed_habits.some(habit => String(habit.id) === String(habitId));
+  } else {
+    // Assume it's an array of IDs
+    return dayInfo.value.completed_habits.some(id => String(id) === String(habitId));
+  }
 };
 
 const progressPercentage = computed(() => {
-  return dayInfo.value.completedHabits.length
-    ? Math.round((dayInfo.value.completedHabits.length / dayInfo.value.possibleHabits.length) * 100)
+  const possibleCount = dayInfo.value.possible_habits?.length || 0;
+  const completedCount = dayInfo.value.completed_habits?.length || 0;
+  return possibleCount > 0
+    ? Math.round((completedCount / possibleCount) * 100)
     : 0;
 });
 
@@ -93,7 +96,7 @@ const router = useRouter();
         <ProgressBar :progress="progressPercentage" />
 
         <Checkbox
-          v-for="habit in dayInfo.possibleHabits"
+          v-for="habit in dayInfo.possible_habits"
           :key="habit.id"
           :label="habit.title"
           :is-checked="isHabitChecked(habit.id)"
@@ -102,7 +105,7 @@ const router = useRouter();
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <ion-text v-if="!isLoading && !dayInfo.possibleHabits.length && !isDateInPast" class="ion-text-center ion-padding">
+        <ion-text v-if="!isLoading && !dayInfo.possible_habits.length && !isDateInPast" class="ion-text-center ion-padding">
           <p>Você ainda não criou nenhum hábito.</p>
         </ion-text>
 
