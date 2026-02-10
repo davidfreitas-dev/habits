@@ -7,6 +7,11 @@ const HTTP_STATUS = {
   UNAUTHORIZED: 401,
 };
 const ENDPOINTS = {
+  LOGIN: '/auth/login',
+  REGISTER: '/auth/register',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  VALIDATE_RESET_CODE: '/auth/validate-reset-code',
+  RESET_PASSWORD: '/auth/reset-password',
   REFRESH: '/auth/refresh',
 };
 
@@ -75,11 +80,23 @@ const isRefreshEndpointError = (error) => {
   return error.config?.url === ENDPOINTS.REFRESH;
 };
 
+const isPublicAuthEndpoint = (error) => {
+  const publicAuthEndpoints = [
+    ENDPOINTS.LOGIN,
+    ENDPOINTS.REGISTER,
+    ENDPOINTS.FORGOT_PASSWORD,
+    ENDPOINTS.VALIDATE_RESET_CODE,
+    ENDPOINTS.RESET_PASSWORD,
+  ];
+  return publicAuthEndpoints.includes(error.config?.url);
+};
+
 const shouldRetryWithRefresh = (error) => {
   return (
     error.response?.status === HTTP_STATUS.UNAUTHORIZED &&
     !error.config?._retry &&
-    !isRefreshEndpointError(error)
+    !isRefreshEndpointError(error) &&
+    !isPublicAuthEndpoint(error)
   );
 };
 
