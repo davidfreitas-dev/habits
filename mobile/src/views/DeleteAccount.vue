@@ -1,12 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
 import { useAuthStore } from '@/stores/auth';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
 
-import axios from '@/api/axios';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -15,10 +14,6 @@ import Button from '@/components/Button.vue';
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
-
-const user = computed(() => {
-  return profileStore.profile;
-});
 
 const router = useRouter();
 
@@ -34,15 +29,13 @@ const confirmDelete = async () => {
   isLoading.value = true;
 
   try {
-    if (profileStore.profile.id) {
-      await axios.delete('/users/delete/' + profileStore.profile.id);
-      showToast('success', 'Conta excluída com sucesso');
-      authStore.clearTokens();
-      router.push('/signin');
-    }
+    await profileStore.deleteAccount();
+    showToast('success', 'Conta excluída com sucesso');
+    authStore.clearTokens();
+    router.push('/signin');
   } catch (err) {
-    const error = err.response?.data || { message: 'Erro ao excluir conta' };
-    showToast('error', error.message);
+    console.error('Error deleting account:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao excluir conta.');
   } 
   
   isLoading.value = false;

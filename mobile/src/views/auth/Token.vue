@@ -5,14 +5,14 @@ import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { IonPage, IonContent } from '@ionic/vue';
 import { useToast } from '@/use/useToast';
-import { useAuthStore } from '@/stores/auth'; // Import useAuthStore
+import { useAuthStore } from '@/stores/auth';
 
 import Container from '@/components/Container.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 
 const router = useRouter();
-const authStore = useAuthStore(); // Initialize auth store
+const authStore = useAuthStore();
 const isLoading = ref(false);
 const formData = reactive({
   token: ''
@@ -24,9 +24,12 @@ const handleContinue = async () => {
   isLoading.value = true;
 
   try {
-    await authStore.validateResetCode(formData.token); // Use auth store's validateResetCode method
+    const response = await authStore.validateResetCode(formData.token);
+    showToast('success', response.message || 'Código válido!');
+    router.push({ name: 'Reset' });
   } catch (err) {
     console.error('Token validation failed:', err);
+    showToast('error', err.response?.data?.message || 'Código inválido.');
   } finally {
     isLoading.value = false;
   }

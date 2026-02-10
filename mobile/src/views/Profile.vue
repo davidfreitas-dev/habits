@@ -1,8 +1,8 @@
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { IonPage, IonContent, IonIcon, onIonViewWillEnter } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
-import { useProfileStore } from '@/stores/profile'; // Use the new profile store
+import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
 
 import Header from '@/components/Header.vue';
@@ -17,27 +17,31 @@ const isLoading = ref(false);
 
 const formData = reactive({
   name: '',
-  phone: '',
-  cpfcnpj: '',
+  email: '',
 });
 
-const isDisabled = computed(() => !formData.name); // Only name is required for now
+const isDisabled = computed(() => !formData.name);
 
 const { showToast } = useToast();
 
 const loadProfileData = () => {
   if (profileStore.user) {
     formData.name = profileStore.user.name || '';
-    formData.phone = profileStore.user.phone || '';
-    formData.cpfcnpj = profileStore.user.cpfcnpj || '';
+    formData.email = profileStore.user.email || '';
   }
 };
 
 onIonViewWillEnter(async () => {
   isLoading.value = true;
-  await profileStore.fetchProfile();
-  loadProfileData();
-  isLoading.value = false;
+  try {
+    await profileStore.fetchProfile();
+    loadProfileData();
+  } catch (err) {
+    console.error('Failed to fetch profile:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao carregar dados do perfil.');
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 // Watch for changes in profileStore.user to update formData
@@ -53,12 +57,15 @@ const updateProfile = async () => {
   try {
     const dataToUpdate = {
       name: formData.name,
-      phone: formData.phone,
-      cpfcnpj: formData.cpfcnpj,
+      email: formData.email,
     };
-    await profileStore.updateProfile(dataToUpdate);
+    const success = await profileStore.updateProfile(dataToUpdate);
+    if (success) {
+      showToast('success', 'Perfil atualizado com sucesso!');
+    }
   } catch (err) {
     console.error('Profile update failed:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao atualizar dados do perfil.');
   } finally {
     isLoading.value = false;
   }

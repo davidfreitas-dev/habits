@@ -3,9 +3,8 @@ import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonIcon, onIonViewDidLeave } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
-import { useProfileStore } from '@/stores/profile'; // Import the profile store
+import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
-
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -14,7 +13,7 @@ import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 
 const isLoading = ref(false);
-const profileStore = useProfileStore(); // Initialize the profile store
+const profileStore = useProfileStore();
 const router = useRouter();
 
 const formData = reactive({
@@ -47,15 +46,16 @@ const updatePassword = async () => {
   isLoading.value = true;
 
   try {
-    await profileStore.changePassword(
+    const response = await profileStore.changePassword(
       formData.currentPassword,
       formData.newPassword,
       formData.confNewPassword
     );
-    
+    showToast('success', response.message || 'Senha alterada com sucesso!');
     router.push('/settings');
   } catch (err) {
     console.error('Password change failed:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao alterar a senha.');
   } finally {
     isLoading.value = false;
   }

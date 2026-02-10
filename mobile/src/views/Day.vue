@@ -6,6 +6,8 @@ import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
 import { useParsedDate } from '@/use/useParsedDate';
 import { useLoading } from '@/use/useLoading';
+import { useToast } from '@/use/useToast'; // Import useToast
+
 import Header from '@/components/Header.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
@@ -27,20 +29,28 @@ const dayInfo = ref({
 
 const route = useRoute();
 const date = ref(route.params.date);
-const { 
-  parsedDate, 
-  dayOfWeek, 
-  dayAndMonth, 
-  isDateInPast 
+const {
+  parsedDate,
+  dayOfWeek,
+  dayAndMonth,
+  isDateInPast
 } = useParsedDate(date.value);
+
+const { showToast } = useToast(); // Initialize useToast
 
 const getDayInfo = async () => {
   const formattedDate = parsedDate.value.format('YYYY-MM-DD');
-  const response = await habitStore.getDayInfo(formattedDate);
-  dayInfo.value = response;
+  try {
+    const response = await habitStore.getDayInfo(formattedDate);
+    dayInfo.value = response;
+  } catch (err) {
+    console.error('Error fetching day info:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao carregar hábitos do dia.');
+    throw err; // Re-throw to propagate to withLoading
+  }
 };
 
-const { isLoading, withLoading } = useLoading();
+const { withLoading } = useLoading(); // Removed isLoading as it's not needed in v-if now
 
 onIonViewWillEnter(() => {
   withLoading(async () => {
@@ -51,22 +61,24 @@ onIonViewWillEnter(() => {
 
 const handleToggleHabit = async (habitId) => {
   await withLoading(async () => {
-    await habitStore.toggleHabit(habitId);
-    await getDayInfo();
-  }, 'Erro ao atualizar o hábito.');
+    try {
+      await habitStore.toggleHabit(habitId);
+      await getDayInfo(); // Refresh data after toggle
+      showToast('success', 'Status do hábito atualizado!');
+    } catch (err) {
+      console.error('Error toggling habit:', err);
+      showToast('error', err.response?.data?.message || 'Erro ao atualizar hábito.');
+      throw err; // Re-throw to propagate to withLoading
+    }
+  });
 };
 
 const isHabitChecked = (habitId) => {
   if (!dayInfo.value.completed_habits) {
     return false;
   }
-  // Check if completed_habits contains objects or just IDs
-  if (dayInfo.value.completed_habits.length > 0 && typeof dayInfo.value.completed_habits[0] === 'object') {
-    return dayInfo.value.completed_habits.some(habit => String(habit.id) === String(habitId));
-  } else {
-    // Assume it's an array of IDs
-    return dayInfo.value.completed_habits.some(id => String(id) === String(habitId));
-  }
+  // According to API documentation, completed_habits contains objects with 'id'
+  return dayInfo.value.completed_habits.some(habit => String(habit.id) === String(habitId));
 };
 
 const progressPercentage = computed(() => {
@@ -87,7 +99,7 @@ const router = useRouter();
     </Header>
 
     <ion-content :fullscreen="true">
-      <Container>        
+      <Container>
         <Breadcrumb
           :week-day="dayOfWeek"
           :date="dayAndMonth"
@@ -105,11 +117,11 @@ const router = useRouter();
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <ion-text v-if="!isLoading && !dayInfo.possible_habits.length && !isDateInPast" class="ion-text-center ion-padding">
+        <ion-text v-if="!dayInfo.possible_habits.length && !isDateInPast" class="ion-text-center ion-padding">
           <p>Você ainda não criou nenhum hábito.</p>
         </ion-text>
 
-        <ion-text v-if="!isLoading && isDateInPast" class="ion-text-center ion-padding">
+        <ion-text v-if="isDateInPast" class="ion-text-center ion-padding">
           Você não pode editar hábitos de datas passadas.
         </ion-text>
       </Container>

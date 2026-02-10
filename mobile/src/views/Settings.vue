@@ -34,9 +34,14 @@ const authStore = useAuthStore();
 
 const logOut = async () => {
   try {
-    await authStore.logout();
+    const success = await authStore.logout();
+    if (success) {
+      showToast('success', 'Sessão finalizada com sucesso!');
+      router.push('/signin');
+    }
   } catch (err) {
     console.error('Error during logout:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao finalizar sessão.');
   }
 };
 </script>

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { alertController } from '@ionic/vue';
 
 const routes = [
   {
@@ -86,6 +87,38 @@ const router = createRouter({
   routes
 });
 
+let isAlertShowing = false;
+
+const showSessionExpiredAlertAndRedirect = async () => {
+  if (isAlertShowing) return;
+  isAlertShowing = true;
+
+  const alert = await alertController.create({
+    header: 'Sessão Expirada',
+    message: 'Sua sessão expirou. Por favor, faça login novamente.',
+    cssClass: 'alert-box',
+    buttons: [
+      {
+        text: 'OK',
+        handler: async () => {
+          isAlertShowing = false;
+          router.push('/signin');
+        },
+      },
+    ],
+  });
+
+  await alert.present();
+
+  const { role } = await alert.onDidDismiss();
+  if (role === 'backdrop' || role === 'cancel') {
+    isAlertShowing = false;
+    if (router.currentRoute.value.path !== '/signin') {
+      router.push('/signin');
+    }
+  }
+};
+
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
@@ -97,12 +130,15 @@ router.beforeEach(async (to, from, next) => {
     return next();
   }
 
-  const refreshed = await authStore.refreshAccessToken();
-  
-  if (refreshed) {
-    next();
-  } else {
-    next('/signin');
+  try {
+    const refreshed = await authStore.refreshAccessToken();
+    if (refreshed) {
+      next();
+    } else {
+      showSessionExpiredAlertAndRedirect();
+    }
+  } catch (error) {
+    showSessionExpiredAlertAndRedirect();
   }
 });
 

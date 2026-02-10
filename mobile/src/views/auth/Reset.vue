@@ -1,4 +1,5 @@
 <script setup>
+import { useRouter } from 'vue-router';
 import { ref, reactive, computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, sameAs } from '@vuelidate/validators';
@@ -17,16 +18,18 @@ const formData = reactive({
 });
 
 const { showToast } = useToast();
+const router = useRouter();
 
 const handleConfirm = async () => {
   isLoading.value = true;
 
   try {
-    // The authStore.resetPassword method will handle retrieving email and code from localStorage
-    await authStore.resetPassword(formData.password, formData.confPassword);
-    // Navigation is handled by the authStore after successful reset
+    const response = await authStore.resetPassword(formData.password, formData.confPassword);
+    showToast('success', response.message || 'Senha redefinida com sucesso!');
+    router.push('/signin');
   } catch (err) {
     console.error('Password reset failed:', err);
+    showToast('error', err.message || err.response?.data?.message || 'Erro ao redefinir senha.');
   } finally {
     isLoading.value = false;  
   }

@@ -1,13 +1,10 @@
 import { ref } from 'vue';
 import { loadingController } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
 
 export function useLoading() {
   const isLoading = ref(false);
 
-  const { showToast } = useToast();
-
-  const withLoading = async (fn, errMsg = 'Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.') => {
+  const withLoading = async (fn) => {
     isLoading.value = true;
 
     const loading = await loadingController.create({
@@ -23,7 +20,7 @@ export function useLoading() {
       await fn();
     } catch (err) {
       console.error('Erro na requisição:', err);
-      showToast('error', errMsg);
+      throw err;
     } finally {
       isLoading.value = false;
       await loading.dismiss();

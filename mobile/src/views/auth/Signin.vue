@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
 import { IonPage, IonContent, onIonViewDidLeave } from '@ionic/vue';
@@ -17,14 +18,22 @@ const formData = reactive({
 });
 
 const { showToast } = useToast();
+const router = useRouter();
 
 const signIn = async () => {
   isLoading.value = true;
 
   try {
-    await authStore.login(formData);
+    const success = await authStore.login(formData);
+    if (success) {
+      showToast('success', 'Login realizado com sucesso!');
+      router.push('/');
+    } else {
+      showToast('error', 'Login falhou. Verifique suas credenciais.');
+    }
   } catch (err) {
     console.error('Login failed:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao fazer login.');
   } finally {
     isLoading.value = false;
   }

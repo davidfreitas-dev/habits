@@ -11,34 +11,39 @@
           :icon="arrowBack" 
           @click="setOpen(false)" 
         />
+        <ion-title v-if="title">
+          {{ title }}
+        </ion-title> 
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <div id="container">
-        <h1>Modal Title</h1>
+        <slot /> 
       </div>
     </ion-content>
   </ion-modal>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
-import { IonButton, IonModal, IonHeader, IonToolbar, IonContent, IonTitle, IonRow, IonCol, IonButtons, IonIcon } from '@ionic/vue';
+import { ref } from 'vue';
+import { IonModal, IonHeader, IonToolbar, IonContent, IonTitle, IonIcon } from '@ionic/vue';
 import { arrowBack } from 'ionicons/icons';
 
 const props = defineProps({
   presentingElement: { 
     type: Object, 
     default: () => {} 
+  },
+  title: { 
+    type: String,
+    default: '',
   }
 });
 
 const canDismiss = (data, role) => {
   return role !== 'gesture' && role !== 'backdrop';
 };
-
-const selectedItem = ref({});
 
 const isOpen = ref(false);
 
@@ -50,6 +55,12 @@ defineExpose({setOpen});
 </script>
 
 <style scoped>
+ion-title {
+  color: var(--font);
+  font-weight: 800;
+  font-size: 1.875rem;
+  padding-left: 0; 
+}
 h1 {
   color: var(--font);
   font-weight: 800;

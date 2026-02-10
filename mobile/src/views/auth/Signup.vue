@@ -1,4 +1,5 @@
 <script setup>
+import { useRouter } from 'vue-router';
 import { ref, reactive, computed } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email } from '@vuelidate/validators';
@@ -18,14 +19,22 @@ const formData = reactive({
 });
 
 const { showToast } = useToast();
+const router = useRouter();
 
 const signUp = async () => {
   isLoading.value = true;
 
   try {
-    await authStore.register(formData);
+    const success = await authStore.register(formData);
+    if (success) {
+      showToast('success', 'Conta criada com sucesso!');
+      router.push('/');
+    } else {
+      showToast('error', 'Criação de conta falhou.');
+    }
   } catch (err) {
     console.error('Registration failed:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao criar conta.');
   } finally {
     isLoading.value = false;
   }

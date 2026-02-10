@@ -5,6 +5,7 @@ import { useGenerateRange } from '@/use/useGenerateRange';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/use/useLoading';
+import { useToast } from '@/use/useToast';
 import Header from '@/components/Header.vue';
 import Avatar from '@/components/Avatar.vue';
 import ButtonNew from '@/components/ButtonNew.vue';
@@ -13,7 +14,7 @@ import Container from '@/components/Container.vue';
 import Summary from '@/components/Summary.vue';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
-const { withLoading, isLoading } = useLoading();
+const { withLoading } = useLoading();
 
 const profileStore = useProfileStore();
 const habitStore = useHabitStore();
@@ -23,10 +24,17 @@ const user = computed(() => {
 });
 
 const summary = ref([]);
+const { showToast } = useToast();
 
 const getSummary = async () => {
-  const response = await habitStore.getHabitsSummary();
-  summary.value = Array.isArray(response) ? response : [];
+  try {
+    const response = await habitStore.getHabitsSummary();
+    summary.value = Array.isArray(response) ? response : [];
+  } catch (err) {
+    console.error('Error fetching habits summary:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao carregar resumo de hábitos.');
+    throw err;
+  }
 };
 
 const amountOfDaysToFill = ref(0);
@@ -52,12 +60,12 @@ onIonViewWillEnter(() => {
     <ion-content :fullscreen="true">
       <Container class="ion-margin-bottom">
         <Summary
-          v-if="!isLoading && summary.length"
+          v-if="summary.length"
           :dates-from-year-start="datesFromYearStart"
           :summary="summary"
         />
         <ion-text
-          v-if="!isLoading && !summary.length"
+          v-if="!summary.length"
           color="medium"
           class="ion-text-center ion-padding"
         >
@@ -67,3 +75,7 @@ onIonViewWillEnter(() => {
     </ion-content>
   </ion-page>
 </template>
+
+<style scoped>
+/* Scoped styles */
+</style>

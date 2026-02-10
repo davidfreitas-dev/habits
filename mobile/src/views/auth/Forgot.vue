@@ -24,9 +24,12 @@ const handleContinue = async () => {
   isLoading.value = true;
 
   try {
-    await authStore.forgotPassword(formData.email);
+    const response = await authStore.forgotPassword(formData.email);
+    showToast('success', response.message || 'E-mail de recuperação enviado!');
+    router.push('/forgot/token');
   } catch (err) {
     console.error('Forgot password failed:', err);
+    showToast('error', err.response?.data?.message || 'Erro ao solicitar recuperação de senha.');
   } finally {
     isLoading.value = false;
   }
