@@ -5,7 +5,7 @@ import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
 import { useToast } from '@/use/useToast';
-
+import { useLoading } from '@/use/useLoading';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -29,20 +29,18 @@ const handleLogOut = (item) => {
 const router = useRouter();
 
 const { showToast } = useToast();
+const { isLoading, withLoading } = useLoading();
 
 const authStore = useAuthStore();
 
 const logOut = async () => {
-  try {
+  await withLoading(async () => {
     const success = await authStore.logout();
     if (success) {
       showToast('success', 'Sessão finalizada com sucesso!');
       router.push('/signin');
     }
-  } catch (err) {
-    console.error('Error during logout:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao finalizar sessão.');
-  }
+  }, 'Erro ao finalizar sessão.');
 };
 </script>
 

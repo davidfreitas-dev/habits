@@ -6,6 +6,7 @@ import { IonPage, IonIcon, IonContent } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
 import { useHabitStore } from '@/stores/habits';
+import { useLoading } from '@/use/useLoading';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -31,22 +32,17 @@ const habit = ref({
 });
 
 const { showToast } = useToast();
+const { isLoading, withLoading } = useLoading();
 
 onMounted(async () => {
-  await profileStore.fetchProfile();
-  if (!habit.value.id) return;
-  
-  try {
+  await withLoading(async () => {
+    await profileStore.fetchProfile();
+    if (!habit.value.id) return;
     const fetchedHabit = await habitStore.getHabitDetails(habit.value.id);
     habit.value = fetchedHabit;
-  } catch (err) {
-    console.error('Error fetching habit details:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao carregar detalhes do hábito.');
-    router.go(-1);
-  }
+  }, 'Erro ao carregar detalhes do hábito.');
 });
 
-const isLoading = ref(false);
 const habitFormRef = ref(null);
 const dialogRef = ref(null);
 
@@ -55,30 +51,18 @@ const handleFormError = (message) => {
 };
 
 const createHabit = async (formData) => {
-  isLoading.value = true;
-  try {
+  await withLoading(async () => {
     await habitStore.createHabit(formData.title, formData.weekDays);
     habitFormRef.value?.clearFormData();
     showToast('success', 'Hábito criado com sucesso!');
-  } catch (err) {
-    console.error('Error creating habit:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao criar hábito.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao criar hábito.');
 };
 
 const updateHabit = async (formData) => {
-  isLoading.value = true;
-  try {
+  await withLoading(async () => {
     await habitStore.updateHabit(habit.value.id, formData.title, formData.weekDays);
     showToast('success', 'Hábito atualizado com sucesso!');
-  } catch (err) {
-    console.error('Error updating habit:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao atualizar hábito.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao atualizar hábito.');
 };
 
 const handleHabit = (formData) => {
@@ -94,17 +78,11 @@ const handleDelete = () => {
 };
 
 const deleteHabit = async () => {
-  isLoading.value = true;
-  try {
+  await withLoading(async () => {
     await habitStore.deleteHabit(habit.value.id);
     showToast('success', 'Hábito excluído com sucesso!');
     router.go(-1);
-  } catch (err) {
-    console.error('Error deleting habit:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao excluir hábito.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao excluir hábito.');
 };
 </script>
 

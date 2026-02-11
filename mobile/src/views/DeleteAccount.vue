@@ -1,11 +1,10 @@
 <script setup>
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
 import { useAuthStore } from '@/stores/auth';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
-
+import { useLoading } from '@/use/useLoading';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -21,24 +20,16 @@ const cancelDelete = () => {
   router.back();
 };
 
-const isLoading = ref(false);
-
 const { showToast } = useToast();
+const { isLoading, withLoading } = useLoading();
 
 const confirmDelete = async () => {
-  isLoading.value = true;
-
-  try {
+  await withLoading(async () => {
     await profileStore.deleteAccount();
     showToast('success', 'Conta excluída com sucesso');
     authStore.clearTokens();
     router.push('/signin');
-  } catch (err) {
-    console.error('Error deleting account:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao excluir conta.');
-  } 
-  
-  isLoading.value = false;
+  });
 };
 </script>
 

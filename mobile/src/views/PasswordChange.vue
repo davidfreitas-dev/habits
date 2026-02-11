@@ -1,10 +1,11 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonIcon, onIonViewDidLeave } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
+import { useLoading } from '@/use/useLoading';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -12,7 +13,6 @@ import BackButton from '@/components/BackButton.vue';
 import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 
-const isLoading = ref(false);
 const profileStore = useProfileStore();
 const router = useRouter();
 
@@ -24,18 +24,18 @@ const formData = reactive({
 
 const isDisabled = computed(() => !formData.currentPassword || !formData.newPassword || !formData.confNewPassword);
 
+const { showToast } = useToast();
+const { isLoading, withLoading } = useLoading();
+
 const resetData = () => {
   formData.currentPassword = null;
   formData.newPassword = null;
   formData.confNewPassword = null;
-  isLoading.value = false;
 };
 
 onIonViewDidLeave(() => {
   resetData();
 });
-
-const { showToast } = useToast();
 
 const updatePassword = async () => { 
   if (formData.newPassword !== formData.confNewPassword) {
@@ -43,9 +43,7 @@ const updatePassword = async () => {
     return;
   }
 
-  isLoading.value = true;
-
-  try {
+  await withLoading(async () => {
     const response = await profileStore.changePassword(
       formData.currentPassword,
       formData.newPassword,
@@ -53,12 +51,7 @@ const updatePassword = async () => {
     );
     showToast('success', response.message || 'Senha alterada com sucesso!');
     router.push('/settings');
-  } catch (err) {
-    console.error('Password change failed:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao alterar a senha.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao alterar a senha.');
 };
 </script>
 

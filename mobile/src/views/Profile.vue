@@ -1,10 +1,10 @@
 <script setup>
-import { ref, reactive, computed, watch } from 'vue';
+import { reactive, computed, watch } from 'vue';
 import { IonPage, IonContent, IonIcon, onIonViewWillEnter } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/use/useToast';
-
+import { useLoading } from '@/use/useLoading'; 
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -13,7 +13,6 @@ import Input from '@/components/Input.vue';
 import Button from '@/components/Button.vue';
 
 const profileStore = useProfileStore();
-const isLoading = ref(false);
 
 const formData = reactive({
   name: '',
@@ -23,6 +22,7 @@ const formData = reactive({
 const isDisabled = computed(() => !formData.name);
 
 const { showToast } = useToast();
+const { isLoading, withLoading } = useLoading();
 
 const loadProfileData = () => {
   if (profileStore.user) {
@@ -32,16 +32,10 @@ const loadProfileData = () => {
 };
 
 onIonViewWillEnter(async () => {
-  isLoading.value = true;
-  try {
+  await withLoading(async () => {
     await profileStore.fetchProfile();
     loadProfileData();
-  } catch (err) {
-    console.error('Failed to fetch profile:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao carregar dados do perfil.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao carregar dados do perfil.');
 });
 
 // Watch for changes in profileStore.user to update formData
@@ -52,9 +46,7 @@ watch(() => profileStore.user, (newUser) => {
 }, { deep: true });
 
 const updateProfile = async () => {
-  isLoading.value = true;
-
-  try {
+  await withLoading(async () => {
     const dataToUpdate = {
       name: formData.name,
       email: formData.email,
@@ -63,12 +55,7 @@ const updateProfile = async () => {
     if (success) {
       showToast('success', 'Perfil atualizado com sucesso!');
     }
-  } catch (err) {
-    console.error('Profile update failed:', err);
-    showToast('error', err.response?.data?.message || 'Erro ao atualizar dados do perfil.');
-  } finally {
-    isLoading.value = false;
-  }
+  }, 'Erro ao atualizar dados do perfil.');
 };
 </script>
 
