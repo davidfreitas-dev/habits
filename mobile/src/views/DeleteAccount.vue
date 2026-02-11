@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList } from '@ionic/vue';
 import { useAuthStore } from '@/stores/auth';
@@ -10,18 +11,21 @@ import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 
 const authStore = useAuthStore();
 const profileStore = useProfileStore();
 
 const router = useRouter();
 
-const cancelDelete = () => {
-  router.back();
-};
-
 const { showToast } = useToast();
 const { isLoading, withLoading } = useLoading();
+
+const modalRef = ref(null);
+
+const handleDeleteClick = () => {
+  modalRef.value?.setOpen(true);
+};
 
 const confirmDelete = async () => {
   await withLoading(async () => {
@@ -79,19 +83,21 @@ const confirmDelete = async () => {
           <p>Caso tenha dúvidas ou precise de assistência, clique em <strong>Cancelar</strong> e entre em contato com nosso suporte.</p>
         </div>
 
-        <Button class="ion-margin-top" @click="cancelDelete">
-          Cancelar
-        </Button>
-
         <Button
           color="danger"
           class="ion-margin-top ion-margin-bottom"
           :is-loading="isLoading"
-          @click="confirmDelete"
+          @click="handleDeleteClick"
         >
           Confirmar Exclusão
         </Button>
       </Container>
+      
+      <ModalDialog
+        ref="modalRef"
+        message="Tem certeza que deseja excluir sua conta? Esta ação é irreversível!"
+        @on-confirm="confirmDelete"
+      />
     </ion-content>
   </ion-page>
 </template>
