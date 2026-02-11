@@ -21,9 +21,10 @@ ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
   --background: var(--bg);
 }
 
-.custom-loading-spinner {
+ion-loading.custom-loading-spinner {
   --background: transparent;
   --spinner-color: var(--primary);
+  --backdrop-opacity: 0.7;
 }
 
 .alert-box .alert-wrapper {

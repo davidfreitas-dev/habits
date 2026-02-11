@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue';
+import { ref, watch } from 'vue';
 import { IonSegment, IonSegmentButton, IonLabel } from '@ionic/vue';
 
 const props = defineProps({

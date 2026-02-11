@@ -10,7 +10,7 @@ export function useLoading() {
     const loading = await loadingController.create({
       spinner: 'crescent',
       cssClass: 'custom-loading-spinner',
-      showBackdrop: false,
+      showBackdrop: true,
       translucent: true
     });
 
