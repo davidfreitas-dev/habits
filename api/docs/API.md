@@ -40,7 +40,7 @@
 Verifica o status da API e seus serviços.
 
 ```http
-GET /api/v1/health
+GET /api/v1
 ```
 
 ---

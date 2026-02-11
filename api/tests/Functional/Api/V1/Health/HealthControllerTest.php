@@ -12,7 +12,7 @@ class HealthControllerTest extends FunctionalTestCase
     public function testHealthCheckReturnsOkAndCorrectStructure(): void
     {
         // Act
-        $response = $this->sendRequest('GET', '/api/v1/health');
+        $response = $this->sendRequest('GET', '/api/v1');
 
         $response->getBody()->rewind();
         $body = json_decode((string) $response->getBody(), true);

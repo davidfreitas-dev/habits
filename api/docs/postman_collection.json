@@ -11,14 +11,13 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                    "raw": "{{baseUrl}}/api/v1/health",
+                    "raw": "{{baseUrl}}/api/v1",
                     "host": [
                         "{{baseUrl}}"
                     ],
                     "path": [
                         "api",
-                        "v1",
-                        "health"
+                        "v1"
                     ]
                 }
             },
