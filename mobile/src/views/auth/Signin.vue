@@ -25,6 +25,7 @@ const signIn = async () => {
 
   try {
     const success = await authStore.login(formData);
+
     if (success) {
       showToast('success', 'Login realizado com sucesso!');
       router.push('/');
@@ -90,7 +91,11 @@ onIonViewDidLeave(() => {
             Esqueci a senha
           </router-link>
 
-          <Button :is-loading="isLoading" @click="submitForm">
+          <Button
+            :is-loading="isLoading"
+            :is-disabled="v$.$invalid"
+            @click="submitForm"
+          >
             Entrar
           </Button>
 

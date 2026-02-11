@@ -24,9 +24,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const updateValue = (event) => (
-  emit('update:modelValue', event.target.value)
-);
+const updateValue = (event) => {
+  emit('update:modelValue', event.detail.value);
+};
 
 const isPasswordVisible = ref(false);
 
@@ -53,7 +53,7 @@ const inputType = computed(() => {
       :type="inputType"
       :value="modelValue"
       :placeholder="placeholder"
-      @input="updateValue"
+      @ion-input="updateValue"
     />
 
     <ion-icon

@@ -1,22 +1,21 @@
-import { ref } from 'vue';
-
-const toastRef = ref(null);
-
-const toastData = ref({
-  message: '',
-  color: 'danger',
-});
-
-const showToast = (status, message) => {
-  toastData.value.color = status === 'error' ? 'danger' : 'success';
-  toastData.value.message = message;
-  toastRef.value?.showToast();
-};
+import { toastController } from '@ionic/vue';
+import { alertCircleOutline } from 'ionicons/icons';
 
 export function useToast() {
+  const showToast = async (status, message) => {
+    const color = status === 'error' ? 'danger' : 'success';
+
+    const toast = await toastController.create({
+      message: message,
+      color: color,
+      duration: 2500,
+      icon: alertCircleOutline,
+    });
+
+    await toast.present();
+  };
+
   return {
-    toastRef,
-    toastData,
     showToast,
   };
 }

@@ -86,7 +86,7 @@ onIonViewDidLeave(() => {
           /> 
 
           <div class="ion-margin-top ion-padding-top">
-            <Button :is-loading="isLoading" @click="submitForm">
+            <Button :is-loading="isLoading" :is-disabled="v$.$invalid" @click="submitForm">
               Confirmar
             </Button>
 
