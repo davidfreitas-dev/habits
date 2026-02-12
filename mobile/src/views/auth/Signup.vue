@@ -25,13 +25,8 @@ const signUp = async () => {
   isLoading.value = true;
 
   try {
-    const success = await authStore.register(formData);
-    if (success) {
-      showToast('success', 'Conta criada com sucesso!');
-      router.push('/');
-    } else {
-      showToast('error', 'Criação de conta falhou.');
-    }
+    await authStore.register(formData);
+    router.push('/');
   } catch (err) {
     console.error('Registration failed:', err);
     showToast('error', err.response?.data?.message || 'Erro ao criar conta.');

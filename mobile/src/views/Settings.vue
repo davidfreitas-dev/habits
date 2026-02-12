@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
-import { useToast } from '@/use/useToast';
 import { useLoading } from '@/use/useLoading';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
@@ -13,26 +12,22 @@ import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
 
+const router = useRouter();
+
+const { withLoading } = useLoading();
+
+const authStore = useAuthStore();
+
 const modalRef = ref(null);
     
 const handleLogOut = (item) => {
   modalRef.value?.setOpen(true);
 };
 
-const router = useRouter();
-
-const { showToast } = useToast();
-const { withLoading } = useLoading();
-
-const authStore = useAuthStore();
-
 const logOut = async () => {
   await withLoading(async () => {
-    const success = await authStore.logout();
-    if (success) {
-      showToast('success', 'Sessão finalizada com sucesso!');
-      router.push('/signin');
-    }
+    await authStore.logout();
+    router.push('/signin');
   }, 'Erro ao finalizar sessão.');
 };
 </script>

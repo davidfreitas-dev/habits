@@ -24,14 +24,8 @@ const signIn = async () => {
   isLoading.value = true;
 
   try {
-    const success = await authStore.login(formData);
-
-    if (success) {
-      showToast('success', 'Login realizado com sucesso!');
-      router.push('/');
-    } else {
-      showToast('error', 'Login falhou. Verifique suas credenciais.');
-    }
+    await authStore.login(formData);
+    router.push('/');
   } catch (err) {
     console.error('Login failed:', err);
     showToast('error', err.response?.data?.message || 'Erro ao fazer login.');
