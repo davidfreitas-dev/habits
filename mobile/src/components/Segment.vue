@@ -1,12 +1,13 @@
 <template>
   <ion-segment
     mode="md"
-    v-model="value"
-    @ion-change="onSegmentChange"
+    :key="modelValue"
+    :value="modelValue"
+    @ion-change="$emit('update:modelValue', $event.detail.value)"
   >
     <ion-segment-button 
-      v-for="(segment, index) in segments" 
-      :key="index" 
+      v-for="segment in segments" 
+      :key="segment.value" 
       :value="segment.value"
     >
       <ion-label>{{ segment.label }}</ion-label>
@@ -15,10 +16,9 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
 import { IonSegment, IonSegmentButton, IonLabel } from '@ionic/vue';
 
-const props = defineProps({
+defineProps({
   modelValue: {
     type: String,
     required: true,
@@ -30,17 +30,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['update:modelValue']);
-
-const value = ref(props.modelValue);
-
-const onSegmentChange = (event) => {
-  emits('update:modelValue', event.detail.value);
-};
-
-watch(() => props.modelValue, (newValue) => {
-  value.value = newValue;
-});
+defineEmits(['update:modelValue']);
 </script>
 
 <style scoped>

@@ -4,9 +4,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { trash } from 'ionicons/icons';
 import { IonPage, IonIcon, IonContent } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
-import { useToast } from '@/use/useToast';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/use/useLoading';
+import { useToast } from '@/use/useToast';
 import Header from '@/components/Header.vue';
 import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
@@ -62,6 +62,7 @@ const updateHabit = async (formData) => {
   await withLoading(async () => {
     await habitStore.updateHabit(habit.value.id, formData.title, formData.weekDays);
     showToast('success', 'Hábito atualizado com sucesso!');
+    router.go(-1);
   }, 'Erro ao atualizar hábito.');
 };
 

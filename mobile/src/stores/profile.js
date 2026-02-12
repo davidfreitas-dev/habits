@@ -24,10 +24,10 @@ export const useProfileStore = defineStore('profile', () => {
   };
 
   const changePassword = async (currentPassword, newPassword, confirmNewPassword) => {
-    const response = await axios.put('/profile/change-password', {
+    const response = await axios.patch('/profile/change-password', {
       current_password: currentPassword,
       new_password: newPassword,
-      new_password_confirmation: confirmNewPassword,
+      new_password_confirm: confirmNewPassword,
     });
     return response;
   };
