@@ -154,13 +154,13 @@ class HabitRepositoryTest extends DatabaseTestCase
     {
         $date = new DateTimeImmutable(self::TEST_DATE_MONDAY);
 
-        $habit1 = new Habit('Daily Habit', $this->testUser);
+        $habit1 = new Habit('Daily Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $this->habitRepository->create($habit1, self::ALL_WEEK_DAYS);
 
-        $habit2 = new Habit('Monday Habit', $this->testUser);
+        $habit2 = new Habit('Monday Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $this->habitRepository->create($habit2, [self::MONDAY]);
 
-        $habit3 = new Habit('Tuesday Habit', $this->testUser);
+        $habit3 = new Habit('Tuesday Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $this->habitRepository->create($habit3, [self::TUESDAY]);
         
         $futureHabitDate = new DateTimeImmutable('2026-02-10');
@@ -179,13 +179,13 @@ class HabitRepositoryTest extends DatabaseTestCase
         $date = new DateTimeImmutable(self::TEST_DATE_MONDAY);
         $dayId = $this->ensureDayExists($date);
 
-        $habit1 = new Habit('Completed Habit 1', $this->testUser);
+        $habit1 = new Habit('Completed Habit 1', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $createdHabit1 = $this->habitRepository->create($habit1, [self::SUNDAY]);
         
-        $habit2 = new Habit('Completed Habit 2', $this->testUser);
+        $habit2 = new Habit('Completed Habit 2', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $createdHabit2 = $this->habitRepository->create($habit2, [self::SUNDAY]);
         
-        $habit3 = new Habit('Uncompleted Habit', $this->testUser);
+        $habit3 = new Habit('Uncompleted Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $this->habitRepository->create($habit3, [self::SUNDAY]);
 
         $this->markHabitAsCompleted($dayId, $createdHabit1->getId());
@@ -205,11 +205,11 @@ class HabitRepositoryTest extends DatabaseTestCase
 
         // Create some habits that should appear in the summary
         // Habit 1: Daily habit, completed on a specific day
-        $habit1 = new Habit('Daily Habit', $this->testUser);
+        $habit1 = new Habit('Daily Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $createdHabit1 = $this->habitRepository->create($habit1, self::ALL_WEEK_DAYS);
 
         // Habit 2: Monday habit
-        $habit2 = new Habit('Monday Habit', $this->testUser);
+        $habit2 = new Habit('Monday Habit', $this->testUser, new DateTimeImmutable('2026-02-08'), new DateTimeImmutable('2026-02-08'));
         $this->habitRepository->create($habit2, [self::MONDAY]);
 
         // Mark habit1 as completed on TEST_DATE_MONDAY

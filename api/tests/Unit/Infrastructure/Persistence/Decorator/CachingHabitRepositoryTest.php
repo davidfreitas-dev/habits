@@ -217,17 +217,18 @@ class CachingHabitRepositoryTest extends TestCase
             ->with($cacheKeyId)
             ->willReturn(true);
 
-        $this->redisCache->expects($this->exactly(2)) // For summary and possible habits
+        $this->redisCache->expects($this->exactly(3))
             ->method('deleteByPattern')
-            ->willReturnOnConsecutiveCalls(0, 0); // Assuming 0 keys deleted for this test
+            ->willReturnOnConsecutiveCalls(0, 0, 0);
 
-        $this->logger->expects($this->exactly(3)) // 1 for habit invalidation, 2 for summary/possible invalidation
+        $this->logger->expects($this->exactly(4))
             ->method('info')
             ->with(
                 $this->logicalOr(
                     $this->equalTo('Cache de hábito invalidado para ID: ' . $createdHabit->getId()),
                     $this->equalTo('Invalidados 0 entradas de cache de sumário para o usuário: ' . $this->userId),
-                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId)
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId),
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos completados para o usuário: ' . $this->userId)
                 )
             );
 
@@ -261,17 +262,18 @@ class CachingHabitRepositoryTest extends TestCase
             ->with($cacheKeyId)
             ->willReturn(true);
         
-        $this->redisCache->expects($this->exactly(2)) // For summary and possible habits
+        $this->redisCache->expects($this->exactly(3))
             ->method('deleteByPattern')
-            ->willReturnOnConsecutiveCalls(0, 0); // Assuming 0 keys deleted for this test
+            ->willReturnOnConsecutiveCalls(0, 0, 0);
 
-        $this->logger->expects($this->exactly(3)) // 1 for habit invalidation, 2 for summary/possible invalidation
+        $this->logger->expects($this->exactly(4))
             ->method('info')
             ->with(
                 $this->logicalOr(
                     $this->equalTo('Cache de hábito invalidado para ID: ' . $habitId),
                     $this->equalTo('Invalidados 0 entradas de cache de sumário para o usuário: ' . $this->userId),
-                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId)
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId),
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos completados para o usuário: ' . $this->userId)
                 )
             );
 
@@ -319,18 +321,19 @@ class CachingHabitRepositoryTest extends TestCase
             ->with($cacheKeyId)
             ->willReturn(true);
         
-        $this->redisCache->expects($this->exactly(2)) // For summary and possible habits
+        $this->redisCache->expects($this->exactly(3))
             ->method('deleteByPattern')
-            ->willReturnOnConsecutiveCalls(0, 0); // Assuming 0 keys deleted for this test
+            ->willReturnOnConsecutiveCalls(0, 0, 0);
 
-        $this->logger->expects($this->exactly(4)) // 2 for habit-related info logs, and 2 for summary/possible habits invalidation
+        $this->logger->expects($this->exactly(5))
             ->method('info')
             ->with(
                 $this->logicalOr(
                     $this->equalTo('Cache de hábito não encontrado para ID: ' . $habitId),
                     $this->equalTo('Cache de hábito invalidado para ID: ' . $habitId),
                     $this->equalTo('Invalidados 0 entradas de cache de sumário para o usuário: ' . $this->userId),
-                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId)
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId),
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos completados para o usuário: ' . $this->userId)
                 )
             );
 
@@ -541,22 +544,24 @@ class CachingHabitRepositoryTest extends TestCase
         $summaryPattern = 'habit:summary:' . $this->userId . ':*';
         $possiblePattern = 'habit:possible:' . $this->userId . ':*';
 
-        $this->redisCache->expects($this->exactly(2))
+        $this->redisCache->expects($this->exactly(3))
             ->method('deleteByPattern')
             ->with(
                 $this->logicalOr(
                     $this->equalTo($summaryPattern),
-                    $this->equalTo($possiblePattern)
+                    $this->equalTo($possiblePattern),
+                    $this->equalTo('habit:completed:' . $this->userId . ':*')
                 )
             )
-            ->willReturnOnConsecutiveCalls(5, 3); // Simulate 5 summary keys and 3 possible keys deleted
+            ->willReturnOnConsecutiveCalls(5, 3, 0);
 
-        $this->logger->expects($this->exactly(2))
+        $this->logger->expects($this->exactly(3))
             ->method('info')
             ->with(
                 $this->logicalOr(
                     $this->equalTo('Invalidados 5 entradas de cache de sumário para o usuário: ' . $this->userId),
-                    $this->equalTo('Invalidados 3 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId)
+                    $this->equalTo('Invalidados 3 entradas de cache de hábitos possíveis para o usuário: ' . $this->userId),
+                    $this->equalTo('Invalidados 0 entradas de cache de hábitos completados para o usuário: ' . $this->userId) // New message
                 )
             );
 

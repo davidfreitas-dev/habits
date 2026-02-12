@@ -19,13 +19,13 @@ use Tests\TestCase;
 
 class ChangePasswordUseCaseTest extends TestCase
 {
-    private \PHPUnit\Framework\MockObject\MockObject $userRepository;
+    private UserRepositoryInterface&MockObject $userRepository;
 
-    private \PHPUnit\Framework\MockObject\MockObject $passwordHasher;
+    private PasswordHasher&MockObject $passwordHasher;
 
-    private \PHPUnit\Framework\MockObject\MockObject $mailer;
+    private MailerInterface&MockObject $mailer;
 
-    private \PHPUnit\Framework\MockObject\MockObject $jwtService;
+    private JwtService&MockObject $jwtService;
 
     private ChangePasswordUseCase $changePasswordUseCase;
 
@@ -48,6 +48,7 @@ class ChangePasswordUseCaseTest extends TestCase
     {
         $dto = new ChangePasswordRequestDTO(1, 'old-password', 'new-password', 'new-password');
 
+        /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
         $user->method('getPassword')->willReturn('hashed-old-password');
 
@@ -71,6 +72,7 @@ class ChangePasswordUseCaseTest extends TestCase
 
         $dto = new ChangePasswordRequestDTO(1, 'wrong-old-password', 'new-password', 'new-password');
 
+        /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
         $user->method('getPassword')->willReturn('hashed-old-password');
 
