@@ -103,6 +103,7 @@ class CachingHabitRepository implements HabitRepositoryInterface
         $deleted = $this->decoratedRepository->delete($id, $userId);
 
         if ($deleted && $habitToDelete instanceof Habit) {
+            $this->cache->delete(self::CACHE_PREFIX_TITLE . \md5($habitToDelete->getTitle()) . ':' . $userId);
             $this->invalidateHabitCache($id, $userId);
             $this->invalidateSummaryAndPossibleHabitsCache($userId);
         }
@@ -112,8 +113,7 @@ class CachingHabitRepository implements HabitRepositoryInterface
 
     public function findPossibleHabits(DateTimeImmutable $date, int $userId): array
     {
-        $dateImmutable = DateTimeImmutable::createFromInterface($date);
-        $dateString = $dateImmutable->format('Y-m-d');
+        $dateString = $date->format('Y-m-d');
         $cacheKey = self::CACHE_PREFIX_POSSIBLE . $userId . ':' . $dateString;
 
         $cachedHabits = $this->cache->get($cacheKey);

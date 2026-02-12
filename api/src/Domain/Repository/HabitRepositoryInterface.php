@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Repository;
 
 use App\Domain\Entity\Habit;
-use DateTime;
 use DateTimeImmutable;
 
 interface HabitRepositoryInterface
@@ -63,7 +62,7 @@ interface HabitRepositoryInterface
     /**
      * Finds possible habits for a given date and user.
      *
-     * @param DateTime $date The date to find possible habits for.
+     * @param DateTimeImmutable $date The date to find possible habits for.
      * @param int $userId The ID of the user.
      *
      * @return Habit[] An array of possible habit entities.

@@ -4,6 +4,42 @@ API REST moderna construída com Slim Framework 4, PHP 8.4, e fortemente inspira
 
 Esta API serve como uma base robusta para novos projetos, incluindo autenticação completa com JWT (Access e Refresh tokens), cache com Redis, e uma estrutura de código organizada para escalabilidade e manutenção.
 
+## 📄 Índice
+
+- [✨ Features](#-features)
+- [🚀 Tecnologias](#-tecnologias)
+- [🔧 Instalação e Execução (Docker)](#-instalação-e-execução-docker)
+  - [1. Pré-requisitos](#1-pré-requisitos)
+  - [2. Clone o repositório](#2-clone-o-repositório)
+  - [3. Configure o ambiente](#3-configure-o-ambiente)
+  - [4. Gere as Chaves de Criptografia](#4-gere-as-chaves-de-criptografia)
+  - [5. Inicie os containers](#5-inicie-os-containers)
+  - [6. Instale as dependências do Composer](#6-instale-as-dependências-do-composer)
+  - [7. Popule o Banco de Dados (Seeders)](#7-popule-o-banco-de-dados-seeders)
+  - [8. Acesse a aplicação](#8-acesse-a-aplicação)
+  - [Acessando o PHPMyAdmin](#acessando-o-phpmyadmin)
+- [🧪 Testes](#-testes)
+  - [Banco de Dados de Testes](#banco-de-dados-de-testes)
+  - [Teste de E-mails com MailHog](#teste-de-e-mails-com-mailhog)
+  - [Como Executar os Testes](#como-executar-os-testes)
+    - [1. Executar todos os testes](#1-executar-todos-os-testes)
+    - [2. Executar suítes específicas de testes](#2-executar-suítes-específicas-de-testes)
+    - [3. Executar um arquivo de teste específico](#3-executar-um-arquivo-de-teste-específico)
+    - [4. Gerar relatório de cobertura de código](#4-gerar-relatório-de-cobertura-de-código)
+    - [5. Limpar o banco de dados de testes](#5-limpar-o-banco-de-dados-de-testes)
+- [🏗️ Arquitetura](#-arquitetura)
+  - [Estrutura de Pastas](#estrutura-de-pastas)
+  - [Destaques Arquiteturais](#destaques-arquiteturais)
+- [📡 Documentação da API](#-documentação-da-api)
+- [🛠️ Qualidade de Código](#-qualidade-de-código)
+  - [PHP-CS-Fixer (Formatação de Código)](#php-cs-fixer-formatação-de-código)
+  - [Rector (Refatoração Automática)](#rector-refatoração-automática)
+- [🛠️ Troubleshooting e Comandos Úteis](#-troubleshooting-e-comandos-úteis)
+  - [Solução de Problemas](#solução-de-problemas)
+  - [Comandos Docker](#comandos-docker)
+
+---
+
 ## ✨ Features
 
 - **Autenticação Completa**: Fluxo de Registro, Login, Logout, Refresh Token e Reset de Senha.

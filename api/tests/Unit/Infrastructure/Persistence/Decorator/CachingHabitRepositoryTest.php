@@ -297,14 +297,16 @@ class CachingHabitRepositoryTest extends TestCase
     public function testDeleteInvalidatesCache(): void
     {
         $habitId = 6;
-        $habitToDelete = $this->createHabit($habitId, 'Habit to delete');
+        $habitTitle = 'Habit to delete';
+        $habitToDelete = $this->createHabit($habitId, $habitTitle);
 
         $cacheKeyId = 'habit:id:' . $habitId . ':' . $this->userId;
+        $cacheKeyTitle = 'habit:title:' . md5($habitTitle) . ':' . $this->userId; // New cache key to expect deletion
 
         $this->redisCache->expects($this->once())
             ->method('get')
             ->with($cacheKeyId)
-            ->willReturn(null);
+            ->willReturn(null); // Simulate cache miss for findById within delete
 
         $this->decoratedRepository->expects($this->once())
             ->method('findById')
@@ -316,9 +318,15 @@ class CachingHabitRepositoryTest extends TestCase
             ->with($habitId, $this->userId)
             ->willReturn(true);
 
-        $this->redisCache->expects($this->once())
+        // Expect two delete calls on redisCache: one for ID, one for Title
+        $this->redisCache->expects($this->exactly(2)) // Changed from once to exactly(2)
             ->method('delete')
-            ->with($cacheKeyId)
+            ->with(
+                $this->logicalOr(
+                    $this->equalTo($cacheKeyId),
+                    $this->equalTo($cacheKeyTitle) // Expect deletion of title cache key
+                )
+            )
             ->willReturn(true);
         
         $this->redisCache->expects($this->exactly(3))

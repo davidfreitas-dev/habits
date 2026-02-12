@@ -107,7 +107,7 @@ const deleteHabit = async () => {
         />
 
         <Button
-          v-if="route.params.id"
+          v-if="route.params.id && habit.title"
           color="danger"
           class="ion-margin-top"
           @click="handleDelete"

@@ -11,14 +11,7 @@ import Heading from '@/components/Heading.vue';
 import Container from '@/components/Container.vue';
 import BackButton from '@/components/BackButton.vue';
 import Button from '@/components/Button.vue';
-import Alert from '@/components/Alert.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
-
-const alertRef = ref(null);
-
-const showAlert = (header, message) => {
-  alertRef.value?.setOpen(header, message);
-};
 
 const modalRef = ref(null);
     
@@ -29,7 +22,7 @@ const handleLogOut = (item) => {
 const router = useRouter();
 
 const { showToast } = useToast();
-const { isLoading, withLoading } = useLoading();
+const { withLoading } = useLoading();
 
 const authStore = useAuthStore();
 
@@ -104,8 +97,6 @@ const logOut = async () => {
           <ion-icon slot="start" :icon="exitOutline" />
           Finalizar Sessão
         </Button>
-
-        <Alert ref="alertRef" @on-alert="logOut" />
 
         <ModalDialog
           ref="modalRef"

@@ -41,7 +41,7 @@ const confirmAction = () => {
     :breakpoints="[0, 0.35]"
   >
     <ion-content class="ion-padding-top">
-      <div class="ion-text-center">
+      <div class="ion-text-center ion-padding-horizontal">
         <p><b>{{ message }}</b></p>
       </div>
       
