@@ -58,6 +58,7 @@ const inputType = computed(() => {
 
     <ion-icon
       v-if="type === 'password'"
+      :key="isPasswordVisible ? 'eye-off' : 'eye'"
       :icon="isPasswordVisible ? eyeOffOutline : eyeOutline"
       @click="togglePasswordVisibility"
     />

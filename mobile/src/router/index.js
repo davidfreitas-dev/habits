@@ -136,9 +136,11 @@ router.beforeEach(async (to, from, next) => {
       next();
     } else {
       showSessionExpiredAlertAndRedirect();
+      next(false);
     }
   } catch (error) {
     showSessionExpiredAlertAndRedirect();
+    next(false);
   }
 });
 
