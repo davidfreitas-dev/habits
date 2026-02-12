@@ -26,8 +26,21 @@ class CorsMiddleware implements MiddlewareInterface
         $origin = $request->getHeaderLine('Origin');
         $allowedOrigins = $this->settings['allowed_origins'];
 
-        // Check if origin is allowed
-        if (\in_array('*', $allowedOrigins, true) || \in_array($origin, $allowedOrigins, true)) {
+        // Allow common development origins for Capacitor/Ionic
+        $devOrigins = [
+            'capacitor://localhost',
+            'ionic://localhost',
+            'http://localhost',
+        ];
+        $allowedOrigins = array_unique(array_merge($allowedOrigins, $devOrigins));
+
+        // Allow live-reload origins dynamically (e.g. http://localhost:8100, http://192.168.1.108:8100)
+        if ($origin && (str_starts_with($origin, 'http://localhost:') || str_starts_with($origin, 'http://192.168.1.108:'))) {
+            $allowedOrigins[] = $origin;
+        }
+
+        // Check if origin is allowed. Also allow requests without an Origin header.
+        if ($origin === '' || \in_array('*', $allowedOrigins, true) || \in_array($origin, $allowedOrigins, true)) {
             $allowOrigin = \in_array('*', $allowedOrigins, true) ? '*' : $origin;
             $response = $response
                 ->withHeader('Access-Control-Allow-Origin', $allowOrigin)

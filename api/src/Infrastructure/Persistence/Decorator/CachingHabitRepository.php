@@ -198,6 +198,11 @@ class CachingHabitRepository implements HabitRepositoryInterface
         return $summary;
     }
 
+    public function invalidateUserHabitsCache(int $userId): void
+    {
+        $this->invalidateSummaryAndPossibleHabitsCache($userId);
+    }
+
     private function setHabitCache(Habit $habit): void
     {
         $serializedHabit = serialize($habit);
@@ -217,11 +222,6 @@ class CachingHabitRepository implements HabitRepositoryInterface
         // For now, we rely on the next findByTitle to repopulate the cache if the title changed.
 
         $this->logger->info('Cache de hábito invalidado para ID: ' . $habitId);
-    }
-
-    public function invalidateUserHabitsCache(int $userId): void
-    {
-        $this->invalidateSummaryAndPossibleHabitsCache($userId);
     }
 
     private function invalidateSummaryAndPossibleHabitsCache(int $userId): void

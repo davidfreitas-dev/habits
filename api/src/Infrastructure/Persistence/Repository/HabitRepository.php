@@ -147,8 +147,8 @@ class HabitRepository implements HabitRepositoryInterface
 
     public function getHabitsSummary(int $userId): array
     {
-        $currentDate = (new DateTimeImmutable())->format(self::DATE_ONLY_FORMAT);
-        $startOfYear = (new DateTimeImmutable('first day of January this year'))->format(self::DATE_ONLY_FORMAT);
+        $currentDate = new DateTimeImmutable()->format(self::DATE_ONLY_FORMAT);
+        $startOfYear = new DateTimeImmutable('first day of January this year')->format(self::DATE_ONLY_FORMAT);
 
         $sql = "
             SELECT
@@ -183,14 +183,12 @@ class HabitRepository implements HabitRepositoryInterface
         ]);
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return array_map(function ($row) {
-            return [
+
+        return array_map(fn ($row) => [
                 'date' => $row['date'],
                 'completed' => (int) $row['completed'],
                 'total' => (int) $row['total'],
-            ];
-        }, $results);
+            ], $results);
     }
 
     private function syncWeekDays(Habit $habit, array $weekDays): void

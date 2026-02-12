@@ -88,6 +88,4 @@ interface HabitRepositoryInterface
      * @return array|null An array of habit summary data (date, completed count, total count) for the specified date, or null if no summary is found.
      */
     public function getHabitsSummary(int $userId): array;
-
-
 }

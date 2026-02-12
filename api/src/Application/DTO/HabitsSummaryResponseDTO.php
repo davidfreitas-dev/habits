@@ -16,8 +16,8 @@ class HabitsSummaryResponseDTO implements JsonSerializable
     public function jsonSerialize(): array
     {
         return array_map(
-            fn(HabitSummaryItemDTO $item) => $item->jsonSerialize(),
-            $this->items
+            fn (HabitSummaryItemDTO $item) => $item->jsonSerialize(),
+            $this->items,
         );
     }
 }

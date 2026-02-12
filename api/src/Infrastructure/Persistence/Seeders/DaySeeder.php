@@ -10,7 +10,7 @@ use PDO;
 class DaySeeder
 {
     public function __construct(
-        private readonly PDO $pdo
+        private readonly PDO $pdo,
     ) {
     }
 
