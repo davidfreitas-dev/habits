@@ -28,8 +28,10 @@ class CorsMiddleware implements MiddlewareInterface
 
         // Allow common development origins for Capacitor/Ionic
         $devOrigins = [
+            'https://habits.davidfreitas.dev.br',
             'capacitor://localhost',
             'ionic://localhost',
+            'https://localhost',
             'http://localhost',
         ];
         $allowedOrigins = array_unique(array_merge($allowedOrigins, $devOrigins));
