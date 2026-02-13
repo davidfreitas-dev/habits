@@ -1,4 +1,4 @@
-name: Habits API CI
+name: Deploy Habits API
 
 on:
   push:
@@ -8,21 +8,31 @@ on:
       - "api/**"
 
 jobs:
-  build:
-    name: Build and Deploy API
+  deploy:
+    name: Deploy Habits API
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Deploy API to Server
+      - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.API_SERVER_SSH_KEY }}
-          ARGS: "-rlvz --no-perms --no-owner --no-group --no-times"
+          ARGS: "-rlgoDzvh --delete-after"
           SOURCE: "./api/"
           TARGET: ${{ secrets.API_REMOTE_TARGET }}
           REMOTE_HOST: ${{ secrets.API_REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.API_REMOTE_USER }}
           REMOTE_PORT: ${{ secrets.API_REMOTE_PORT }}
           EXCLUDE: "/.git/,.docker/,bin/,tests/,docker-compose.yml,.dockerignore,.env.example,GEMINI.md,README.md,vendor/,.env,.idea/,.vscode/,logs/,config/keys/,tools/,docs/,storage/"
+          SCRIPT_AFTER: |
+            cd /var/www/habits.davidfreitas.dev.br
+            composer install --no-dev --optimize-autoloader --no-interaction
+            sudo chown -R www-data:www-data /var/www/habits.davidfreitas.dev.br
+            sudo find /var/www/habits.davidfreitas.dev.br -type d -exec chmod 755 {} \;
+            sudo find /var/www/habits.davidfreitas.dev.br -type f -exec chmod 644 {} \;
+            sudo chmod -R 775 /var/www/habits.davidfreitas.dev.br/logs
+            redis-cli -a ${{ secrets.API_REDIS_PASSWORD }} SELECT 0 && redis-cli -a ${{ secrets.API_REDIS_PASSWORD }} FLUSHDB || true
+            sudo systemctl reload php8.4-fpm
