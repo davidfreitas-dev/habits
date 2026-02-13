@@ -151,27 +151,37 @@ class HabitRepository implements HabitRepositoryInterface
         $startOfYear = new DateTimeImmutable('first day of January this year')->format(self::DATE_ONLY_FORMAT);
 
         $sql = "
+            WITH RECURSIVE date_range AS (
+                SELECT :start_of_year AS date
+                UNION ALL
+                SELECT DATE_ADD(date, INTERVAL 1 DAY)
+                FROM date_range
+                WHERE date < :current_date
+            )
             SELECT
-                D.id,
-                D.date,
-                (
-                    SELECT COUNT(*)
-                    FROM day_habits DH
-                    JOIN habits H1 ON DH.habit_id = H1.id
-                    WHERE DH.day_id = D.id
-                      AND H1.user_id = :userId1
+                dr.date,
+                COALESCE(
+                    (
+                        SELECT COUNT(*)
+                        FROM day_habits DH
+                        JOIN habits H1 ON DH.habit_id = H1.id
+                        JOIN days D ON DH.day_id = D.id
+                        WHERE D.date = dr.date
+                        AND H1.user_id = :userId1
+                    ), 0
                 ) AS completed,
-                (
-                    SELECT COUNT(*)
-                    FROM habit_week_days HWD
-                    JOIN habits H2 ON HWD.habit_id = H2.id
-                    WHERE HWD.week_day = (WEEKDAY(D.date) + 1) % 7
-                      AND DATE(H2.created_at) <= D.date
-                      AND H2.user_id = :userId2
+                COALESCE(
+                    (
+                        SELECT COUNT(*)
+                        FROM habit_week_days HWD
+                        JOIN habits H2 ON HWD.habit_id = H2.id
+                        WHERE HWD.week_day = (WEEKDAY(dr.date) + 1) % 7
+                        AND DATE(H2.created_at) <= dr.date
+                        AND H2.user_id = :userId2
+                    ), 0
                 ) AS total
-            FROM days D
-            WHERE D.date BETWEEN :start_of_year AND :current_date
-            ORDER BY D.date ASC
+            FROM date_range dr
+            ORDER BY dr.date ASC
         ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -185,10 +195,10 @@ class HabitRepository implements HabitRepositoryInterface
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return array_map(fn ($row) => [
-                'date' => $row['date'],
-                'completed' => (int) $row['completed'],
-                'total' => (int) $row['total'],
-            ], $results);
+            'date' => $row['date'],
+            'completed' => (int) $row['completed'],
+            'total' => (int) $row['total'],
+        ], $results);
     }
 
     private function syncWeekDays(Habit $habit, array $weekDays): void
