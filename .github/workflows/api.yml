@@ -30,9 +30,6 @@ jobs:
           SCRIPT_AFTER: |
             cd /var/www/habits.davidfreitas.dev.br
             composer install --no-dev --optimize-autoloader --no-interaction
-            sudo chown -R www-data:www-data /var/www/habits.davidfreitas.dev.br
-            sudo find /var/www/habits.davidfreitas.dev.br -type d -exec chmod 755 {} \;
-            sudo find /var/www/habits.davidfreitas.dev.br -type f -exec chmod 644 {} \;
-            sudo chmod -R 775 /var/www/habits.davidfreitas.dev.br/logs
+            sudo chmod -R 775 logs
             redis-cli -a ${{ secrets.API_REDIS_PASSWORD }} SELECT 0 && redis-cli -a ${{ secrets.API_REDIS_PASSWORD }} FLUSHDB || true
             sudo systemctl reload php8.4-fpm
