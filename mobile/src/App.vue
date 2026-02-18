@@ -2,8 +2,15 @@
 import { onMounted } from 'vue';
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { Capacitor } from '@capacitor/core';
+import { useNetwork } from '@/use/useNetwork';
+import { useStatusBar } from '@/use/useStatusBar';
 
-onMounted(() => {
+const { isConnected } = useNetwork();
+
+const { setStatusBar, Style } = useStatusBar();
+
+onMounted(async () => {
+  await setStatusBar(Style.Dark);
   if (Capacitor.isNativePlatform()) {
     window.screen.orientation.lock('portrait');
   }  
@@ -12,6 +19,19 @@ onMounted(() => {
 
 <template>
   <ion-app>
+    <div v-if="!isConnected" class="offline-banner">
+      Você está offline
+    </div>
     <ion-router-outlet />
   </ion-app>
 </template>
+
+<style scoped>
+.offline-banner {
+  background: var(--ion-color-danger);
+  color: white;
+  text-align: center;
+  padding: 6px;
+  font-size: 0.85rem;
+}
+</style>

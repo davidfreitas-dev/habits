@@ -20,17 +20,20 @@ defineExpose({ setOpen });
 </template>
 
 <style>
-ion-alert.alert-box {
+ion-alert.alert-box .alert-wrapper {
   --background: var(--color-background-secondary);
   --backdrop-opacity: 0.7;
 }
-ion-alert.alert-box .alert-wrapper .alert-head h2 {
+
+ion-alert.alert-box .alert-head h2 {
   color: var(--color-text-primary);
 }
-ion-alert.alert-box .alert-wrapper .alert-message {
+
+ion-alert.alert-box .alert-message {
   color: var(--color-text-accent);
 }
-ion-alert.alert-box button.alert-button {
+
+ion-alert.alert-box .alert-button {
   color: var(--color-success);
 }
 </style>
