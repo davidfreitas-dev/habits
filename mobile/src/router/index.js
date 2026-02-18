@@ -119,29 +119,29 @@ const showSessionExpiredAlertAndRedirect = async () => {
   }
 };
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to) => {
   const authStore = useAuthStore();
 
   if (!to.meta.requiresAuth) {
-    return next();
+    return true;
   }
 
   if (authStore.isAuthenticated) {
-    return next();
+    return true;
   }
 
   try {
     const refreshed = await authStore.refreshAccessToken();
     if (refreshed) {
-      next();
-    } else {
-      showSessionExpiredAlertAndRedirect();
-      next(false);
+      return true;
     }
   } catch (error) {
-    showSessionExpiredAlertAndRedirect();
-    next(false);
+    // Erro ao renovar token, prossegue para o redirecionamento
   }
+
+  showSessionExpiredAlertAndRedirect();
+  
+  return { name: 'Signin' };
 });
 
 export default router;

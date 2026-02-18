@@ -36,8 +36,13 @@ class CorsMiddleware implements MiddlewareInterface
         ];
         $allowedOrigins = array_unique(array_merge($allowedOrigins, $devOrigins));
 
-        // Allow live-reload origins dynamically (e.g. http://localhost:8100, http://192.168.1.108:8100)
-        if ($origin && (str_starts_with($origin, 'http://localhost:') || str_starts_with($origin, 'http://192.168.1.108:'))) {
+        // Allow live-reload origins dynamically (e.g. http://localhost:8100, http://192.168.x.x:8100)
+        if ($origin && (
+            str_starts_with($origin, 'http://localhost:') ||
+            str_starts_with($origin, 'http://127.0.0.1:') ||
+            preg_match('/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/', $origin) ||
+            preg_match('/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/', $origin)
+        )) {
             $allowedOrigins[] = $origin;
         }
 

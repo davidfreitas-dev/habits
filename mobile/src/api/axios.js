@@ -66,14 +66,13 @@ const handleTokenRefresh = async (originalRequest) => {
   }
 };
 
-const queueRequest = (originalRequest) => {
-  return new Promise((resolve, reject) => {
+const queueRequest = async (originalRequest) => {
+  const newToken = await new Promise((resolve, reject) => {
     requestsQueue.push({ resolve, reject });
-  })
-    .then(newToken => {
-      originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-      return instance(originalRequest);
-    });
+  });
+
+  originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
+  return instance(originalRequest);
 };
 
 const isRefreshEndpointError = (error) => {
