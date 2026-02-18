@@ -21,16 +21,16 @@ defineExpose({ setOpen });
 
 <style>
 ion-alert.alert-box {
-  --background: var(--bg-accent);
+  --background: var(--color-background-secondary);
   --backdrop-opacity: 0.7;
 }
 ion-alert.alert-box .alert-wrapper .alert-head h2 {
-  color: var(--font);
+  color: var(--color-text-primary);
 }
 ion-alert.alert-box .alert-wrapper .alert-message {
-  color: var(--font-accent);
+  color: var(--color-text-accent);
 }
 ion-alert.alert-box button.alert-button {
-  color: var(--success);
+  color: var(--color-success);
 }
 </style>

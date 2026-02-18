@@ -38,7 +38,7 @@ ion-row {
 ion-checkbox {
   --size: 2rem;
   --checkmark-width: 5px;
-  --checkbox-background: var(--bg-accent);
+  --checkbox-background: var(--color-background-secondary);
   --checkbox-background-checked: #22c55e;
   --border-color-checked: transparent;
 }
@@ -48,7 +48,7 @@ ion-checkbox::part(container) {
   border-color: transparent;
 }
 ion-label {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-size: 1.1rem;
   margin-left: .75rem;
 }

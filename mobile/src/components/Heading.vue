@@ -13,7 +13,7 @@ const props = defineProps({
 
 <style scoped>
 h1 {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 800;
   font-size: 1.875rem;
   margin: 0;

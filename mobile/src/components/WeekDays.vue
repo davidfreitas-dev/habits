@@ -29,7 +29,7 @@ div {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--bg);
+  background: var(--color-background-primary);
   padding: 0 1rem;
   padding-bottom: .5rem;
 }

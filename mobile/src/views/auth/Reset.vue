@@ -119,7 +119,7 @@ form {
 form h1 {
   font-size: 3rem;
   text-align: center;
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 800;
 }
 
@@ -127,7 +127,7 @@ form h1 {
   display: flex;
   align-items: center;
   margin: 1.25rem 0;
-  color: var(--font);
+  color: var(--color-text-primary);
   font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -138,7 +138,7 @@ form h1 {
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--font);
+  background: var(--color-text-primary);
   margin: 0 0.75rem;
 }
 </style>

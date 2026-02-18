@@ -67,7 +67,7 @@ const inputType = computed(() => {
 
 <style scoped>
 ion-label {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 700;
   margin-top: 1.5rem;
   margin-bottom: 1rem;
@@ -75,10 +75,10 @@ ion-label {
 
 ion-input {  
   border-radius: 0.375rem;
-  border: 2px solid var(--border);
-  background: var(--bg-accent);
+  border: 2px solid var(--color-border-default);
+  background: var(--color-background-secondary);
   
-  --color: var(--font);
+  --color: var(--color-text-primary);
   --placeholder-color: var(--placeholder);
   --placeholder-opacity: .8;
   --padding-top: 1rem;
@@ -88,7 +88,7 @@ ion-input {
 }
 
 ion-input:focus-within {
-  border: 2px solid var(--success);
+  border: 2px solid var(--color-success);
 }
 
 .input-container {
@@ -101,7 +101,7 @@ ion-icon {
   right: 1rem;
   transform: translateY(-50%);
   font-size: 1.5rem;
-  color: var(--font);
+  color: var(--color-text-primary);
   cursor: pointer;
   z-index: 10;
 }

@@ -43,7 +43,7 @@ a {
 }
 
 div h5 {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 800;
   line-height: 1.75rem;
   max-width: 200px;
@@ -54,7 +54,7 @@ div h5 {
 }
 
 div span {
-  color: var(--secondary);
+  color: var(--color-text-secondary);
   font-size: .9rem;
 }
 

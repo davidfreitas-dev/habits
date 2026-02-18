@@ -105,14 +105,14 @@ const logOut = async () => {
 
 <style scoped>
 ion-list {
-  background: var(--bg);
+  background: var(--color-background-primary);
   margin-top: 1rem;
 }
 ion-list-header {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-size: 1.1rem;
   margin-bottom: .5rem;
-  border-bottom: 1px solid var(--bg-accent);
+  border-bottom: 1px solid var(--color-background-secondary);
 }
 ion-list-header ion-icon {
   font-size: 1.2rem;
@@ -120,13 +120,13 @@ ion-list-header ion-icon {
   --ionicon-stroke-width: 40px;
 }
 ion-item {
-  color: var(--font-accent);
+  color: var(--color-text-accent);
   font-size: 1.1rem;
   --inner-padding-end: 0;
 }
 ion-item ion-icon {
   font-size: 1.2rem;
-  color: var(--font-accent);
+  color: var(--color-text-accent);
 }
 ion-label ion-icon {
   margin-bottom: -2px;

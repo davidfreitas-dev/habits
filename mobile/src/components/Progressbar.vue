@@ -34,7 +34,7 @@ div.progress {
   left: 0;
   height: .75rem;
   border-radius: .75rem;
-  background: var(--primary);
+  background: var(--color-primary);
   transition-property: width;
   transition-duration: 500ms;
 }

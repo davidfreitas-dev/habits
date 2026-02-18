@@ -33,7 +33,7 @@ const handleBack = () => {
 <style scoped>
 ion-icon {
   font-size: 2rem;
-  color: var(--secondary);
+  color: var(--color-text-secondary);
   padding: 0 1rem;
 }
 </style>

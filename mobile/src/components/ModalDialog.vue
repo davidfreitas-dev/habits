@@ -59,6 +59,6 @@ const confirmAction = () => {
 
 <style scoped>
 ion-content {
-  --background: var(--bg-accent)
+  --background: var(--color-background-secondary)
 }
 </style>

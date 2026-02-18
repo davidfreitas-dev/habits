@@ -75,7 +75,7 @@ const dayStyle = computed(() => {
 <style scoped>
 div {
   margin: .25rem;
-  background: var(--bg-accent);
+  background: var(--color-background-secondary);
   border-width: 2px;
   border-style: solid;
   border-radius: .5rem;

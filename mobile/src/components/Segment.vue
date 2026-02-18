@@ -39,21 +39,21 @@ ion-segment {
   top: 0;
   z-index: 10;
   padding: 0 .5rem;
-  background: var(--bg);
+  background: var(--color-background-primary);
 }
 
 ion-segment-button::part(indicator-background) {
-  background: var(--success);
+  background: var(--color-success);
 }
 
 /* Material Design styles */
 ion-segment-button.md::part(native) {
   font-weight: 600;
-  color: var(--font);
+  color: var(--color-text-primary);
 }
 
 .segment-button-checked.md::part(native) {
-  color: var(--success);
+  color: var(--color-success);
 }
 
 ion-segment-button.md::part(indicator-background) {
@@ -62,11 +62,11 @@ ion-segment-button.md::part(indicator-background) {
 
 /* iOS styles */
 ion-segment-button.ios::part(native) {
-  color: var(--success);
+  color: var(--color-success);
 }
 
 .segment-button-checked.ios::part(native) {
-  color: #fff;
+  color: var(--color-text-primary);
 }
 
 ion-segment-button.ios::part(indicator-background) {

@@ -114,6 +114,6 @@ a {
   text-align: center;
   text-decoration: none;
   letter-spacing: .25px;
-  color: var(--success);
+  color: var(--color-success);
 }
 </style>

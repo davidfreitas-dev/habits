@@ -28,11 +28,11 @@ ion-button {
   text-transform: unset;
   letter-spacing: .0225rem;
 
-  --color: var(--font);
-  --background: var(--success);
-  --background-hover: var(--success);
-  --background-activated: var(--success);
-  --background-focused: var(--success);
+  --color: var(--color-text-primary);
+  --background: var(--color-success);
+  --background-hover: var(--color-success);
+  --background-activated: var(--color-success);
+  --background-focused: var(--color-success);
   --border-radius: 0.375rem;
 }
 
@@ -48,13 +48,13 @@ ion-button.outline {
 }
 
 ion-button.danger {
-  --color: #EB445A;
+  --color: var(--color-danger);
   --background: transparent;
   --background-hover: transparent;
   --background-activated: transparent;
   --background-focused: transparent;
   --border-radius: 0.375rem;
-  --border-color: #EB445A;
+  --border-color: var(--color-danger);
   --border-style: solid;
   --border-width: 1px;
 }

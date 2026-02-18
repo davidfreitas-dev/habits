@@ -107,20 +107,20 @@ ion-content {
 h1 {
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--font);
+  color: var(--color-text-primary);
   margin-bottom: 1rem;
 }
 
 h2 {
   font-size: 1.2rem;
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 p, ul {
   font-size: 1rem;
-  color: var(--secondary);
+  color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
 
@@ -129,7 +129,7 @@ ul {
 }
 
 a {
-  color: var(--success);
+  color: var(--color-success);
   text-decoration: none;
 }
 

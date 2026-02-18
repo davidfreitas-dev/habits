@@ -37,7 +37,7 @@ div {
 }
 
 div span{
-  color: var(--font);
+  color: var(--color-text-primary);
   font-size: 1.875rem;
   line-height: 2.25rem;
   font-weight: 800;

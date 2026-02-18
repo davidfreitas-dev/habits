@@ -56,20 +56,20 @@ defineExpose({setOpen});
 
 <style scoped>
 ion-title {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 800;
   font-size: 1.875rem;
   padding-left: 0; 
 }
 h1 {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 800;
   font-size: 1.875rem;
   margin: 0;
 }
 ion-icon {
   font-size: 2rem;
-  color: var(--secondary);
+  color: var(--color-text-secondary);
   padding: 0 1rem;
 }
 </style>

@@ -119,7 +119,7 @@ const availableWeekDays = [
 
 <style scoped>
 p {
-  color: var(--font);
+  color: var(--color-text-primary);
   font-weight: 700;
   margin-top: 1.5rem;
 }

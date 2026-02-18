@@ -1,44 +1,70 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
 :root {
-	--bg: #09090a;
-	--bg-accent: #18181b;
-	--primary: #7c3aed;
-    --secondary: #a1a1aa;
-    --success: #16a34a;
-    --danger: #dc2626;
-	--font: #ffffff;	
-	--font-accent: #f1f1f1;
-    --border: #27272a;
+  /* Brand */
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-focus: #5b21b6;
+  
+  /* success */
+  --color-success: #16a34a;
+  --color-success-hover: #15803d;
+  --color-success-focus: #166534;
+
+  /* Danger */
+  --color-danger: #EB445A;
+  --color-danger-hover: #D63A50;
+  --color-danger-focus: #B73144;
+
+  /* Neutral */
+  --color-neutral-900: #09090a;
+  --color-neutral-800: #18181b;
+  --color-neutral-700: #27272a;
+  --color-neutral-500: #a1a1aa;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-100: #f4f4f5;
+
+  /* Background */
+  --color-background-primary: var(--color-neutral-900);
+  --color-background-secondary: var(--color-neutral-800);
+
+  /* Border */
+  --color-border-default: var(--color-neutral-700);
+
+  /* Text */
+  --color-text-primary: #ffffff;
+  --color-text-accent: #f1f1f1;
+  --color-text-secondary: var(--color-neutral-500);
 }
+
 
 * {
   font-family: 'Inter', sans-serif;
 }
 
 ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
-  --color: var(--font);
-  --background: var(--bg);
+  --color: var(--color-text-primary);
+  --background: var(--color-background-primary);
 }
 
 ion-loading.custom-loading-spinner {
   --background: transparent;
-  --spinner-color: var(--primary);
+  --spinner-color: var(--color-primary);
   --backdrop-opacity: 0.7;
 }
 
-.alert-box .alert-wrapper {
-  background: var(--bg-accent);
+ion-alert.alert-box .alert-wrapper {
+  background: var(--color-background-secondary);
 }
 
-.alert-box .alert-head h2 {
-  color: var(--font);
+ion-alert.alert-box .alert-head h2 {
+  color: var(--color-text-primary);
 }
 
-.alert-box .alert-message {
-  color: var(--font-accent);
+ion-alert.alert-box .alert-message {
+  color: var(--color-text-primary-accent);
 }
 
-.alert-box .alert-button {
-  color: var(--success);
+ion-alert.alert-box .alert-button {
+  color: var(--color-success);
 }
