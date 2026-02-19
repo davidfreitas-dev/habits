@@ -40,8 +40,9 @@ class CorsMiddleware implements MiddlewareInterface
         if ($origin && (
             str_starts_with($origin, 'http://localhost:') ||
             str_starts_with($origin, 'http://127.0.0.1:') ||
-            preg_match('/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/', $origin) ||
-            preg_match('/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/', $origin)
+            preg_match('/^http:\/\/192\.168\.\d+\.\d+(:\d+)?\/?$/', $origin) ||
+            preg_match('/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?\/?$/', $origin) ||
+            preg_match('/^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+(:\d+)?\/?$/', $origin)
         )) {
             $allowedOrigins[] = $origin;
         }

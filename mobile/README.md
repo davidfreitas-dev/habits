@@ -77,6 +77,26 @@ src/
    npm install
    ```
 
+3. Configure o arquivo de ambiente:
+   Crie um arquivo `.env.development` na raiz da pasta `mobile/` e configure a variável `VITE_BASE_URL` de acordo com o seu cenário de teste:
+
+   ```env
+   # Escolha APENAS UM dos cenários abaixo:
+
+   # CENÁRIO 1: Navegador (Web)
+   # Use localhost se estiver rodando apenas no browser
+   VITE_BASE_URL=http://localhost:8000/api/v1
+
+   # CENÁRIO 2: Emulador Android
+   # O endereço 10.0.2.2 mapeia para o localhost da sua máquina host
+   VITE_BASE_URL=http://10.0.2.2:8000/api/v1
+
+   # CENÁRIO 3: Dispositivo Físico (Android/iOS)
+   # Use o IP real da sua máquina na rede local (Ex: 192.168.x.x)
+   # Certifique-se de que o celular está no mesmo Wi-Fi que o PC
+   VITE_BASE_URL=http://192.168.x.x:8000/api/v1
+   ```
+
 ---
 
 ## 🛠️ Comandos Principais

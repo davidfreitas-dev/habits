@@ -34,7 +34,7 @@ const routes = [
     redirect: '/tabs/home'
   },
   {
-    path: '/tabs/',
+    path: '/tabs',
     component: () => import('@/views/TabsPage.vue'),
     children: [
       {

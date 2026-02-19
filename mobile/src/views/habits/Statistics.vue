@@ -6,7 +6,7 @@ import Container from '@/components/layout/Container.vue';
 
 <template>
   <ion-page>
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="vertical-safe-area">
       <Container>
         <Heading title="Estatísticas" />
         <p class="ion-padding-top">

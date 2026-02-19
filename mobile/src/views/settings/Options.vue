@@ -32,7 +32,7 @@ const logOut = async () => {
 
 <template>
   <ion-page ref="pageRef">
-    <ion-content :fullscreen="true">
+    <ion-content :fullscreen="true" class="vertical-safe-area">
       <Container>
         <Heading title="Opções" />
         
