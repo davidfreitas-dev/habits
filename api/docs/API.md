@@ -486,7 +486,7 @@ GET /api/v1/habits/summary
 
 #### Estatísticas de Hábitos
 
-Retorna estatísticas detalhadas de hábitos para um período específico (Semana, Mês, 3 Meses, 6 Meses ou Ano).
+Retorna estatísticas detalhadas de hábitos agregadas por dia da semana (Domingo a Sábado) para um período específico.
 
 ```http
 GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
@@ -503,16 +503,26 @@ GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
   "data": {
     "data": [
       {
-        "date": "2024-03-01",
+        "week_day": 0,
+        "label": "D",
         "percentage": 50.0,
-        "completed": 1,
-        "total": 2
+        "completed": 10,
+        "total": 20
       },
       {
-        "date": "2024-03-02",
+        "week_day": 1,
+        "label": "S",
         "percentage": 100.0,
-        "completed": 3,
-        "total": 3
+        "completed": 15,
+        "total": 15
+      },
+      // ... (sempre retorna 7 itens, de 0 a 6)
+      {
+        "week_day": 6,
+        "label": "S",
+        "percentage": 0.0,
+        "completed": 0,
+        "total": 5
       }
     ]
   }

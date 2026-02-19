@@ -6,10 +6,11 @@ namespace App\Application\DTO;
 
 use JsonSerializable;
 
-readonly class HabitStatsDayDTO implements JsonSerializable
+readonly class HabitStatsWeekDayDTO implements JsonSerializable
 {
     public function __construct(
-        public string $date,
+        public int $weekDay,
+        public string $label,
         public ?float $percentage,
         public int $completed,
         public int $total
@@ -18,7 +19,8 @@ readonly class HabitStatsDayDTO implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'date' => $this->date,
+            'week_day' => $this->weekDay,
+            'label' => $this->label,
             'percentage' => $this->percentage,
             'completed' => $this->completed,
             'total' => $this->total,

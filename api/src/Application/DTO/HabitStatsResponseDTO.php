@@ -9,7 +9,7 @@ use JsonSerializable;
 readonly class HabitStatsResponseDTO implements JsonSerializable
 {
     /**
-     * @param HabitStatsDayDTO[] $data
+     * @param HabitStatsWeekDayDTO[] $data
      */
     public function __construct(
         public array $data

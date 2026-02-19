@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
-use App\Application\DTO\HabitStatsDayDTO;
+use App\Application\DTO\HabitStatsWeekDayDTO;
 use App\Application\DTO\HabitStatsResponseDTO;
 use App\Domain\Repository\HabitStatsRepositoryInterface;
 use DateTimeImmutable;
@@ -12,6 +12,16 @@ use InvalidArgumentException;
 
 readonly class GetHabitStatsUseCase
 {
+    private const LABELS = [
+        0 => 'D',
+        1 => 'S',
+        2 => 'T',
+        3 => 'Q',
+        4 => 'Q',
+        5 => 'S',
+        6 => 'S'
+    ];
+
     public function __construct(
         private HabitStatsRepositoryInterface $habitStatsRepository
     ) {}
@@ -21,23 +31,34 @@ readonly class GetHabitStatsUseCase
         $endDate = new DateTimeImmutable('today');
         $startDate = $this->calculateStartDate($period, $endDate);
 
-        $stats = $this->habitStatsRepository->getStatsByPeriod($userId, $startDate, $endDate);
+        $stats = $period === 'W'
+            ? $this->habitStatsRepository->getWeekStats($userId, $startDate, $endDate)
+            : $this->habitStatsRepository->getAggregatedStats($userId, $startDate, $endDate);
 
-        $dtos = array_map(function (array $day) {
-            $total = (int) $day['total'];
-            $completed = (int) $day['completed'];
+        $statsByWeekDay = [];
+        foreach ($stats as $row) {
+            $statsByWeekDay[(int) $row['week_day']] = $row;
+        }
+
+        $dtos = [];
+        for ($i = 0; $i <= 6; $i++) {
+            $row = $statsByWeekDay[$i] ?? ['completed' => 0, 'total' => 0];
+            
+            $total = (int) $row['total'];
+            $completed = (int) $row['completed'];
             
             $percentage = $total > 0 
                 ? round(($completed / $total) * 100, 2) 
                 : null;
 
-            return new HabitStatsDayDTO(
-                $day['date'],
+            $dtos[] = new HabitStatsWeekDayDTO(
+                $i,
+                self::LABELS[$i],
                 $percentage,
                 $completed,
                 $total
             );
-        }, $stats);
+        }
 
         return new HabitStatsResponseDTO($dtos);
     }
@@ -45,7 +66,7 @@ readonly class GetHabitStatsUseCase
     private function calculateStartDate(string $period, DateTimeImmutable $endDate): DateTimeImmutable
     {
         return match ($period) {
-            'W' => $endDate->modify('-6 days'),
+            'W' => $endDate->modify('last sunday'),
             'M' => $endDate->modify('-29 days'),
             '3M' => $endDate->modify('-89 days'),
             '6M' => $endDate->modify('-179 days'),

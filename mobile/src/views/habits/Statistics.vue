@@ -6,53 +6,36 @@ import { useLoading } from '@/composables/useLoading';
 import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
 import BarChart from '@/components/habits/BarChart.vue';
+import PeriodSelector from '@/components/habits/PeriodSelector.vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt-br';
 
 dayjs.locale('pt-br');
 
-const periods = [
-  { label: 'W', value: 'W' },
-  { label: 'M', value: 'M' },
-  { label: '3M', value: '3M' },
-  { label: '6M', value: '6M' },
-  { label: 'Y', value: 'Y' }
-];
-
-const activeLabel = ref('W');
+const activePeriod = ref('W');
 const statsData = ref([]);
 const habitStore = useHabitStore();
 const { withLoading } = useLoading();
 
 const chartLabels = computed(() => {
-  if (statsData.value.length === 0) return [];
-  
-  if (activeLabel.value === 'W' || activeLabel.value === 'D') {
-    return statsData.value.map(day => dayjs(day.date).format('dd').charAt(0).toUpperCase());
-  }
-  
-  if (statsData.value.length > 30) {
-    // Show fewer labels for longer periods
-    return statsData.value.map((day, index) => {
-      return index % Math.floor(statsData.value.length / 5) === 0 ? dayjs(day.date).format('MMM') : '';
-    });
-  }
-
-  return statsData.value.map(day => dayjs(day.date).format('DD/MM'));
+  return statsData.value.map(item => item.label);
 });
 
 const chartValues = computed(() => {
-  return statsData.value.map(day => day.percentage || 0);
+  return statsData.value.map(item => item.percentage || 0);
 });
 
 const averagePercentage = computed(() => {
   if (statsData.value.length === 0) return 0;
-  const sum = statsData.value.reduce((acc, day) => acc + (day.percentage || 0), 0);
-  return Math.round(sum / statsData.value.length);
+  
+  const totalCompleted = statsData.value.reduce((acc, item) => acc + (item.completed || 0), 0);
+  const totalHabits = statsData.value.reduce((acc, item) => acc + (item.total || 0), 0);
+  
+  if (totalHabits === 0) return 0;
+  return Math.round((totalCompleted / totalHabits) * 100);
 });
 
 const handlePeriodChange = async (period) => {
-  activeLabel.value = period.label;
   await withLoading(async () => {
     const result = await habitStore.getHabitStats(period.value);
     statsData.value = result.data;
@@ -73,23 +56,16 @@ onMounted(async () => {
       <Container>
         <Heading title="Estatísticas" />
 
-        <!-- Period Selector -->
-        <div class="period-selector">
-          <button 
-            v-for="period in periods" 
-            :key="period.label"
-            :class="['period-btn', { active: activeLabel === period.label }]"
-            @click="handlePeriodChange(period)"
-          >
-            {{ period.label }}
-          </button>
-        </div>
+        <PeriodSelector 
+          v-model="activePeriod"
+          @change="handlePeriodChange"
+        />
 
         <div class="stats-container">
           <!-- Chart Card -->
           <div class="chart-card">
             <div class="chart-header">
-              <span class="chart-title">Total Activities</span>
+              <span class="chart-title">Total de Atividades</span>
               <h2 class="chart-percentage">
                 {{ averagePercentage }}%
               </h2>
@@ -108,37 +84,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.period-selector {
-  display: flex;
-  justify-content: space-between;
-  background: var(--color-background-secondary);
-  padding: 0;
-  border-radius: 100px;
-  margin-bottom: 24px;
-  margin-top: 16px;
-}
-
-.period-btn {
-  background: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  font-weight: 600;
-  font-size: 14px;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.period-btn.active {
-  background: var(--color-primary);
-  color: #ffffff;
-}
-
 .chart-card {
   background: var(--color-background-secondary);
   border-radius: 24px;
