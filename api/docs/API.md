@@ -21,6 +21,7 @@
     - [Criar Hábito](#criar-hábito)
     - [Listar hábitos por dia](#listar-hábitos-por-dia)
     - [Resumo de Hábitos](#resumo-de-hábitos)
+    - [Estatísticas de Hábitos](#estatísticas-de-hábitos)
     - [Detalhes do Hábito](#detalhes-do-hábito)
     - [Atualizar Hábito](#atualizar-hábito)
     - [Marcar/Desmarcar Hábito como Completo](#marcar/desmarcar-hábito-como-completo)
@@ -478,6 +479,43 @@ GET /api/v1/habits/summary
       "total": 1
     }
   ]
+}
+```
+
+---
+
+#### Estatísticas de Hábitos
+
+Retorna estatísticas detalhadas de hábitos para um período específico (Semana, Mês, 3 Meses, 6 Meses ou Ano).
+
+```http
+GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
+```
+
+**Query Params:**
+- `period`: Opcional. Período das estatísticas. Valores aceitos: `W` (Semana - padrão), `M` (Mês), `3M` (3 Meses), `6M` (6 Meses), `Y` (Ano).
+
+**Resposta:**
+```json
+{
+  "status": "success",
+  "message": "Estatísticas obtidas com sucesso.",
+  "data": {
+    "data": [
+      {
+        "date": "2024-03-01",
+        "percentage": 50.0,
+        "completed": 1,
+        "total": 2
+      },
+      {
+        "date": "2024-03-02",
+        "percentage": 100.0,
+        "completed": 3,
+        "total": 3
+      }
+    ]
+  }
 }
 ```
 

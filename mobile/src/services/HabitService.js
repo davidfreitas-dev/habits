@@ -19,6 +19,12 @@ export const HabitService = {
     return api.get(HABIT_ENDPOINTS.SUMMARY);
   },
   
+  getStats(period = 'W') {
+    return api.get(HABIT_ENDPOINTS.STATS, {
+      params: { period }
+    });
+  },
+  
   getDetails(id) {
     return api.get(HABIT_ENDPOINTS.DETAILS(id));
   },

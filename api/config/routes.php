@@ -44,6 +44,7 @@ return function (App $app): void {
             $habitsGroup->post('', [HabitController::class, 'create']);
             $habitsGroup->get('/day', [HabitController::class, 'getByDay']);
             $habitsGroup->get('/summary', [HabitController::class, 'getSummary']);
+            $habitsGroup->get('/stats', [HabitController::class, 'getStats']);
             $habitsGroup->get('/{id:[0-9]+}', [HabitController::class, 'getDetails']);
             $habitsGroup->put('/{id:[0-9]+}', [HabitController::class, 'update']);
             $habitsGroup->patch('/{id:[0-9]+}/toggle', [HabitController::class, 'toggle']);

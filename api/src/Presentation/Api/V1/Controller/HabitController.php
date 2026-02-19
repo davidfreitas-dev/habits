@@ -11,6 +11,7 @@ use App\Application\Service\ValidationService;
 use App\Application\UseCase\CreateHabitUseCase;
 use App\Application\UseCase\DeleteHabitUseCase;
 use App\Application\UseCase\GetHabitDetailsUseCase;
+use App\Application\UseCase\GetHabitStatsUseCase;
 use App\Application\UseCase\GetHabitsByDayUseCase;
 use App\Application\UseCase\GetHabitsSummaryUseCase;
 use App\Application\UseCase\ToggleHabitUseCase;
@@ -37,10 +38,38 @@ class HabitController
         private readonly UpdateHabitUseCase $updateHabitUseCase,
         private readonly DeleteHabitUseCase $deleteHabitUseCase,
         private readonly ToggleHabitUseCase $toggleHabitUseCase,
+        private readonly GetHabitStatsUseCase $getHabitStatsUseCase,
         private readonly ValidationService $validationService,
         private readonly JsonResponseFactory $jsonResponseFactory,
         private readonly LoggerInterface $logger,
     ) {
+    }
+
+    public function getStats(Request $request): Response
+    {
+        try {
+            $userId = (int) $request->getAttribute('user_id');
+            if ($userId === 0) {
+                return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
+            }
+
+            $period = $request->getQueryParams()['period'] ?? 'W';
+
+            $stats = $this->getHabitStatsUseCase->execute($userId, $period);
+
+            return $this->jsonResponseFactory->success($stats, 'Estatísticas obtidas com sucesso.');
+        } catch (Throwable $e) {
+            $this->logger->error('Erro ao obter estatísticas de hábitos', [
+                'exception' => $e,
+                'user_id' => $request->getAttribute('user_id'),
+            ]);
+
+            return $this->jsonResponseFactory->error(
+                'Ocorreu um erro ao obter as estatísticas. Por favor, tente novamente mais tarde.',
+                null,
+                500
+            );
+        }
     }
 
     public function create(Request $request): Response

@@ -12,6 +12,7 @@ export const HABIT_ENDPOINTS = {
   BASE: '/habits',
   DAY: '/habits/day',
   SUMMARY: '/habits/summary',
+  STATS: '/habits/stats',
   DETAILS: (id) => `/habits/${id}`,
   TOGGLE: (id) => `/habits/${id}/toggle`,
 };

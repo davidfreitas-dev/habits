@@ -17,6 +17,11 @@ export const useHabitStore = defineStore('habit', () => {
     return data.data;
   };
 
+  const getHabitStats = async (period) => {
+    const data = await HabitService.getStats(period);
+    return data.data;
+  };
+
   const getHabitDetails = async (id) => {
     const data = await HabitService.getDetails(id);
     return data.data;
@@ -38,6 +43,7 @@ export const useHabitStore = defineStore('habit', () => {
     createHabit,
     getDayInfo,
     getHabitsSummary,
+    getHabitStats,
     getHabitDetails,
     updateHabit,
     toggleHabit,

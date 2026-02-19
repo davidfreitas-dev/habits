@@ -15,6 +15,7 @@ use App\Application\{
     UseCase\GetHabitDetailsUseCase,
     UseCase\GetHabitsByDayUseCase,
     UseCase\GetHabitsSummaryUseCase,
+    UseCase\GetHabitStatsUseCase,
     UseCase\ListErrorLogsUseCase,
     UseCase\RegisterUserUseCase,
     UseCase\ResetPasswordUseCase,
@@ -31,6 +32,7 @@ use App\Domain\Repository\{
     DayRepositoryInterface,
     ErrorLogRepositoryInterface,
     HabitRepositoryInterface,
+    HabitStatsRepositoryInterface,
     PasswordResetRepositoryInterface,
     PersonRepositoryInterface,
     RoleRepositoryInterface,
@@ -59,6 +61,7 @@ use App\Infrastructure\{
     Persistence\Repository\DayHabitRepository,
     Persistence\Repository\DayRepository,
     Persistence\Repository\HabitRepository,
+    Persistence\Repository\HabitStatsRepository,
     Security\JwtService,
     Security\PasswordHasher
 };
@@ -87,6 +90,7 @@ use Slim\Psr7\Factory\{
 // Third Party
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use PDO;
 
 return [
     // Database Connection
@@ -253,6 +257,8 @@ return [
     ),
     DayHabitRepositoryInterface::class => fn (ContainerInterface $c) => new DayHabitRepository($c->get(PDO::class)),
 
+    HabitStatsRepositoryInterface::class => fn (ContainerInterface $c) => new HabitStatsRepository($c->get(PDO::class)),
+
     // Mailer Service
     MailerInterface::class => function (ContainerInterface $c) {
         $settings = $c->get('settings');
@@ -402,6 +408,10 @@ return [
         $c->get(UserRepositoryInterface::class),
     ),
 
+    GetHabitStatsUseCase::class => fn (ContainerInterface $c) => new GetHabitStatsUseCase(
+        $c->get(HabitStatsRepositoryInterface::class),
+    ),
+
     // Controllers
     ErrorLogController::class => fn (ContainerInterface $c) => new ErrorLogController(
         $c->get(JsonResponseFactory::class),
@@ -418,6 +428,7 @@ return [
         $c->get(UpdateHabitUseCase::class),
         $c->get(DeleteHabitUseCase::class),
         $c->get(ToggleHabitUseCase::class),
+        $c->get(GetHabitStatsUseCase::class),
         $c->get(ValidationService::class),
         $c->get(JsonResponseFactory::class),
         $c->get(LoggerInterface::class),

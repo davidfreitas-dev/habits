@@ -8,11 +8,12 @@ export function useNetwork() {
   let listenerHandle = null;
 
   const handleNetworkChange = ({ connected, connectionType }) => {
+    const wasDisconnected = isConnected.value === false;
     isConnected.value = connected;
 
     if (!connected) {
       showToast('danger', 'Sem conexão com a internet.');
-    } else {
+    } else if (wasDisconnected) {
       showToast('success', 'Conexão restaurada.');
     }
   };

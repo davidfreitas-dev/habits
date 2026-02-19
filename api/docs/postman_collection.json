@@ -910,6 +910,43 @@
                     "response": []
                 },
                 {
+                    "name": "Stats",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/habits/stats?period=W",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "habits",
+                                "stats"
+                            ],
+                            "query": [
+                                {
+                                    "key": "period",
+                                    "value": "W",
+                                    "description": "Period for statistics: W (Week), M (Month), 3M (3 Months), 6M (6 Months), Y (Year)"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "Details",
                     "request": {
                         "auth": {
