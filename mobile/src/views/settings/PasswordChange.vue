@@ -50,7 +50,7 @@ const updatePassword = async () => {
       formData.confNewPassword
     );
     showToast('success', response.message || 'Senha alterada com sucesso!');
-    router.push('/options');
+    router.push('/tabs/options');
   }, 'Erro ao alterar a senha.');
 };
 </script>

@@ -31,19 +31,35 @@ const routes = [
   },
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/tabs/home'
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('@/views/habits/Home.vue'),
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/day/:date',
-    name: 'Day',
-    component: () => import('@/views/habits/Day.vue'),
-    meta: { requiresAuth: true }
+    path: '/tabs/',
+    component: () => import('@/views/TabsPage.vue'),
+    children: [
+      {
+        path: '',
+        redirect: '/tabs/home'
+      },
+      {
+        path: 'home',
+        name: 'Home',
+        component: () => import('@/views/habits/Home.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'statistics',
+        name: 'Statistics',
+        component: () => import('@/views/habits/Statistics.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'options',
+        name: 'Options',
+        component: () => import('@/views/settings/Options.vue'),
+        meta: { requiresAuth: true }
+      },
+    ]
   },
   {
     path: '/habit/:id?',
@@ -52,9 +68,9 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/options',
-    name: 'Options',
-    component: () => import('@/views/settings/Options.vue'),
+    path: '/day/:date',
+    name: 'Day',
+    component: () => import('@/views/habits/Day.vue'),
     meta: { requiresAuth: true }
   },
   {

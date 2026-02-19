@@ -1,6 +1,6 @@
 <template>
-  <ion-header class="ion-no-border">
-    <ion-toolbar class="ion-safe-area-top">
+  <ion-header class="ion-no-border ion-safe-area-top">
+    <ion-toolbar>
       <slot />
     </ion-toolbar>
   </ion-header>

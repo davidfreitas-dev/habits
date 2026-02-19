@@ -23,7 +23,7 @@ const currentDate = dayjs().format('dddd, D MMM');
 </script>
 
 <template>
-  <router-link to="/options">
+  <router-link to="/tabs/options">
     <ion-row class="ion-justify-content-start ion-align-items-center">
       <ion-avatar class="ion-margin-end">
         <img v-if="image" :src="image">

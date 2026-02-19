@@ -42,6 +42,11 @@
   font-family: 'Inter', sans-serif;
 }
 
+ion-content {
+  --padding-top: env(safe-area-inset-top);
+  --padding-bottom: env(safe-area-inset-bottom);
+}
+
 ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
   --color: var(--color-text-primary);
   --background: var(--color-background-primary);

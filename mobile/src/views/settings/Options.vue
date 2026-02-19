@@ -5,10 +5,8 @@ import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
 import { useLoading } from '@/composables/useLoading';
-import Header from '@/components/layout/Header.vue';
 import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
-import BackButton from '@/components/layout/BackButton.vue';
 import Button from '@/components/ui/Button.vue';
 import ModalDialog from '@/components/layout/ModalDialog.vue';
 
@@ -34,10 +32,6 @@ const logOut = async () => {
 
 <template>
   <ion-page ref="pageRef">
-    <Header>
-      <BackButton />
-    </Header>
-
     <ion-content :fullscreen="true">
       <Container>
         <Heading title="Opções" />
