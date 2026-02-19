@@ -47,14 +47,11 @@ watch(() => profileStore.user, (newUser) => {
 
 const updateProfile = async () => {
   await withLoading(async () => {
-    const dataToUpdate = {
+    await profileStore.updateProfile({
       name: formData.name,
       email: formData.email,
-    };
-    const success = await profileStore.updateProfile(dataToUpdate);
-    if (success) {
-      showToast('success', 'Perfil atualizado com sucesso!');
-    }
+    });
+    showToast('success', 'Perfil atualizado com sucesso!');
   }, 'Erro ao atualizar dados do perfil.');
 };
 </script>

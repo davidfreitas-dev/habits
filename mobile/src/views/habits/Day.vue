@@ -61,23 +61,17 @@ onIonViewWillEnter(() => {
 
 const handleToggleHabit = async (habitId) => {
   await withLoading(async () => {
-    try {
-      await habitStore.toggleHabit(habitId);
-      await getDayInfo(); // Refresh data after toggle
-      showToast('success', 'Status do hábito atualizado!');
-    } catch (err) {
-      console.error('Error toggling habit:', err);
-      showToast('error', err.response?.data?.message || 'Erro ao atualizar hábito.');
-      throw err; // Re-throw to propagate to withLoading
-    }
-  });
+    await habitStore.toggleHabit(habitId);
+    await getDayInfo();
+    showToast('success', 'Status do hábito atualizado!');
+  }, 'Erro ao carregar os dados do dia.');
 };
 
 const isHabitChecked = (habitId) => {
   if (!dayInfo.value.completed_habits) {
     return false;
   }
-  // According to API documentation, completed_habits contains objects with 'id'
+  
   return dayInfo.value.completed_habits.some(habit => String(habit.id) === String(habitId));
 };
 
