@@ -1,6 +1,6 @@
 <script setup>
-import { IonPage, IonContent } from '@ionic/vue';
-import { ref, onMounted, computed } from 'vue';
+import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { ref, computed } from 'vue';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/composables/useLoading';
 import Heading from '@/components/layout/Heading.vue';
@@ -42,7 +42,7 @@ const handlePeriodChange = async (period) => {
   }, 'Erro ao carregar estatísticas');
 };
 
-onMounted(async () => {
+onIonViewWillEnter(async () => {
   await withLoading(async () => {
     const result = await habitStore.getHabitStats('W');
     statsData.value = result.data;

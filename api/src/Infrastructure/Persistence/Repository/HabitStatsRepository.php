@@ -10,7 +10,9 @@ use PDO;
 
 class HabitStatsRepository implements HabitStatsRepositoryInterface
 {
-    public function __construct(private PDO $pdo) {}
+    public function __construct(private PDO $pdo)
+    {
+    }
 
     public function getWeekStats(int $userId, DateTimeImmutable $startDate, DateTimeImmutable $endDate): array
     {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
-use App\Application\DTO\HabitStatsWeekDayDTO;
 use App\Application\DTO\HabitStatsResponseDTO;
+use App\Application\DTO\HabitStatsWeekDayDTO;
 use App\Domain\Repository\HabitStatsRepositoryInterface;
 use DateTimeImmutable;
 use InvalidArgumentException;
@@ -19,12 +19,13 @@ readonly class GetHabitStatsUseCase
         3 => 'Q',
         4 => 'Q',
         5 => 'S',
-        6 => 'S'
+        6 => 'S',
     ];
 
     public function __construct(
-        private HabitStatsRepositoryInterface $habitStatsRepository
-    ) {}
+        private HabitStatsRepositoryInterface $habitStatsRepository,
+    ) {
+    }
 
     public function execute(int $userId, string $period): HabitStatsResponseDTO
     {
@@ -43,12 +44,12 @@ readonly class GetHabitStatsUseCase
         $dtos = [];
         for ($i = 0; $i <= 6; $i++) {
             $row = $statsByWeekDay[$i] ?? ['completed' => 0, 'total' => 0];
-            
+
             $total = (int) $row['total'];
             $completed = (int) $row['completed'];
-            
-            $percentage = $total > 0 
-                ? round(($completed / $total) * 100, 2) 
+
+            $percentage = $total > 0
+                ? round(($completed / $total) * 100, 2)
                 : null;
 
             $dtos[] = new HabitStatsWeekDayDTO(
@@ -56,7 +57,7 @@ readonly class GetHabitStatsUseCase
                 self::LABELS[$i],
                 $percentage,
                 $completed,
-                $total
+                $total,
             );
         }
 

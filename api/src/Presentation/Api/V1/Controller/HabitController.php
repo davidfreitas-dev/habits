@@ -11,9 +11,9 @@ use App\Application\Service\ValidationService;
 use App\Application\UseCase\CreateHabitUseCase;
 use App\Application\UseCase\DeleteHabitUseCase;
 use App\Application\UseCase\GetHabitDetailsUseCase;
-use App\Application\UseCase\GetHabitStatsUseCase;
 use App\Application\UseCase\GetHabitsByDayUseCase;
 use App\Application\UseCase\GetHabitsSummaryUseCase;
+use App\Application\UseCase\GetHabitStatsUseCase;
 use App\Application\UseCase\ToggleHabitUseCase;
 use App\Application\UseCase\UpdateHabitUseCase;
 use App\Domain\Exception\HabitAlreadyExistsException;
@@ -67,7 +67,7 @@ class HabitController
             return $this->jsonResponseFactory->error(
                 'Ocorreu um erro ao obter as estatísticas. Por favor, tente novamente mais tarde.',
                 null,
-                500
+                500,
             );
         }
     }

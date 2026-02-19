@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { trash } from 'ionicons/icons';
-import { IonPage, IonIcon, IonContent } from '@ionic/vue';
+import { IonPage, IonIcon, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/composables/useLoading';
@@ -34,7 +34,7 @@ const habit = ref({
 const { showToast } = useToast();
 const { isLoading, withLoading } = useLoading();
 
-onMounted(async () => {
+onIonViewWillEnter(async () => {
   await withLoading(async () => {
     await profileStore.fetchProfile();
     if (!habit.value.id) return;

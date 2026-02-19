@@ -13,9 +13,9 @@ use App\Application\{
     UseCase\DeleteUserUseCase,
     UseCase\GetErrorLogDetailsUseCase,
     UseCase\GetHabitDetailsUseCase,
+    UseCase\GetHabitStatsUseCase,
     UseCase\GetHabitsByDayUseCase,
     UseCase\GetHabitsSummaryUseCase,
-    UseCase\GetHabitStatsUseCase,
     UseCase\ListErrorLogsUseCase,
     UseCase\RegisterUserUseCase,
     UseCase\ResetPasswordUseCase,
@@ -90,7 +90,6 @@ use Slim\Psr7\Factory\{
 // Third Party
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use PDO;
 
 return [
     // Database Connection

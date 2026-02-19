@@ -13,8 +13,9 @@ readonly class HabitStatsWeekDayDTO implements JsonSerializable
         public string $label,
         public ?float $percentage,
         public int $completed,
-        public int $total
-    ) {}
+        public int $total,
+    ) {
+    }
 
     public function jsonSerialize(): array
     {

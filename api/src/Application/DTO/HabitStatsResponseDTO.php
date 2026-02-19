@@ -12,8 +12,9 @@ readonly class HabitStatsResponseDTO implements JsonSerializable
      * @param HabitStatsWeekDayDTO[] $data
      */
     public function __construct(
-        public array $data
-    ) {}
+        public array $data,
+    ) {
+    }
 
     public function jsonSerialize(): array
     {
