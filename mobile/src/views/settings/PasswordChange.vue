@@ -4,14 +4,14 @@ import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonIcon, onIonViewDidLeave } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useProfileStore } from '@/stores/profile';
-import { useToast } from '@/use/useToast';
-import { useLoading } from '@/use/useLoading';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
+import { useToast } from '@/composables/useToast';
+import { useLoading } from '@/composables/useLoading';
+import Header from '@/components/layout/Header.vue';
+import Heading from '@/components/layout/Heading.vue';
+import Container from '@/components/layout/Container.vue';
+import BackButton from '@/components/layout/BackButton.vue';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
 
 const profileStore = useProfileStore();
 const router = useRouter();
@@ -39,7 +39,7 @@ onIonViewDidLeave(() => {
 
 const updatePassword = async () => { 
   if (formData.newPassword !== formData.confNewPassword) {
-    showToast('error', 'A nova senha não coincide com a confirmação');
+    showToast('info', 'A nova senha não coincide com a confirmação');
     return;
   }
 
@@ -50,7 +50,7 @@ const updatePassword = async () => {
       formData.confNewPassword
     );
     showToast('success', response.message || 'Senha alterada com sucesso!');
-    router.push('/settings');
+    router.push('/options');
   }, 'Erro ao alterar a senha.');
 };
 </script>

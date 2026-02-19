@@ -36,49 +36,49 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: () => import('@/views/Home.vue'),
+    component: () => import('@/views/habits/Home.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/day/:date',
     name: 'Day',
-    component: () => import('@/views/Day.vue'),
+    component: () => import('@/views/habits/Day.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/habit/:id?',
     name: 'Habit',
-    component: () => import('@/views/Habit.vue'),
+    component: () => import('@/views/habits/Habit.vue'),
     meta: { requiresAuth: true }
   },
   {
-    path: '/settings',
-    name: 'Settings',
-    component: () => import('@/views/Settings.vue'),
+    path: '/options',
+    name: 'Options',
+    component: () => import('@/views/settings/Options.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/profile',
     name: 'Profile',
-    component: () => import('@/views/Profile.vue'),
+    component: () => import('@/views/settings/Profile.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/password-change',
     name: 'PasswordChange',
-    component: () => import('@/views/PasswordChange.vue'),
+    component: () => import('@/views/settings/PasswordChange.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/delete-account',
     name: 'DeleteAccount',
-    component: () => import('@/views/DeleteAccount.vue'),
+    component: () => import('@/views/settings/DeleteAccount.vue'),
     meta: { requiresAuth: true }
   },
   {
     path: '/about',
     name: 'About',
-    component: () => import('@/views/About.vue')
+    component: () => import('@/views/settings/About.vue')
   }
 ];
 

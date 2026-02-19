@@ -5,15 +5,15 @@ import { trash } from 'ionicons/icons';
 import { IonPage, IonIcon, IonContent } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
-import { useLoading } from '@/use/useLoading';
-import { useToast } from '@/use/useToast';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import Button from '@/components/Button.vue';
-import BackButton from '@/components/BackButton.vue';
-import HabitForm from '@/components/HabitForm.vue';
-import ModalDialog from '@/components/ModalDialog.vue';
+import { useLoading } from '@/composables/useLoading';
+import { useToast } from '@/composables/useToast';
+import Header from '@/components/layout/Header.vue';
+import Heading from '@/components/layout/Heading.vue';
+import Container from '@/components/layout/Container.vue';
+import Button from '@/components/ui/Button.vue';
+import BackButton from '@/components/layout/BackButton.vue';
+import HabitForm from '@/components/habits/HabitForm.vue';
+import ModalDialog from '@/components/layout/ModalDialog.vue';
 
 const profileStore = useProfileStore();
 const habitStore = useHabitStore();
@@ -47,7 +47,7 @@ const habitFormRef = ref(null);
 const dialogRef = ref(null);
 
 const handleFormError = (message) => {
-  showToast('error', message);
+  showToast('info', message);
 };
 
 const createHabit = async (formData) => {

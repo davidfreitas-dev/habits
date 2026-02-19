@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 import { loadingController } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
+import { useToast } from '@/composables/useToast';
 
 export function useLoading() {
   const { showToast } = useToast();

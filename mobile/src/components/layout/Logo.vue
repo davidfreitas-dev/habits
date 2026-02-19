@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/settings">
+  <router-link to="/options">
     <img
       src="../assets/logo.svg"
       alt="Logo do aplicativo"

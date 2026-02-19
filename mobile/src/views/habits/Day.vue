@@ -4,16 +4,16 @@ import { useRoute, useRouter } from 'vue-router';
 import { IonPage, IonContent, IonText, onIonViewWillEnter } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
-import { useParsedDate } from '@/use/useParsedDate';
-import { useLoading } from '@/use/useLoading';
-import { useToast } from '@/use/useToast'; // Import useToast
+import { useParsedDate } from '@/composables/useParsedDate';
+import { useLoading } from '@/composables/useLoading';
+import { useToast } from '@/composables/useToast';
 
-import Header from '@/components/Header.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Breadcrumb from '@/components/Breadcrumb.vue';
-import ProgressBar from '@/components/ProgressBar.vue';
-import Checkbox from '@/components/Checkbox.vue';
+import Header from '@/components/layout/Header.vue';
+import Container from '@/components/layout/Container.vue';
+import BackButton from '@/components/layout/BackButton.vue';
+import Breadcrumb from '@/components/layout/Breadcrumb.vue';
+import ProgressBar from '@/components/ui/Progressbar.vue';
+import Checkbox from '@/components/ui/Checkbox.vue';
 
 const profileStore = useProfileStore();
 const habitStore = useHabitStore();
@@ -122,7 +122,7 @@ const router = useRouter();
         </ion-text>
 
         <ion-text v-if="isDateInPast" class="ion-text-center ion-padding">
-          Você não pode editar hábitos de datas passadas.
+          Você não pode alterar o status de hábitos de datas passadas.
         </ion-text>
       </Container>
     </ion-content>

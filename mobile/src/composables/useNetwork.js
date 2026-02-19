@@ -1,6 +1,6 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Network } from '@capacitor/network';
-import { useToast } from '@/use/useToast';
+import { useToast } from '@/composables/useToast';
 
 export function useNetwork() {
   const isConnected = ref(true);

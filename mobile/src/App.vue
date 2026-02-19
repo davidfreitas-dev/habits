@@ -2,8 +2,8 @@
 import { onMounted } from 'vue';
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { Capacitor } from '@capacitor/core';
-import { useNetwork } from '@/use/useNetwork';
-import { useStatusBar } from '@/use/useStatusBar';
+import { useNetwork } from '@/composables/useNetwork';
+import { useStatusBar } from '@/composables/useStatusBar';
 
 const { isConnected } = useNetwork();
 

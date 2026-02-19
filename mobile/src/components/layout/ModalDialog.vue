@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { IonModal, IonContent } from '@ionic/vue';
-import Button from '@/components/Button.vue';
+import Button from '@/components/ui/Button.vue';
 
 const props = defineProps({
   message: {

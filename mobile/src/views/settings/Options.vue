@@ -4,13 +4,13 @@ import { useRouter } from 'vue-router';
 import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
-import { useLoading } from '@/use/useLoading';
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Button from '@/components/Button.vue';
-import ModalDialog from '@/components/ModalDialog.vue';
+import { useLoading } from '@/composables/useLoading';
+import Header from '@/components/layout/Header.vue';
+import Heading from '@/components/layout/Heading.vue';
+import Container from '@/components/layout/Container.vue';
+import BackButton from '@/components/layout/BackButton.vue';
+import Button from '@/components/ui/Button.vue';
+import ModalDialog from '@/components/layout/ModalDialog.vue';
 
 const router = useRouter();
 
@@ -40,7 +40,7 @@ const logOut = async () => {
 
     <ion-content :fullscreen="true">
       <Container>
-        <Heading title="Configurações" />
+        <Heading title="Opções" />
         
         <ion-list lines="none" class="ion-no-padding">
           <ion-list-header class="ion-no-padding">

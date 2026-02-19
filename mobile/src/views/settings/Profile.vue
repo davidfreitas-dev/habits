@@ -3,14 +3,14 @@ import { reactive, computed, watch } from 'vue';
 import { IonPage, IonContent, IonIcon, onIonViewWillEnter } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
 import { useProfileStore } from '@/stores/profile';
-import { useToast } from '@/use/useToast';
-import { useLoading } from '@/use/useLoading'; 
-import Header from '@/components/Header.vue';
-import Heading from '@/components/Heading.vue';
-import Container from '@/components/Container.vue';
-import BackButton from '@/components/BackButton.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
+import { useToast } from '@/composables/useToast';
+import { useLoading } from '@/composables/useLoading'; 
+import Header from '@/components/layout/Header.vue';
+import Heading from '@/components/layout/Heading.vue';
+import Container from '@/components/layout/Container.vue';
+import BackButton from '@/components/layout/BackButton.vue';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
 
 const profileStore = useProfileStore();
 

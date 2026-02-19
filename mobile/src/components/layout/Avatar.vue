@@ -23,11 +23,11 @@ const currentDate = dayjs().format('dddd, D MMM');
 </script>
 
 <template>
-  <router-link to="/settings">
+  <router-link to="/options">
     <ion-row class="ion-justify-content-start ion-align-items-center">
       <ion-avatar class="ion-margin-end">
         <img v-if="image" :src="image">
-        <img v-else src="../assets/avatar.png">
+        <img v-else src="@/assets/avatar.png">
       </ion-avatar>
       <div>
         <h5>Olá, {{ firstName || 'Visitante' }}!</h5>

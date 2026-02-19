@@ -4,12 +4,12 @@ import { useRouter } from 'vue-router';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import { IonPage, IonContent } from '@ionic/vue';
-import { useToast } from '@/use/useToast';
+import { useToast } from '@/composables/useToast';
 import { useAuthStore } from '@/stores/auth';
 
-import Container from '@/components/Container.vue';
-import Input from '@/components/Input.vue';
-import Button from '@/components/Button.vue';
+import Container from '@/components/layout/Container.vue';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -47,7 +47,7 @@ const submitForm = async () => {
   const isFormCorrect = await v$.value.$validate();
 
   if (!isFormCorrect) {
-    showToast('error', 'Informe o token de redefinição de senha');
+    showToast('info', 'Informe o token de redefinição de senha');
     return;
   } 
   

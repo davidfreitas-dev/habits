@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { useDayDimensions } from '@/use/useDayDimensions';
+import { useDayDimensions } from '@/composables/useDayDimensions';
 
 const props = defineProps({
   isCurrentDay: Boolean,

@@ -2,9 +2,9 @@
 import { ref, watch } from 'vue';
 import { IonIcon } from '@ionic/vue';
 import { checkmark } from 'ionicons/icons';
-import Input from '@/components/Input.vue';
-import Checkbox from '@/components/Checkbox.vue';
-import Button from '@/components/Button.vue';
+import Input from '@/components/ui/Input.vue';
+import Checkbox from '@/components/ui/Checkbox.vue';
+import Button from '@/components/ui/Button.vue';
 
 const emit = defineEmits(['onError', 'onSubmit']);
 

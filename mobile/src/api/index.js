@@ -1,21 +1,14 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
+import { AUTH_ENDPOINTS } from '@/constants/endpoints';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const REQUEST_TIMEOUT = 10000;
 const HTTP_STATUS = {
   UNAUTHORIZED: 401,
 };
-const ENDPOINTS = {
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
-  FORGOT_PASSWORD: '/auth/forgot-password',
-  VALIDATE_RESET_CODE: '/auth/validate-reset-code',
-  RESET_PASSWORD: '/auth/reset-password',
-  REFRESH: '/auth/refresh',
-};
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: BASE_URL,
   timeout: REQUEST_TIMEOUT,
 });
@@ -56,7 +49,7 @@ const handleTokenRefresh = async (originalRequest) => {
     originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
     processRequestQueue(null, newAccessToken);
     
-    return instance(originalRequest);
+    return api(originalRequest);
   } catch (refreshError) {
     processRequestQueue(refreshError);
     authStore.handleSessionExpired();
@@ -72,20 +65,20 @@ const queueRequest = async (originalRequest) => {
   });
 
   originalRequest.headers['Authorization'] = `Bearer ${newToken}`;
-  return instance(originalRequest);
+  return api(originalRequest);
 };
 
 const isRefreshEndpointError = (error) => {
-  return error.config?.url === ENDPOINTS.REFRESH;
+  return error.config?.url === AUTH_ENDPOINTS.REFRESH;
 };
 
 const isPublicAuthEndpoint = (error) => {
   const publicAuthEndpoints = [
-    ENDPOINTS.LOGIN,
-    ENDPOINTS.REGISTER,
-    ENDPOINTS.FORGOT_PASSWORD,
-    ENDPOINTS.VALIDATE_RESET_CODE,
-    ENDPOINTS.RESET_PASSWORD,
+    AUTH_ENDPOINTS.LOGIN,
+    AUTH_ENDPOINTS.REGISTER,
+    AUTH_ENDPOINTS.FORGOT_PASSWORD,
+    AUTH_ENDPOINTS.VALIDATE_RESET_CODE,
+    AUTH_ENDPOINTS.RESET_PASSWORD,
   ];
   return publicAuthEndpoints.includes(error.config?.url);
 };
@@ -99,7 +92,7 @@ const shouldRetryWithRefresh = (error) => {
   );
 };
 
-instance.interceptors.request.use(
+api.interceptors.request.use(
   addAuthorizationHeader,
   (error) => {
     console.error('Erro na requisição da API:', error);
@@ -107,7 +100,7 @@ instance.interceptors.request.use(
   }
 );
 
-instance.interceptors.response.use(
+api.interceptors.response.use(
   (response) => response.data,
   async (error) => {
     if (isRefreshEndpointError(error)) {
@@ -132,4 +125,4 @@ instance.interceptors.response.use(
   }
 );
 
-export default instance;
+export default api;

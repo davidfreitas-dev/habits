@@ -80,10 +80,10 @@
 <script setup>
 import { ref } from 'vue';
 import { IonPage, IonContent, IonLabel, IonSegment, IonSegmentButton } from '@ionic/vue';
-import Header from '@/components/Header.vue';
-import Container from '@/components/Container.vue';
-import Segment from '@/components/Segment.vue';
-import BackButton from '@/components/BackButton.vue';
+import Header from '@/components/layout/Header.vue';
+import Container from '@/components/layout/Container.vue';
+import Segment from '@/components/ui/Segment.vue';
+import BackButton from '@/components/layout/BackButton.vue';
 
 const segments = ref([
   { 

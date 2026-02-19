@@ -9,6 +9,35 @@ Seja bem-vindo ao **Habits**, um aplicativo para rastrear e gerenciar seus hábi
 
 ---
 
+## 🏗️ Arquitetura do Projeto
+
+O projeto segue uma arquitetura modular baseada em camadas, focada em separação de preocupações e escalabilidade:
+
+```text
+src/
+├── api/            # Configuração do cliente HTTP (Axios) e interceptores
+├── assets/         # Recursos estáticos (imagens, ícones, logotipos)
+├── components/     # Componentes Vue reutilizáveis
+│   ├── ui/         # Componentes base e atômicos (Button, Input)
+│   ├── habits/     # Componentes de domínio (HabitDay, Summary)
+│   └── layout/     # Componentes de estrutura (Header, Container)
+├── composables/    # Lógica reutilizável (Hooks/Composition API)
+├── constants/      # Strings globais, endpoints e chaves de storage
+├── router/         # Definições de rotas e guardas de navegação
+├── services/       # Camada de comunicação com a API (Regras de I/O)
+├── stores/         # Gerenciamento de estado global (Pinia)
+├── theme/          # Estilos globais e variáveis de tema do Ionic
+└── views/          # Páginas organizadas por contexto (auth, habits, settings)
+```
+
+### Fluxo de Dados
+1.  **Views** acionam ações nos **Stores**.
+2.  **Stores** utilizam os **Services** para buscar ou enviar dados.
+3.  **Services** utilizam a instância da **API** para requisições HTTP.
+4.  **Constants** centralizam endpoints e chaves para evitar duplicação.
+
+---
+
 ## 🚀 Guia de Configuração
 
 ### 1. Instale as Dependências Principais

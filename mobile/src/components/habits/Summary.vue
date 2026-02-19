@@ -15,8 +15,8 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import dayjs from 'dayjs';
-import HabitDaysStartGap from '@/components/HabitDaysStartGap.vue';
-import HabitDay from '@/components/HabitDay.vue';
+import HabitDaysStartGap from '@/components/habits/HabitDaysStartGap.vue';
+import HabitDay from '@/components/habits/HabitDay.vue';
 
 const props = defineProps({
   summary: {

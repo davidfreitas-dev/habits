@@ -1,15 +1,8 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import { useProfileStore } from './profile';
-import axios from '@/api/axios';
-
-const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'access_token',
-  REFRESH_TOKEN: 'refresh_token',
-  FORGOT_EMAIL: 'forgot_password_email',
-  RESET_EMAIL: 'reset_code_email',
-  RESET_CODE: 'reset_code_value',
-};
+import { AuthService } from '@/services/AuthService';
+import { STORAGE_KEYS } from '@/constants/storage';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref(localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN));
@@ -43,7 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     try {
       if (isAuthenticated.value) {
-        await axios.post('/auth/logout');
+        await AuthService.logout();
       }
 
       return true;
@@ -58,10 +51,10 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const login = async (credentials) => {
-    const response = await axios.post('/auth/login', credentials);
+    const data = await AuthService.login(credentials);
     
-    if (response.data?.access_token && response.data?.refresh_token) {
-      setTokens(response.data.access_token, response.data.refresh_token);
+    if (data.data?.access_token && data.data?.refresh_token) {
+      setTokens(data.data.access_token, data.data.refresh_token);
       await useProfileStore().fetchProfile();
       return true;
     }
@@ -70,10 +63,10 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const register = async (userData) => {
-    const response = await axios.post('/auth/register', userData);
+    const data = await AuthService.register(userData);
     
-    if (response.data?.access_token && response.data?.refresh_token) {
-      setTokens(response.data.access_token, response.data.refresh_token);
+    if (data.data?.access_token && data.data?.refresh_token) {
+      setTokens(data.data.access_token, data.data.refresh_token);
       await useProfileStore().fetchProfile();
       return true;
     }
@@ -87,14 +80,16 @@ export const useAuthStore = defineStore('auth', () => {
       return false;
     }
 
-    const response = await axios.post('/auth/refresh', { 
-      refresh_token: refreshToken.value 
-    });
+    try {
+      const data = await AuthService.refresh(refreshToken.value);
 
-    if (response.data?.access_token && response.data?.refresh_token) {
-      setTokens(response.data.access_token, response.data.refresh_token);
-      await useProfileStore().fetchProfile();
-      return true;
+      if (data.data?.access_token && data.data?.refresh_token) {
+        setTokens(data.data.access_token, data.data.refresh_token);
+        await useProfileStore().fetchProfile();
+        return true;
+      }
+    } catch (error) {
+      // Refresh failed
     }
 
     clearTokens();
@@ -102,7 +97,7 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const forgotPassword = async (email) => {
-    const response = await axios.post('/auth/forgot-password', { email });
+    const response = await AuthService.forgotPassword(email);
     localStorage.setItem(STORAGE_KEYS.FORGOT_EMAIL, email);
     return response;
   };
@@ -114,7 +109,7 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error('E-mail de recuperação não encontrado.');
     }
 
-    const response = await axios.post('/auth/validate-reset-code', { email, code });
+    const response = await AuthService.validateResetCode(email, code);
     
     localStorage.setItem(STORAGE_KEYS.RESET_EMAIL, email);
     localStorage.setItem(STORAGE_KEYS.RESET_CODE, code);
@@ -130,12 +125,7 @@ export const useAuthStore = defineStore('auth', () => {
       throw new Error('Informações de recuperação incompletas.');
     }
 
-    const response = await axios.post('/auth/reset-password', { 
-      email, 
-      code, 
-      password, 
-      password_confirm: passwordConfirm 
-    });
+    const response = await AuthService.resetPassword(email, code, password, passwordConfirm);
     
     localStorage.removeItem(STORAGE_KEYS.FORGOT_EMAIL);
     localStorage.removeItem(STORAGE_KEYS.RESET_EMAIL);
@@ -161,3 +151,4 @@ export const useAuthStore = defineStore('auth', () => {
     refreshAccessToken,
   };
 });
+

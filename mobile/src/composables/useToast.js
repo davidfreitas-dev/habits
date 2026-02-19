@@ -1,12 +1,13 @@
 import { toastController } from '@ionic/vue';
 import { alertCircleOutline, checkmarkCircleOutline, informationCircleOutline } from 'ionicons/icons';
 
+const TOAST_DURATION = 2500;
 const TOAST_CONFIG = {
   success: {
     color: 'success',
     icon: checkmarkCircleOutline,
   },
-  danger: {
+  error: {
     color: 'danger',
     icon: alertCircleOutline,
   },
@@ -24,7 +25,7 @@ export function useToast() {
       message,
       color: config.color,
       icon: config.icon,
-      duration: 2500,
+      duration: TOAST_DURATION,
     });
 
     await toast.present();

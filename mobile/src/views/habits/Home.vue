@@ -1,17 +1,17 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { IonPage, IonContent, IonRow, onIonViewWillEnter, IonText } from '@ionic/vue';
-import { useGenerateRange } from '@/use/useGenerateRange';
+import { useGenerateRange } from '@/composables/useGenerateRange';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
-import { useLoading } from '@/use/useLoading';
-import { useToast } from '@/use/useToast';
-import Header from '@/components/Header.vue';
-import Avatar from '@/components/Avatar.vue';
-import ButtonNew from '@/components/ButtonNew.vue';
-import WeekDays from '@/components/WeekDays.vue';
-import Container from '@/components/Container.vue';
-import Summary from '@/components/Summary.vue';
+import { useLoading } from '@/composables/useLoading';
+import { useToast } from '@/composables/useToast';
+import Header from '@/components/layout/Header.vue';
+import Avatar from '@/components/layout/Avatar.vue';
+import ButtonNew from '@/components/habits/ButtonNew.vue';
+import WeekDays from '@/components/habits/WeekDays.vue';
+import Container from '@/components/layout/Container.vue';
+import Summary from '@/components/habits/Summary.vue';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
 const { withLoading } = useLoading();

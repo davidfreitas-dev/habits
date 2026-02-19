@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useAuthStore } from './auth';
-import axios from '@/api/axios';
+import { ProfileService } from '@/services/ProfileService';
 
 export const useProfileStore = defineStore('profile', () => {
   const user = ref(null);
@@ -12,29 +12,27 @@ export const useProfileStore = defineStore('profile', () => {
       user.value = null;
       return;
     }
-    const response = await axios.get('/profile');
-    user.value = response.data;
+    const data = await ProfileService.getProfile();
+    user.value = data.data;
     return true;
   };
 
   const updateProfile = async (profileData) => {
-    const response = await axios.put('/profile', profileData);
-    user.value = response.data;
+    const data = await ProfileService.updateProfile(profileData);
+    user.value = data.data;
     return true;
   };
 
   const changePassword = async (currentPassword, newPassword, confirmNewPassword) => {
-    const response = await axios.patch('/profile/change-password', {
-      current_password: currentPassword,
-      new_password: newPassword,
-      new_password_confirm: confirmNewPassword,
-    });
-    return response;
+    return await ProfileService.changePassword(
+      currentPassword,
+      newPassword,
+      confirmNewPassword
+    );
   };
 
   const deleteAccount = async () => {
-    const response = await axios.delete('/profile');
-    return response;
+    return await ProfileService.deleteAccount();
   };
 
   const clearProfile = () => {
