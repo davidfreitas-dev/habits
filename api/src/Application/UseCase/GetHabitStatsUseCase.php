@@ -61,7 +61,13 @@ readonly class GetHabitStatsUseCase
             );
         }
 
-        return new HabitStatsResponseDTO($dtos);
+        $streaks = $this->habitStatsRepository->getStreaks($userId);
+
+        return new HabitStatsResponseDTO(
+            $dtos,
+            $streaks['current_streak'],
+            $streaks['longest_streak'],
+        );
     }
 
     private function calculateStartDate(string $period, DateTimeImmutable $endDate): DateTimeImmutable

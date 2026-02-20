@@ -9,17 +9,21 @@ use JsonSerializable;
 readonly class HabitStatsResponseDTO implements JsonSerializable
 {
     /**
-     * @param HabitStatsWeekDayDTO[] $data
+     * @param HabitStatsWeekDayDTO[] $dailyStats
      */
     public function __construct(
-        public array $data,
+        public array $dailyStats,
+        public int $currentStreak,
+        public int $longestStreak,
     ) {
     }
 
     public function jsonSerialize(): array
     {
         return [
-            'data' => $this->data,
+            'daily_stats' => $this->dailyStats,
+            'current_streak' => $this->currentStreak,
+            'longest_streak' => $this->longestStreak,
         ];
     }
 }

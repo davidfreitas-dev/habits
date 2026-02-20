@@ -85,6 +85,62 @@ class HabitStatsRepositoryTest extends DatabaseTestCase
         $this->assertEquals(1, $statsMap[4]['total']);
     }
 
+    public function testGetStreaksCalculatesCorrectly(): void
+    {
+        $today = new DateTimeImmutable();
+        $yesterday = $today->modify('-1 day');
+        $twoDaysAgo = $today->modify('-2 days');
+        $threeDaysAgo = $today->modify('-3 days');
+        $fourDaysAgo = $today->modify('-4 days');
+
+        // Create a daily habit starting 4 days ago
+        $habit = new Habit('Streak Habit', $this->testUser, $fourDaysAgo);
+        $createdHabit = $this->habitRepository->create($habit, [0, 1, 2, 3, 4, 5, 6]);
+
+        // Scenario: 
+        // 4 days ago: Completed
+        // 3 days ago: Not completed (break)
+        // 2 days ago: Completed
+        // 1 day ago: Completed
+        // Today: Not completed (yet)
+        
+        $this->markHabitAsCompleted($this->ensureDayExists($fourDaysAgo), $createdHabit->getId());
+        $this->markHabitAsCompleted($this->ensureDayExists($twoDaysAgo), $createdHabit->getId());
+        $this->markHabitAsCompleted($this->ensureDayExists($yesterday), $createdHabit->getId());
+
+        $streaks = $this->habitStatsRepository->getStreaks($this->testUser->getId());
+
+        // Longest streak should be 2 (yesterday and 2 days ago)
+        $this->assertEquals(2, $streaks['longest_streak']);
+        // Current streak should be 2 (it ignores today if not completed yet, or includes yesterday)
+        $this->assertEquals(2, $streaks['current_streak']);
+    }
+
+    public function testGetStreaksWithEmptyDays(): void
+    {
+        $today = new DateTimeImmutable();
+        $yesterday = $today->modify('-1 day');
+        $twoDaysAgo = $today->modify('-2 days');
+        $threeDaysAgo = $today->modify('-3 days');
+
+        // Create a habit only for today and 2 days ago (SKIP yesterday)
+        $habit = new Habit('Partial Habit', $this->testUser, $threeDaysAgo);
+        $createdHabit = $this->habitRepository->create($habit, [
+            (int)$today->format('w'),
+            (int)$twoDaysAgo->format('w')
+        ]);
+
+        $this->markHabitAsCompleted($this->ensureDayExists($twoDaysAgo), $createdHabit->getId());
+        $this->markHabitAsCompleted($this->ensureDayExists($today), $createdHabit->getId());
+
+        $streaks = $this->habitStatsRepository->getStreaks($this->testUser->getId());
+
+        // Yesterday had no habits scheduled, so it shouldn't break the streak.
+        // Streak: 2 days ago (OK), Yesterday (SKIP/OK), Today (OK) = 3 days
+        $this->assertEquals(3, $streaks['current_streak']);
+        $this->assertEquals(3, $streaks['longest_streak']);
+    }
+
     private function createTestUser(string $name, string $email): User
     {
         $person = new Person(name: $name, email: $email);

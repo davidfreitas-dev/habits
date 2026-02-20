@@ -14,6 +14,8 @@ dayjs.locale('pt-br');
 
 const activePeriod = ref('W');
 const statsData = ref([]);
+const currentStreak = ref(0);
+const longestStreak = ref(0);
 const habitStore = useHabitStore();
 const { withLoading } = useLoading();
 
@@ -61,14 +63,18 @@ watch(averagePercentage, (newVal) => {
 const handlePeriodChange = async (period) => {
   await withLoading(async () => {
     const result = await habitStore.getHabitStats(period.value);
-    statsData.value = result.data;
+    statsData.value = result.daily_stats;
+    currentStreak.value = result.current_streak;
+    longestStreak.value = result.longest_streak;
   }, 'Erro ao carregar estatísticas');
 };
 
 onIonViewWillEnter(async () => {
   await withLoading(async () => {
     const result = await habitStore.getHabitStats('W');
-    statsData.value = result.data;
+    statsData.value = result.daily_stats;
+    currentStreak.value = result.current_streak;
+    longestStreak.value = result.longest_streak;
   }, 'Erro ao carregar estatísticas');
 });
 
@@ -89,6 +95,9 @@ onIonViewDidLeave(async () => {
         />
 
         <div class="stats-container">
+          <p class="chart-description">
+            Sua taxa de conclusão média para cada dia da semana no período selecionado.
+          </p>
           <!-- Chart Card -->
           <div class="chart-card">
             <div class="chart-header">
@@ -104,6 +113,34 @@ onIonViewDidLeave(async () => {
               :labels="chartLabels" 
             />
           </div>
+
+          <!-- Streaks Grid -->
+          <div class="streaks-grid">
+            <div class="streak-card">
+              <div class="streak-header">
+                <span class="streak-label">Sequência Atual</span>
+                <div class="streak-icon-container">
+                  <span class="streak-emoji">🔥</span>
+                </div>
+              </div>
+              <div class="streak-value-container">
+                <span class="streak-value">{{ currentStreak }}</span>
+                <span class="streak-unit">dias</span>
+              </div>
+            </div>
+            <div class="streak-card">
+              <div class="streak-header">
+                <span class="streak-label">Recorde</span>
+                <div class="streak-icon-container">
+                  <span class="streak-emoji">🏆</span>
+                </div>
+              </div>
+              <div class="streak-value-container">
+                <span class="streak-value">{{ longestStreak }}</span>
+                <span class="streak-unit">dias</span>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     </ion-content>
@@ -111,6 +148,11 @@ onIonViewDidLeave(async () => {
 </template>
 
 <style scoped>
+.chart-description {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
 .chart-card {
   background: var(--color-background-secondary);
   border-radius: 24px;
@@ -140,5 +182,68 @@ onIonViewDidLeave(async () => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.streaks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.streak-card {
+  background: var(--color-background-secondary);
+  border-radius: 24px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.streak-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.streak-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.streak-icon-container {
+  background: var(--color-neutral-800);
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.streak-emoji {
+  font-size: 16px;
+}
+
+.streak-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.streak-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.streak-unit {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
 }
 </style>

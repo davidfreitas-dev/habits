@@ -486,7 +486,7 @@ GET /api/v1/habits/summary
 
 #### Estatísticas de Hábitos
 
-Retorna estatísticas detalhadas de hábitos agregadas por dia da semana (Domingo a Sábado) para um período específico.
+Retorna estatísticas detalhadas de hábitos agregadas por dia da semana (Domingo a Sábado) para um período específico, além do recorde e sequência atual de dias consecutivos.
 
 ```http
 GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
@@ -501,20 +501,13 @@ GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
   "status": "success",
   "message": "Estatísticas obtidas com sucesso.",
   "data": {
-    "data": [
+    "daily_stats": [
       {
         "week_day": 0,
         "label": "D",
         "percentage": 50.0,
         "completed": 10,
         "total": 20
-      },
-      {
-        "week_day": 1,
-        "label": "S",
-        "percentage": 100.0,
-        "completed": 15,
-        "total": 15
       },
       // ... (sempre retorna 7 itens, de 0 a 6)
       {
@@ -524,7 +517,9 @@ GET /api/v1/habits/stats?period={W|M|3M|6M|Y}
         "completed": 0,
         "total": 5
       }
-    ]
+    ],
+    "current_streak": 5,
+    "longest_streak": 12
   }
 }
 ```

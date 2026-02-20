@@ -122,13 +122,15 @@ class GetHabitStatsTest extends FunctionalTestCase
         $this->assertEquals('success', $body['status']);
         $this->assertEquals('Estatísticas obtidas com sucesso.', $body['message']);
         
-        $this->assertIsArray($body['data']['data']);
-        $this->assertCount(7, $body['data']['data']);
+        $this->assertIsArray($body['data']['daily_stats']);
+        $this->assertCount(7, $body['data']['daily_stats']);
+        $this->assertArrayHasKey('current_streak', $body['data']);
+        $this->assertArrayHasKey('longest_streak', $body['data']);
 
         // Check if today's weekday has at least one completed and one total
         $todayWeekDay = (int) $today->format('w');
         $foundToday = false;
-        foreach ($body['data']['data'] as $stat) {
+        foreach ($body['data']['daily_stats'] as $stat) {
             if ($stat['week_day'] === $todayWeekDay) {
                 $this->assertGreaterThanOrEqual(1, $stat['total']);
                 $this->assertGreaterThanOrEqual(1, $stat['completed']);
@@ -152,7 +154,7 @@ class GetHabitStatsTest extends FunctionalTestCase
             $this->assertEquals(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
             $response->getBody()->rewind();
             $body = json_decode((string) $response->getBody(), true);
-            $this->assertCount(7, $body['data']['data']);
+            $this->assertIsArray($body['data']['daily_stats']);
         }
     }
 }

@@ -39,30 +39,37 @@ class GetHabitStatsUseCaseTest extends TestCase
             ->with($userId, $this->isInstanceOf(DateTimeImmutable::class), $this->isInstanceOf(DateTimeImmutable::class))
             ->willReturn($mockStats);
 
+        $this->habitStatsRepository->expects($this->once())
+            ->method('getStreaks')
+            ->with($userId)
+            ->willReturn(['current_streak' => 5, 'longest_streak' => 10]);
+
         $response = $this->getHabitStatsUseCase->execute($userId, $period);
 
         $this->assertInstanceOf(HabitStatsResponseDTO::class, $response);
-        $this->assertCount(7, $response->data);
+        $this->assertCount(7, $response->dailyStats);
+        $this->assertEquals(5, $response->currentStreak);
+        $this->assertEquals(10, $response->longestStreak);
         
         // Monday (1)
-        $this->assertEquals(1, $response->data[1]->weekDay);
-        $this->assertEquals('S', $response->data[1]->label);
-        $this->assertEquals(66.67, $response->data[1]->percentage);
-        $this->assertEquals(2, $response->data[1]->completed);
-        $this->assertEquals(3, $response->data[1]->total);
+        $this->assertEquals(1, $response->dailyStats[1]->weekDay);
+        $this->assertEquals('S', $response->dailyStats[1]->label);
+        $this->assertEquals(66.67, $response->dailyStats[1]->percentage);
+        $this->assertEquals(2, $response->dailyStats[1]->completed);
+        $this->assertEquals(3, $response->dailyStats[1]->total);
 
         // Wednesday (3)
-        $this->assertEquals(3, $response->data[3]->weekDay);
-        $this->assertEquals('Q', $response->data[3]->label);
-        $this->assertEquals(100.0, $response->data[3]->percentage);
-        $this->assertEquals(1, $response->data[3]->completed);
-        $this->assertEquals(1, $response->data[3]->total);
+        $this->assertEquals(3, $response->dailyStats[3]->weekDay);
+        $this->assertEquals('Q', $response->dailyStats[3]->label);
+        $this->assertEquals(100.0, $response->dailyStats[3]->percentage);
+        $this->assertEquals(1, $response->dailyStats[3]->completed);
+        $this->assertEquals(1, $response->dailyStats[3]->total);
 
         // Sunday (0) - No data
-        $this->assertEquals(0, $response->data[0]->weekDay);
-        $this->assertNull($response->data[0]->percentage);
-        $this->assertEquals(0, $response->data[0]->completed);
-        $this->assertEquals(0, $response->data[0]->total);
+        $this->assertEquals(0, $response->dailyStats[0]->weekDay);
+        $this->assertNull($response->dailyStats[0]->percentage);
+        $this->assertEquals(0, $response->dailyStats[0]->completed);
+        $this->assertEquals(0, $response->dailyStats[0]->total);
     }
 
     public function testShouldReturnStatsSuccessfullyForMonthlyPeriod(): void
@@ -79,10 +86,15 @@ class GetHabitStatsUseCaseTest extends TestCase
             ->with($userId, $this->isInstanceOf(DateTimeImmutable::class), $this->isInstanceOf(DateTimeImmutable::class))
             ->willReturn($mockStats);
 
+        $this->habitStatsRepository->expects($this->once())
+            ->method('getStreaks')
+            ->with($userId)
+            ->willReturn(['current_streak' => 0, 'longest_streak' => 0]);
+
         $response = $this->getHabitStatsUseCase->execute($userId, $period);
 
         $this->assertInstanceOf(HabitStatsResponseDTO::class, $response);
-        $this->assertEquals(50.0, $response->data[0]->percentage);
+        $this->assertEquals(50.0, $response->dailyStats[0]->percentage);
     }
 
     public function testShouldThrowExceptionForInvalidPeriod(): void
