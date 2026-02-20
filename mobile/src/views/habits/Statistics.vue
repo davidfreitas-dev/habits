@@ -1,6 +1,6 @@
 <script setup>
-import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
-import { ref, computed } from 'vue';
+import { IonPage, IonContent, onIonViewWillEnter, onIonViewDidLeave } from '@ionic/vue';
+import { ref, computed, watch } from 'vue';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/composables/useLoading';
 import Heading from '@/components/layout/Heading.vue';
@@ -35,6 +35,29 @@ const averagePercentage = computed(() => {
   return Math.round((totalCompleted / totalHabits) * 100);
 });
 
+const displayedPercentage = ref(0);
+
+watch(averagePercentage, (newVal) => {
+  const duration = 1000;
+  const startValue = displayedPercentage.value;
+  const diff = newVal - startValue;
+  const startTime = Date.now();
+
+  const step = () => {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+    
+    displayedPercentage.value = Math.round(startValue + diff * ease);
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+
+  requestAnimationFrame(step);
+}, { immediate: true });
+
 const handlePeriodChange = async (period) => {
   await withLoading(async () => {
     const result = await habitStore.getHabitStats(period.value);
@@ -47,6 +70,10 @@ onIonViewWillEnter(async () => {
     const result = await habitStore.getHabitStats('W');
     statsData.value = result.data;
   }, 'Erro ao carregar estatísticas');
+});
+
+onIonViewDidLeave(async () => {
+  statsData.value = [];
 });
 </script>
 
@@ -67,7 +94,7 @@ onIonViewWillEnter(async () => {
             <div class="chart-header">
               <span class="chart-title">Total de Atividades</span>
               <h2 class="chart-percentage">
-                {{ averagePercentage }}%
+                {{ displayedPercentage }}%
               </h2>
             </div>
             
@@ -89,6 +116,7 @@ onIonViewWillEnter(async () => {
   border-radius: 24px;
   padding: 24px;
   color: var(--color-text-primary);
+  min-height: 340px;
 }
 
 .chart-header {
