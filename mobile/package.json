@@ -1,5 +1,5 @@
 {
-  "name": "habits",
+  "name": "habitus",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -10,6 +10,7 @@
     "test:e2e": "cypress run",
     "test:unit": "vitest",
     "lint": "eslint",
+    "assets:generate": "cp src/assets/icon.png resources/icon.png && cp src/assets/splash.png resources/splash.png && npx @capacitor/assets generate",
     "live:ios": "ionic capacitor run ios -l --external",
     "live:android": "ionic capacitor run android -l --external",
     "prod:android": "ionic build --prod && npx cap sync android && npx cap open android",
@@ -57,5 +58,5 @@
     "vite": "^7.0.0",
     "vitest": "^2.1.9"
   },
-  "description": "An Ionic project"
+  "description": "Habitus - A modern and intuitive habit tracker built with Ionic, Vue, and Capacitor."
 }

@@ -129,7 +129,7 @@ ul {
 }
 
 a {
-  color: var(--color-success);
+  color: var(--color-primary);
   text-decoration: none;
 }
 

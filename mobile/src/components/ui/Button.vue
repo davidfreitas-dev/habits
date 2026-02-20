@@ -28,15 +28,25 @@ ion-button {
   text-transform: unset;
   letter-spacing: .0225rem;
 
-  --color: var(--color-text-primary);
-  --background: var(--color-success);
-  --background-hover: var(--color-success);
-  --background-activated: var(--color-success);
-  --background-focused: var(--color-success);
+  --color: var(--color-background-primary);
+  --background: var(--color-neutral-100);
+  --background-hover: var(--color-neutral-100);
+  --background-activated: var(--color-neutral-100);
+  --background-focused: var(--color-neutral-100);
   --border-radius: 0.375rem;
 }
 
-ion-button.outline {
+ion-button.primary {
+  --color: var(--color-background-primary);
+  --background: var(--color-primary);
+  --background-hover: var(--color-primary-hover);
+  --background-activated: var(--color-primary-focus);
+  --background-focused: var(--color-primary-focus);
+  --border-radius: 0.375rem;
+}
+
+ion-button.outline {    
+  --color: var(--color-text-primary);
   --background: transparent;
   --background-hover: transparent;
   --background-activated: transparent;
@@ -48,14 +58,11 @@ ion-button.outline {
 }
 
 ion-button.danger {
-  --color: var(--color-danger);
-  --background: transparent;
-  --background-hover: transparent;
-  --background-activated: transparent;
-  --background-focused: transparent;
+  --color: var(--color-text-primary);
+  --background: var(--color-danger);
+  --background-hover: var(--color-danger-hover);
+  --background-activated: var(--color-danger-focus);
+  --background-focused: var(--color-danger-focus);
   --border-radius: 0.375rem;
-  --border-color: var(--color-danger);
-  --border-style: solid;
-  --border-width: 1px;
 }
 </style>

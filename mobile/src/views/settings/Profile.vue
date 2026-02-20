@@ -1,7 +1,6 @@
 <script setup>
 import { reactive, computed, watch } from 'vue';
-import { IonPage, IonContent, IonIcon, onIonViewWillEnter } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
+import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/composables/useToast';
 import { useLoading } from '@/composables/useLoading'; 
@@ -84,11 +83,12 @@ const updateProfile = async () => {
           </div>
 
           <Button
+            color="primary"
             :is-disabled="isDisabled"
             :is-loading="isLoading"
             @click="updateProfile"
           >
-            <ion-icon :icon="checkmark" /> Confirmar
+            Confirmar
           </Button>
         </form>
       </Container>
@@ -108,6 +108,6 @@ a {
   text-align: center;
   text-decoration: none;
   letter-spacing: .25px;
-  color: var(--color-success);
+  color: var(--color-secondary);
 }
 </style>

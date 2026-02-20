@@ -1,8 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { trash } from 'ionicons/icons';
-import { IonPage, IonIcon, IonContent, onIonViewWillEnter } from '@ionic/vue';
+import { IonPage, IonContent, onIonViewWillEnter } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/composables/useLoading';
@@ -112,12 +111,6 @@ const deleteHabit = async () => {
           class="ion-margin-top"
           @click="handleDelete"
         >
-          <ion-icon
-            slot="start"
-            size="small"
-            :icon="trash"
-            aria-hidden="true"
-          />
           Excluir
         </Button>
       </Container>

@@ -34,6 +34,6 @@ ion-alert.alert-box .alert-message {
 }
 
 ion-alert.alert-box .alert-button {
-  color: var(--color-success);
+  color: var(--color-primary);
 }
 </style>

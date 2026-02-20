@@ -85,6 +85,6 @@ const selectPeriod = (period) => {
 }
 
 .period-btn.active {
-  color: var(--color-text-primary);
+  color: var(--color-background-primary);
 }
 </style>

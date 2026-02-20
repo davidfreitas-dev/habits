@@ -68,7 +68,7 @@ onIonViewDidLeave(() => {
     <ion-content :fullscreen="true">
       <Container>
         <form>
-          <h1>habits</h1>
+          <h1>habitus</h1>
 
           <Input
             v-model="formData.name"
@@ -93,6 +93,7 @@ onIonViewDidLeave(() => {
 
           <div class="ion-margin-top ion-padding-top">
             <Button
+              color="primary"
               :is-loading="isLoading"
               :is-disabled="v$.$invalid"
               @click="submitForm"
@@ -104,11 +105,11 @@ onIonViewDidLeave(() => {
               <span>ou</span>
             </div>
 
-            <Button color="outline" router-link="/signin">
+            <Button router-link="/signin">
               Já tenho uma conta
             </Button>
 
-            <div>
+            <div class="ion-padding-top">
               Ao criar uma conta, você concorda com nossos 
               <router-link to="/about">
                 Termos de Uso e Política de Privacidade
@@ -148,7 +149,7 @@ form a {
   text-decoration: none;
   letter-spacing: .25px;
   margin: 1.25rem 0;
-  color: var(--color-success);
+  color: var(--color-primary);
 }
 
 .separator {

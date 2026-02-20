@@ -82,7 +82,11 @@ const logOut = async () => {
 
         <br>
 
-        <Button class="ion-margin-top" @click="handleLogOut">
+        <Button
+          color="primary"
+          class="ion-margin-top"
+          @click="handleLogOut"
+        >
           <ion-icon slot="start" :icon="exitOutline" />
           Finalizar Sessão
         </Button>

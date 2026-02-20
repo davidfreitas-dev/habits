@@ -2,16 +2,21 @@
 
 :root {
   /* Brand */
-  --color-primary: #7c3aed;
-  --color-primary-hover: #6d28d9;
-  --color-primary-focus: #5b21b6;
-  --color-primary-accent: #8b5cf6;
-  
-  /* success */
-  --color-success: #16a34a;
-  --color-success-hover: #15803d;
-  --color-success-focus: #166534;
-  --color-success-accent: #22c55e;
+  --color-primary: #a3e635;
+  --color-primary-hover: #84cc16;
+  --color-primary-focus: #65a30d;
+  --color-primary-accent: #bef264;
+
+  /* Secondary */
+  --color-secondary: #9333ea;
+  --color-secondary-hover: #7e22ce;
+  --color-secondary-focus: #6b21a8;
+  --color-secondary-accent: #a855f7;
+
+  --color-success: #0d9488;
+  --color-success-hover: #0f766e;
+  --color-success-focus: #115e59;
+  --color-success-accent: #2dd4bf;
 
   /* Danger */
   --color-danger: #EB445A;
@@ -38,24 +43,24 @@
   --color-text-accent: #f1f1f1;
   --color-text-secondary: var(--color-neutral-500);
 
-  /* Habit Progression Colors */
+  /* Habit Progression */
   --habit-bg-0: var(--color-neutral-800);
   --habit-border-0: var(--color-neutral-700);
 
-  --habit-bg-20: #4c1d95;
-  --habit-border-20: #6d28d9;
+  --habit-bg-20: #1a2e05;
+  --habit-border-20: #365314;
 
-  --habit-bg-40: #5b21b6;
-  --habit-border-40: #7c3aed;
+  --habit-bg-40: #365314;
+  --habit-border-40: #4d7c0f;
 
-  --habit-bg-60: #6d28d9;
-  --habit-border-60: #8b5cf6;
+  --habit-bg-60: #4d7c0f;
+  --habit-border-60: #65a30d;
 
-  --habit-bg-80: #7c3aed;
-  --habit-border-80: #8b5cf6;
+  --habit-bg-80: #65a30d;
+  --habit-border-80: #84cc16;
 
-  --habit-bg-100: #8b5cf6;
-  --habit-border-100: #a78bfa;
+  --habit-bg-100: #a3e635;
+  --habit-border-100: #bef264;
 }
 
 /* Habit Progression Utility Classes */
@@ -100,5 +105,5 @@ ion-alert.alert-box .alert-message {
 }
 
 ion-alert.alert-box .alert-button {
-  color: var(--color-success);
+  color: var(--color-primary);
 }

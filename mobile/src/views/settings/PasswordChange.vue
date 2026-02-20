@@ -1,8 +1,7 @@
 <script setup>
 import { reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonContent, IonPage, IonIcon, onIonViewDidLeave } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
+import { IonContent, IonPage, onIonViewDidLeave } from '@ionic/vue';
 import { useProfileStore } from '@/stores/profile';
 import { useToast } from '@/composables/useToast';
 import { useLoading } from '@/composables/useLoading';
@@ -90,11 +89,12 @@ const updatePassword = async () => {
           </div>
 
           <Button
+            color="primary"
             :is-disabled="isDisabled"
             :is-loading="isLoading"
             @click="updatePassword"
           >
-            <ion-icon :icon="checkmark" /> Confirmar
+            Confirmar
           </Button>
         </form>
       </Container>
@@ -114,6 +114,6 @@ a {
   text-align: center;
   text-decoration: none;
   letter-spacing: .25px;
-  color: var(--color-success);
+  color: var(--color-secondary);
 }
 </style>

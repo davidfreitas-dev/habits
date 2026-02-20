@@ -39,7 +39,7 @@ ion-checkbox {
   --size: 2rem;
   --checkmark-width: 5px;
   --checkbox-background: var(--color-background-secondary);
-  --checkbox-background-checked: var(--color-success-accent);
+  --checkbox-background-checked: var(--color-success);
   --border-color-checked: transparent;
 }
 ion-checkbox::part(container) {

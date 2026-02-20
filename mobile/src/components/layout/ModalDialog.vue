@@ -46,10 +46,14 @@ const confirmAction = () => {
       </div>
       
       <div class="ion-padding">
-        <Button class="ion-margin-bottom" @click="confirmAction">
+        <Button
+          color="primary"
+          class="ion-margin-bottom"
+          @click="confirmAction"
+        >
           Confirmar
         </Button>
-        <Button color="outline" @click="closeModal">
+        <Button @click="closeModal">
           Cancelar
         </Button>
       </div>

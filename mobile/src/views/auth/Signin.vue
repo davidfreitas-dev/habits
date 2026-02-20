@@ -65,7 +65,7 @@ onIonViewDidLeave(() => {
     <ion-content :fullscreen="true">
       <Container>
         <form>
-          <h1>habits</h1>
+          <h1>habitus</h1>
 
           <Input
             v-model="formData.email"
@@ -86,6 +86,7 @@ onIonViewDidLeave(() => {
           </router-link>
 
           <Button
+            color="primary"
             :is-loading="isLoading"
             :is-disabled="v$.$invalid"
             @click="submitForm"
@@ -97,7 +98,7 @@ onIonViewDidLeave(() => {
             <span>ou</span>
           </div>
 
-          <Button color="outline" router-link="/signup">
+          <Button router-link="/signup">
             Criar minha conta
           </Button>
         </form>
@@ -127,7 +128,7 @@ form a {
   letter-spacing: .25px;
   width: fit-content;
   margin: 1.25rem 0 1.25rem auto;
-  color: var(--color-success);
+  color: var(--color-primary);
 }
 
 .separator {

@@ -60,7 +60,7 @@ const submitForm = async () => {
     <ion-content :fullscreen="true">
       <Container>
         <form>
-          <h1>habits</h1>
+          <h1>habitus</h1>
 
           <Input
             v-model="formData.token"
@@ -71,6 +71,7 @@ const submitForm = async () => {
           
           <div class="ion-margin-top ion-padding-top">
             <Button
+              color="primary"
               :is-loading="isLoading"
               :is-disabled="v$.$invalid"
               @click="submitForm"
@@ -82,7 +83,7 @@ const submitForm = async () => {
               <span>ou</span>
             </div>
 
-            <Button color="outline" router-link="/signin">
+            <Button router-link="/signin">
               Voltar ao login
             </Button>
           </div>

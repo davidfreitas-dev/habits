@@ -1,7 +1,5 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { IonIcon } from '@ionic/vue';
-import { checkmark } from 'ionicons/icons';
 import Input from '@/components/ui/Input.vue';
 import Checkbox from '@/components/ui/Checkbox.vue';
 import Button from '@/components/ui/Button.vue';
@@ -108,11 +106,12 @@ const availableWeekDays = [
     />
 
     <Button
+      color="primary"
       class="ion-margin-top"
       :is-loading="isLoading"
       @click="submitForm"
     >
-      <ion-icon :icon="checkmark" /> Confirmar
+      Confirmar
     </Button>
   </form>
 </template>

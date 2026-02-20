@@ -7,8 +7,10 @@ import { homeOutline, home, statsChartOutline, statsChart, cogOutline, cog } fro
 const route = useRoute();
 
 const activeTab = computed(() => {
-  const segments = route.path.split('/');
-  return segments[2] || 'home';
+  const path = route.path;
+  if (path.endsWith('/statistics')) return 'statistics';
+  if (path.endsWith('/options')) return 'options';
+  return 'home';
 });
 </script>
 

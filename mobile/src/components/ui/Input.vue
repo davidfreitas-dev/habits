@@ -88,7 +88,7 @@ ion-input {
 }
 
 ion-input:focus-within {
-  border: 2px solid var(--color-success);
+  border: 2px solid var(--color-primary);
 }
 
 .input-container {

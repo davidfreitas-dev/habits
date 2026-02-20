@@ -1,8 +1,8 @@
-# Habits
+# Habitus
 
-Welcome to Habits!
+Welcome to Habitus!
 
-Habits is a powerful habit management application designed to help you track and improve your daily routines. With user-friendly features and intelligent tracking, Habits assists you in cultivating positive habits, saving time, and ensuring consistent progress towards your goals.
+Habitus is a powerful habit management application designed to help you track and improve your daily routines. With user-friendly features and intelligent tracking, Habitus assists you in cultivating positive habits, saving time, and ensuring consistent progress towards your goals.
 
 ## Key Features
 
@@ -17,20 +17,15 @@ Habits is a powerful habit management application designed to help you track and
 
 <table>
   <tr>
-    <td><img src="mobile/src/assets/screenshots/signin.png" alt="Login Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/signup.png" alt="Home Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/summary.png" alt="Shopping List Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/habits.png" alt="Settings Screen" width="200"></td>
-  </tr>
-  <tr>
-    <td><img src="mobile/src/assets/screenshots/new.png" alt="Login Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/edit.png" alt="Home Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/settings.png" alt="Shopping List Screen" width="200"></td>
-    <td><img src="mobile/src/assets/screenshots/about.png" alt="Shopping List Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/Register.jpeg" alt="Register Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/Home.jpeg" alt="Home Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/Habit.jpeg" alt="Habit Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/Stats.jpeg" alt="Stats Screen" width="200"></td>
+    <td><img src="mobile/src/assets/screenshots/Options.jpeg" alt="Options Screen" width="200"></td>
   </tr>
 </table>
 
-*Figure 1: Login Screen. Figure 2: Signup Screen. Figure 3: Home Screen. Figure 4: Habits List Screen. Figure 5: New Habit Screen. Figure 6: Edit Habit Screen. Figure 7: Settings Screen. Figure 8: About Screen.*
+*Figure 1: Register Screen. Figure 2: Home Screen. Figure 3: Habit Details Screen. Figure 4: Statistics Screen. Figure 5: Options Screen.*
 
 ## How to Use
 

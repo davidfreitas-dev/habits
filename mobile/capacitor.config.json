@@ -1,6 +1,6 @@
 {
   "appId": "com.habits.ionic.app",
-  "appName": "habits",
+  "appName": "habitus",
   "webDir": "dist",
   "plugins": {
     "SplashScreen": {
