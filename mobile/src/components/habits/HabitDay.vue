@@ -24,58 +24,28 @@ const amountAccomplishedPercentage = computed(() => {
     : 0;
 });
 
-const dayStyle = computed(() => {
-  if (amountAccomplishedPercentage.value === 0)
-    return {
-      'background': '#18181b',
-      'border-color': '#27272a',
-    };
-
-  if (amountAccomplishedPercentage.value > 0 && amountAccomplishedPercentage.value < 20)
-    return {
-      'background': '#4c1d95',
-      'border-color': '#6d28d9',
-    };
-
-  if (amountAccomplishedPercentage.value >= 20 && amountAccomplishedPercentage.value < 40)
-    return {
-      'background': '#5b21b6',
-      'border-color': '#7c3aed',
-    };
-
-  if (amountAccomplishedPercentage.value >= 40 && amountAccomplishedPercentage.value < 60)
-    return {
-      'background': '#6d28d9',
-      'border-color': '#8b5cf6',
-    };
-
-  if (amountAccomplishedPercentage.value >= 60 && amountAccomplishedPercentage.value < 80)
-    return {
-      'background': '#7c3aed',
-      'border-color': '#8b5cf6',
-    };
-    
-  if (amountAccomplishedPercentage.value >= 80)
-    return {
-      'background': '#8b5cf6',
-      'border-color': '#a78bfa',
-    };
-
-  return '';
+const dayClass = computed(() => {
+  const percentage = amountAccomplishedPercentage.value;
+  
+  if (percentage === 0) return 'habit-day-0';
+  if (percentage < 20)  return 'habit-day-20';
+  if (percentage < 40)  return 'habit-day-40';
+  if (percentage < 60)  return 'habit-day-60';
+  if (percentage < 80)  return 'habit-day-80';
+  return 'habit-day-100';
 });
 </script>
 
 <template>
   <div
-    :style="[ daySize, dayStyle ]"
-    :class="{ active: isCurrentDay }"
+    :style="daySize"
+    :class="[ dayClass, { active: isCurrentDay } ]"
   />
 </template>
 
 <style scoped>
 div {
   margin: .25rem;
-  background: var(--color-background-secondary);
   border-width: 2px;
   border-style: solid;
   border-radius: .5rem;

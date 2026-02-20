@@ -35,8 +35,34 @@
   --color-text-primary: #ffffff;
   --color-text-accent: #f1f1f1;
   --color-text-secondary: var(--color-neutral-500);
+
+  /* Habit Progression Colors */
+  --habit-bg-0: var(--color-neutral-800);
+  --habit-border-0: var(--color-neutral-700);
+
+  --habit-bg-20: #4c1d95;
+  --habit-border-20: #6d28d9;
+
+  --habit-bg-40: #5b21b6;
+  --habit-border-40: #7c3aed;
+
+  --habit-bg-60: #6d28d9;
+  --habit-border-60: #8b5cf6;
+
+  --habit-bg-80: #7c3aed;
+  --habit-border-80: #8b5cf6;
+
+  --habit-bg-100: #8b5cf6;
+  --habit-border-100: #a78bfa;
 }
 
+/* Habit Progression Utility Classes */
+.habit-day-0 { background: var(--habit-bg-0); border-color: var(--habit-border-0); }
+.habit-day-20 { background: var(--habit-bg-20); border-color: var(--habit-border-20); }
+.habit-day-40 { background: var(--habit-bg-40); border-color: var(--habit-border-40); }
+.habit-day-60 { background: var(--habit-bg-60); border-color: var(--habit-border-60); }
+.habit-day-80 { background: var(--habit-bg-80); border-color: var(--habit-border-80); }
+.habit-day-100 { background: var(--habit-bg-100); border-color: var(--habit-border-100); }
 
 * {
   font-family: 'Inter', sans-serif;
