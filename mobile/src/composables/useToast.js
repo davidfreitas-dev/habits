@@ -4,11 +4,11 @@ import { alertCircleOutline, checkmarkCircleOutline, informationCircleOutline } 
 const TOAST_DURATION = 2500;
 const TOAST_CONFIG = {
   success: {
-    color: 'success',
+    cssClass: 'toast-success',
     icon: checkmarkCircleOutline,
   },
   error: {
-    color: 'danger',
+    cssClass: 'toast-error',
     icon: alertCircleOutline,
   },
   info: {
@@ -24,6 +24,7 @@ export function useToast() {
     const toast = await toastController.create({
       message,
       color: config.color,
+      cssClass: config.cssClass,
       icon: config.icon,
       duration: TOAST_DURATION,
     });

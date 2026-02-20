@@ -80,7 +80,6 @@ const handleDelete = () => {
 const deleteHabit = async () => {
   await withLoading(async () => {
     await habitStore.deleteHabit(habit.value.id);
-    showToast('success', 'Hábito excluído com sucesso!');
     router.go(-1);
   }, 'Erro ao excluir hábito.');
 };

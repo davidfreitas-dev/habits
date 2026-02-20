@@ -107,3 +107,14 @@ ion-alert.alert-box .alert-message {
 ion-alert.alert-box .alert-button {
   color: var(--color-primary);
 }
+
+/* Toast Styles */
+.toast-success {
+  --background: var(--color-success);
+  --color: #fff;
+}
+
+.toast-error {
+  --background: var(--color-danger);
+  --color: #fff;
+}

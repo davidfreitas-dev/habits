@@ -24,8 +24,7 @@ const handleContinue = async () => {
   isLoading.value = true;
 
   try {
-    const response = await authStore.validateResetCode(formData.token);
-    showToast('success', response.message || 'Código válido!');
+    await authStore.validateResetCode(formData.token);
     router.push({ name: 'Reset' });
   } catch (err) {
     console.error('Token validation failed:', err);

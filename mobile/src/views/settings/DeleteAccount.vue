@@ -30,7 +30,6 @@ const handleDeleteClick = () => {
 const confirmDelete = async () => {
   await withLoading(async () => {
     await profileStore.deleteAccount();
-    showToast('success', 'Conta excluída com sucesso');
     authStore.clearTokens();
     router.push('/signin');
   });

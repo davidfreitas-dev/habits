@@ -63,7 +63,6 @@ const handleToggleHabit = async (habitId) => {
   await withLoading(async () => {
     await habitStore.toggleHabit(habitId);
     await getDayInfo();
-    showToast('success', 'Status do hábito atualizado!');
   }, 'Erro ao carregar os dados do dia.');
 };
 
