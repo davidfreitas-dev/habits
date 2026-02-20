@@ -20,18 +20,18 @@ ion-button {
   --background-activated: transparent;
   --background-focused: transparent;
   --border-radius: 0.375rem;
-  --border-color: #8B5CF6;
+  --border-color: var(--color-primary-accent);
   --border-style: solid;
   --border-width: 1px;
 }
 
 ion-button ion-icon {
-  color: #8B5CF6;
+  color: var(--color-primary-accent);
   font-size: 20px;
 }
 
 ion-button span {
-  color: #fff;
+  color: var(--color-text-primary);
   margin-left: 0.75rem;
   font-weight: 600;
   font-size: 1rem; 

@@ -34,7 +34,7 @@ div {
   padding-bottom: .5rem;
 }
 div span {
-  color: #9CA3AF;
+  color: var(--color-text-secondary);
   font-size: 1.25rem;
   font-weight: 700;
   text-align: center;

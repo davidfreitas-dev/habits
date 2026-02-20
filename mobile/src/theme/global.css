@@ -5,11 +5,13 @@
   --color-primary: #7c3aed;
   --color-primary-hover: #6d28d9;
   --color-primary-focus: #5b21b6;
+  --color-primary-accent: #8b5cf6;
   
   /* success */
   --color-success: #16a34a;
   --color-success-hover: #15803d;
   --color-success-focus: #166534;
+  --color-success-accent: #22c55e;
 
   /* Danger */
   --color-danger: #EB445A;

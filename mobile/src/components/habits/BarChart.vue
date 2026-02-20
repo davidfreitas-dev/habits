@@ -24,16 +24,21 @@ const props = defineProps({
   }
 });
 
+const getCSSVar = (name, fallback) => {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+};
+
 const chartData = computed(() => {
-  const neutral700 = getComputedStyle(document.documentElement).getPropertyValue('--color-neutral-700').trim() || '#27272a';
+  const primaryColor = getCSSVar('--color-primary', '#7c3aed');
+  const neutral700 = getCSSVar('--color-neutral-700', '#27272a');
 
   return {
     labels: props.labels,
     datasets: [
       {
-        // Main Data (Roxo)
+        // Main Data
         data: props.data,
-        backgroundColor: '#7c3aed',
+        backgroundColor: primaryColor,
         borderRadius: 20,
         borderSkipped: false,
         barThickness: 28,
@@ -47,7 +52,7 @@ const chartData = computed(() => {
         }
       },
       {
-        // Background Tracks (Neutral-700)
+        // Background Tracks
         data: props.data.map(() => 100),
         backgroundColor: neutral700,
         borderRadius: 20,
@@ -65,44 +70,48 @@ const chartData = computed(() => {
   };
 });
 
-const chartOptions = computed(() => ({
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: false
-    },
-    tooltip: {
-      enabled: true,
-      filter: (tooltipItem) => tooltipItem.datasetIndex === 0,
-      callbacks: {
-        label: (context) => `${context.raw}%`
+const chartOptions = computed(() => {
+  const neutral500 = getCSSVar('--color-neutral-500', '#a1a1aa');
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        enabled: true,
+        filter: (tooltipItem) => tooltipItem.datasetIndex === 0,
+        callbacks: {
+          label: (context) => `${context.raw}%`
+        }
       }
-    }
-  },
-  scales: {
-    y: {
-      display: false,
-      beginAtZero: true,
-      max: 100
     },
-    x: {
-      grid: {
-        display: false
+    scales: {
+      y: {
+        display: false,
+        beginAtZero: true,
+        max: 100
       },
-      border: {
-        display: false
-      },
-      ticks: {
-        color: '#a1a1aa', // var(--color-neutral-500)
-        font: {
-          size: 16,
-          weight: '600'
+      x: {
+        grid: {
+          display: false
+        },
+        border: {
+          display: false
+        },
+        ticks: {
+          color: neutral500,
+          font: {
+            size: 16,
+            weight: '600'
+          }
         }
       }
     }
-  }
-}));
+  };
+});
 </script>
 
 <template>

@@ -30,7 +30,7 @@ div {
   justify-content: flex-start;
   align-items: flex-start;
 
-  color: #9ca3af;
+  color: var(--color-text-secondary);
   font-weight: 600;
   font-size: 1rem;
   text-transform: lowercase; 

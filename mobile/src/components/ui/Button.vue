@@ -42,7 +42,7 @@ ion-button.outline {
   --background-activated: transparent;
   --background-focused: transparent;
   --border-radius: 0.375rem;
-  --border-color: #8B5CF6;
+  --border-color: var(--color-primary-accent);
   --border-style: solid;
   --border-width: 1px;
 }
