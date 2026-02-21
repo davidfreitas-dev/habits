@@ -36,4 +36,10 @@ ion-alert.alert-box .alert-message {
 ion-alert.alert-box .alert-button {
   color: var(--color-primary);
 }
+
+ion-alert.alert-box .alert-button.ion-focused,
+ion-alert.alert-box .alert-button:hover,
+ion-alert.alert-box .alert-button.ion-activated {
+  background: var(--color-background-secondary);
+}
 </style>

@@ -1,22 +1,17 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
-import { IonPage, IonContent } from '@ionic/vue';
+import { IonPage, IonContent, IonInputOtp, onIonViewDidLeave } from '@ionic/vue';
 import { useToast } from '@/composables/useToast';
 import { useAuthStore } from '@/stores/auth';
 
 import Container from '@/components/layout/Container.vue';
-import Input from '@/components/ui/Input.vue';
 import Button from '@/components/ui/Button.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const isLoading = ref(false);
-const formData = reactive({
-  token: ''
-});
+const otpValue = ref('');
 
 const { showToast } = useToast();
 
@@ -24,7 +19,7 @@ const handleContinue = async () => {
   isLoading.value = true;
 
   try {
-    await authStore.validateResetCode(formData.token);
+    await authStore.validateResetCode(otpValue.value);
     router.push({ name: 'Reset' });
   } catch (err) {
     console.error('Token validation failed:', err);
@@ -34,24 +29,17 @@ const handleContinue = async () => {
   }
 };
 
-const rules = computed(() => {
-  return {
-    token: { required }
-  };
-});
-
-const v$ = useVuelidate(rules, formData);
-
-const submitForm = async () => {
-  const isFormCorrect = await v$.value.$validate();
-
-  if (!isFormCorrect) {
-    showToast('info', 'Informe o token de redefinição de senha');
-    return;
-  } 
-  
-  handleContinue();
+const onOtpInput = (event) => {
+  otpValue.value = event.detail.value ?? '';
 };
+
+const onOtpComplete = (event) => {
+  otpValue.value = event.detail.value ?? '';
+};
+
+onIonViewDidLeave(() => {
+  otpValue.value = '';
+});
 </script>
 
 <template>
@@ -61,19 +49,30 @@ const submitForm = async () => {
         <form>
           <h1>habitus</h1>
 
-          <Input
-            v-model="formData.token"
-            type="text"
-            label="Informe o token"
-            placeholder="Token de recuperação"
-          /> 
-          
+          <label class="otp-label">Informe o código</label>
+          <p class="otp-description">
+            Digite o código de 6 dígitos enviado para o seu e-mail
+          </p>
+
+          <div class="otp-wrapper">
+            <ion-input-otp
+              :length="6"
+              type="number"
+              fill="outline"
+              shape="soft"
+              size="large"
+              class="custom-otp"
+              @ion-input="onOtpInput"
+              @ion-complete="onOtpComplete"
+            />
+          </div>
+
           <div class="ion-margin-top ion-padding-top">
             <Button
               color="primary"
               :is-loading="isLoading"
-              :is-disabled="v$.$invalid"
-              @click="submitForm"
+              :is-disabled="otpValue.length < 6"
+              @click="handleContinue"
             >
               Continuar
             </Button>
@@ -105,6 +104,39 @@ form h1 {
   text-align: center;
   color: var(--color-text-primary);
   font-weight: 800;
+}
+
+.otp-label {
+  color: var(--color-text-primary);
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.otp-description {
+  color: var(--color-text-primary);
+  opacity: 0.7;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.otp-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.custom-otp {
+  --background: var(--color-background-secondary);
+  --border-color: var(--color-border-default);
+  --border-radius: 0.375rem;
+  --border-width: 2px;
+  --color: var(--color-text-primary);
+  --highlight-color-focused: var(--color-primary);
+  --highlight-color-valid: var(--color-primary);
+  --highlight-color-invalid: var(--ion-color-danger);
+  --height: 56px;
+  --width: 44px;
 }
 
 .separator {

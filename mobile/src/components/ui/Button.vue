@@ -6,8 +6,8 @@ const props = defineProps({
   isLoading: Boolean,
   color: {
     type: String,
-    default: 'main',
-    validator: (value) => ['main', 'outline', 'danger'].includes(value),
+    default: 'default',
+    validator: (value) => ['default', 'primary', 'danger', 'outline'].includes(value),
   },
 });
 </script>
@@ -45,6 +45,15 @@ ion-button.primary {
   --border-radius: 0.375rem;
 }
 
+ion-button.danger {
+  --color: var(--color-text-primary);
+  --background: var(--color-danger);
+  --background-hover: var(--color-danger-hover);
+  --background-activated: var(--color-danger-focus);
+  --background-focused: var(--color-danger-focus);
+  --border-radius: 0.375rem;
+}
+
 ion-button.outline {    
   --color: var(--color-text-primary);
   --background: transparent;
@@ -55,14 +64,5 @@ ion-button.outline {
   --border-color: var(--color-primary-accent);
   --border-style: solid;
   --border-width: 1px;
-}
-
-ion-button.danger {
-  --color: var(--color-text-primary);
-  --background: var(--color-danger);
-  --background-hover: var(--color-danger-hover);
-  --background-activated: var(--color-danger-focus);
-  --background-focused: var(--color-danger-focus);
-  --border-radius: 0.375rem;
 }
 </style>

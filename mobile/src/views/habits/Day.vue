@@ -78,7 +78,7 @@ const progressPercentage = computed(() => {
   const possibleCount = dayInfo.value.possible_habits?.length || 0;
   const completedCount = dayInfo.value.completed_habits?.length || 0;
   return possibleCount > 0
-    ? Math.round((completedCount / possibleCount) * 100)
+    ? Math.min(100, Math.round((completedCount / possibleCount) * 100))
     : 0;
 });
 
