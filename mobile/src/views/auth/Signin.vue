@@ -65,7 +65,13 @@ onIonViewDidLeave(() => {
     <ion-content :fullscreen="true">
       <Container>
         <form>
-          <h1>habitus</h1>
+          <div class="logo-wrapper">
+            <img
+              src="@/assets/logo.png"
+              alt="Habitus"
+              class="logo"
+            >
+          </div>
 
           <Input
             v-model="formData.email"
@@ -115,11 +121,18 @@ form {
   padding: 0 .5rem;
 }
 
-form h1 {
-  font-size: 3rem;
-  text-align: center;
-  color: var(--color-text-primary);
-  font-weight: 800;
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: auto;
+  height: 70px;
+  object-fit: contain;
 }
 
 form a {
