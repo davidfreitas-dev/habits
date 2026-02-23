@@ -14,7 +14,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import HabitDaysStartGap from '@/components/habits/HabitDaysStartGap.vue';
 import HabitDay from '@/components/habits/HabitDay.vue';
 

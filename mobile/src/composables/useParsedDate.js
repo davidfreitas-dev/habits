@@ -1,8 +1,5 @@
 import { ref, computed } from 'vue';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br';
-
-dayjs.locale('pt-br');
+import dayjs from '@/lib/dayjs';
 
 export function useParsedDate(dateInput) {
   const parsedDate = ref(dayjs(dateInput).startOf('day'));

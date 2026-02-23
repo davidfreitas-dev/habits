@@ -2,10 +2,7 @@
 import { computed } from 'vue';
 import { IonRow, IonAvatar, IonIcon } from '@ionic/vue';
 import { person } from 'ionicons/icons';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br';
-
-dayjs.locale('pt-br');
+import dayjs from '@/lib/dayjs';
 
 const props = defineProps({
   name: {

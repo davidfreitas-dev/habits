@@ -38,7 +38,7 @@ ion-row {
 ion-checkbox {
   --size: 2rem;
   --checkmark-width: 5px;
-  --checkbox-background: var(--color-background-secondary);
+  --checkbox-background: var(--color-background-elevated);
   --checkbox-background-checked: var(--color-success);
   --border-color-checked: transparent;
 }

@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import dayjs from 'dayjs';
+import dayjs from '@/lib/dayjs';
 import { useDayDimensions } from '@/composables/useDayDimensions';
 
 const { daySize } = useDayDimensions();

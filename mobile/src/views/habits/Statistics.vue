@@ -7,10 +7,7 @@ import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
 import BarChart from '@/components/habits/BarChart.vue';
 import PeriodSelector from '@/components/habits/PeriodSelector.vue';
-import dayjs from 'dayjs';
-import 'dayjs/locale/pt-br';
-
-dayjs.locale('pt-br');
+import dayjs from '@/lib/dayjs';
 
 const activePeriod = ref('W');
 const statsData = ref([]);

@@ -20,7 +20,7 @@ const props = defineProps({
 <style scoped>
 div.progress-container {
   position: relative;
-  background: var(--color-neutral-700);
+  background: var(--color-background-elevated);
   border-radius: .75rem;
   margin-top: 1rem;
   margin-bottom: 1.25rem;
