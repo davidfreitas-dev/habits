@@ -37,7 +37,7 @@ ion-button {
 }
 
 ion-button.primary {
-  --color: var(--color-background-primary);
+  --color: var(--color-neutral-900);
   --background: var(--color-primary);
   --background-hover: var(--color-primary-hover);
   --background-activated: var(--color-primary-focus);
@@ -46,7 +46,7 @@ ion-button.primary {
 }
 
 ion-button.danger {
-  --color: var(--color-text-primary);
+  --color: #fff;
   --background: var(--color-danger);
   --background-hover: var(--color-danger-hover);
   --background-activated: var(--color-danger-focus);

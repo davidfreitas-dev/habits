@@ -216,7 +216,7 @@ onIonViewDidLeave(async () => {
 }
 
 .streak-icon-container {
-  background: var(--color-neutral-800);
+  background: var(--color-background-secondary);
   width: 32px;
   height: 32px;
   border-radius: 10px;

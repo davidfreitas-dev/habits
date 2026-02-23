@@ -23,6 +23,7 @@ ion-button {
   --border-color: var(--color-primary-accent);
   --border-style: solid;
   --border-width: 1px;
+  --box-shadow: none;
 }
 
 ion-button ion-icon {

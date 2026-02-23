@@ -57,8 +57,8 @@ div span {
 .avatar-container {
   width: 48px;
   height: 48px;
-  background: var(--color-neutral-800);
-  border: 2px solid var(--color-neutral-700);
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-background-elevated);
   position: relative;
   overflow: hidden;
   display: flex;

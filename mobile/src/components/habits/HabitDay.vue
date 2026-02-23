@@ -52,6 +52,6 @@ div {
 }
 div.active {
   border-width: 4px !important;
-  border-color: #fff !important;
+  border-color: var(--color-text-primary) !important;
 }
 </style>

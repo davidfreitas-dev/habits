@@ -1,24 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { IonContent, IonPage, IonItem, IonLabel, IonList, IonListHeader, IonIcon } from '@ionic/vue';
+import { 
+  IonContent, 
+  IonPage, 
+  IonItem, 
+  IonLabel, 
+  IonList, 
+  IonListHeader, 
+  IonIcon
+} from '@ionic/vue';
 import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
+import { useThemeStore } from '@/stores/theme';
 import { useLoading } from '@/composables/useLoading';
 import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
 import Button from '@/components/ui/Button.vue';
 import ModalDialog from '@/components/layout/ModalDialog.vue';
+import Toggle from '@/components/ui/Toggle.vue';
 
 const router = useRouter();
-
 const { withLoading } = useLoading();
-
 const authStore = useAuthStore();
+const themeStore = useThemeStore();
+
+const isDarkMode = computed({
+  get: () => themeStore.isDarkMode,
+  set: (value) => themeStore.setDarkMode(value),
+});
 
 const modalRef = ref(null);
     
-const handleLogOut = (item) => {
+const handleLogOut = () => {
   modalRef.value?.setOpen(true);
 };
 
@@ -72,6 +86,12 @@ const logOut = async () => {
               Mais
             </ion-label>
           </ion-list-header>
+          <ion-item class="ion-no-padding">
+            <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
+              Modo escuro
+            </ion-label>
+            <Toggle v-model:checked="isDarkMode" />
+          </ion-item>
           <ion-item class="ion-no-padding" router-link="/about">
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
               Sobre o app

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
 :root {
-  /* Brand */
+  /* Primary */
   --color-primary: #a3e635;
   --color-primary-hover: #84cc16;
   --color-primary-focus: #65a30d;
@@ -13,6 +13,7 @@
   --color-secondary-focus: #6b21a8;
   --color-secondary-accent: #a855f7;
 
+  /* Success */
   --color-success: #0d9488;
   --color-success-hover: #0f766e;
   --color-success-focus: #115e59;
@@ -22,53 +23,78 @@
   --color-danger: #EB445A;
   --color-danger-hover: #D63A50;
   --color-danger-focus: #B73144;
+  --color-danger-accent: #ff8096;
 
   /* Neutral */
   --color-neutral-900: #09090a;
   --color-neutral-800: #18181b;
   --color-neutral-700: #27272a;
+  --color-neutral-600: #52525b;
   --color-neutral-500: #a1a1aa;
+  --color-neutral-400: #c4c4cc;
   --color-neutral-300: #d4d4d8;
+  --color-neutral-200: #e8e8ec;
   --color-neutral-100: #f4f4f5;
+  --color-neutral-50:  #fafafa;
 
-  /* Background */
-  --color-background-primary: var(--color-neutral-900);
+  /* Light Theme */
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: var(--color-neutral-100);
+  --color-background-elevated:  var(--color-neutral-200);
+  --color-border-default:       var(--color-neutral-300);
+  --color-border-strong:        var(--color-neutral-400);
+  --color-text-primary:         var(--color-neutral-900);
+  --color-text-accent:          var(--color-neutral-700);
+  --color-text-secondary:       var(--color-neutral-600);
+  --color-text-disabled:        var(--color-neutral-500);
+
+  /* Habit Progression — Lime palette adaptada ao tema claro */
+  --habit-bg-0:       var(--color-neutral-200);
+  --habit-border-0:   var(--color-neutral-400);
+  --habit-bg-20:      #f7fee7;
+  --habit-border-20:  #ecfccb;
+  --habit-bg-40:      #ecfccb;
+  --habit-border-40:  #d9f99d;
+  --habit-bg-60:      #d9f99d;
+  --habit-border-60:  #bef264;
+  --habit-bg-80:      #bef264;
+  --habit-border-80:  #a3e635;
+  --habit-bg-100:     #a3e635;
+  --habit-border-100: #84cc16;
+}
+
+body.dark {
+  --color-background-primary:   var(--color-neutral-900);
   --color-background-secondary: var(--color-neutral-800);
+  --color-background-elevated:  var(--color-neutral-700);
+  --color-border-default:       var(--color-neutral-700);
+  --color-border-strong:        var(--color-neutral-600);
+  --color-text-primary:         #ffffff;
+  --color-text-accent:          #f1f1f1;
+  --color-text-secondary:       var(--color-neutral-500);
+  --color-text-disabled:        var(--color-neutral-600);
 
-  /* Border */
-  --color-border-default: var(--color-neutral-700);
-
-  /* Text */
-  --color-text-primary: #ffffff;
-  --color-text-accent: #f1f1f1;
-  --color-text-secondary: var(--color-neutral-500);
-
-  /* Habit Progression */
-  --habit-bg-0: var(--color-neutral-800);
-  --habit-border-0: var(--color-neutral-700);
-
-  --habit-bg-20: #1a2e05;
-  --habit-border-20: #365314;
-
-  --habit-bg-40: #365314;
-  --habit-border-40: #4d7c0f;
-
-  --habit-bg-60: #4d7c0f;
-  --habit-border-60: #65a30d;
-
-  --habit-bg-80: #65a30d;
-  --habit-border-80: #84cc16;
-
-  --habit-bg-100: #a3e635;
+  /* Habit Progression — Lime palette adaptada ao tema escuro */
+  --habit-bg-0:         var(--color-neutral-800);
+  --habit-border-0:     var(--color-neutral-700);
+  --habit-bg-20:      #1a2e05;
+  --habit-border-20:  #365314;
+  --habit-bg-40:      #365314;
+  --habit-border-40:  #4d7c0f;
+  --habit-bg-60:      #4d7c0f;
+  --habit-border-60:  #65a30d;
+  --habit-bg-80:      #65a30d;
+  --habit-border-80:  #84cc16;
+  --habit-bg-100:     #a3e635;
   --habit-border-100: #bef264;
 }
 
 /* Habit Progression Utility Classes */
-.habit-day-0 { background: var(--habit-bg-0); border-color: var(--habit-border-0); }
-.habit-day-20 { background: var(--habit-bg-20); border-color: var(--habit-border-20); }
-.habit-day-40 { background: var(--habit-bg-40); border-color: var(--habit-border-40); }
-.habit-day-60 { background: var(--habit-bg-60); border-color: var(--habit-border-60); }
-.habit-day-80 { background: var(--habit-bg-80); border-color: var(--habit-border-80); }
+.habit-day-0   { background: var(--habit-bg-0); border-color: var(--habit-border-0); }
+.habit-day-20  { background: var(--habit-bg-20); border-color: var(--habit-border-20); }
+.habit-day-40  { background: var(--habit-bg-40); border-color: var(--habit-border-40); }
+.habit-day-60  { background: var(--habit-bg-60); border-color: var(--habit-border-60); }
+.habit-day-80  { background: var(--habit-bg-80); border-color: var(--habit-border-80); }
 .habit-day-100 { background: var(--habit-bg-100); border-color: var(--habit-border-100); }
 
 * {
@@ -85,12 +111,14 @@ ion-content, ion-toolbar, ion-modal, ion-list-header, ion-item {
   --background: var(--color-background-primary);
 }
 
+/* Loading Styles */
 ion-loading.custom-loading-spinner {
   --background: transparent;
   --spinner-color: var(--color-primary);
   --backdrop-opacity: 0.7;
 }
 
+/* Alert Styles */
 ion-alert.alert-box .alert-wrapper {
   --background: var(--color-background-secondary);
   --backdrop-opacity: 0.7;
