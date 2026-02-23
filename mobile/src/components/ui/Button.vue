@@ -28,7 +28,7 @@ ion-button {
   text-transform: unset;
   letter-spacing: .0225rem;
 
-  --color: var(--color-background-primary);
+  --color: var(--color-neutral-900);
   --background: var(--color-neutral-100);
   --background-hover: var(--color-neutral-100);
   --background-activated: var(--color-neutral-100);

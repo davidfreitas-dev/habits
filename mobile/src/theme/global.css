@@ -118,6 +118,11 @@ ion-loading.custom-loading-spinner {
   --backdrop-opacity: 0.7;
 }
 
+.loading-wrapper.sc-ion-loading-md {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
 /* Alert Styles */
 ion-alert.alert-box .alert-wrapper {
   --background: var(--color-background-secondary);
