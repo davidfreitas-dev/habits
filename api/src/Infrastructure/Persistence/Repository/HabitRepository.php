@@ -154,7 +154,7 @@ class HabitRepository implements HabitRepositoryInterface
     public function getHabitsSummary(int $userId, ?DateTimeImmutable $date = null): array
     {
         $currentDate = ($date ?? new DateTimeImmutable())->format(self::DATE_ONLY_FORMAT);
-        $startOfYear = (new DateTimeImmutable('first day of January this year'))->format(self::DATE_ONLY_FORMAT);
+        $startOfYear = new DateTimeImmutable('first day of January this year')->format(self::DATE_ONLY_FORMAT);
 
         $sql = "
             WITH RECURSIVE date_range AS (

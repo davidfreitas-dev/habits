@@ -12,6 +12,7 @@ import ButtonNew from '@/components/habits/ButtonNew.vue';
 import WeekDays from '@/components/habits/WeekDays.vue';
 import Container from '@/components/layout/Container.vue';
 import Summary from '@/components/habits/Summary.vue';
+import dayjs from '@/lib/dayjs';
 
 const { generateDatesFromYearBeginning } = useGenerateRange();
 const { withLoading } = useLoading();
@@ -28,7 +29,8 @@ const { showToast } = useToast();
 
 const getSummary = async () => {
   try {
-    const response = await habitStore.getHabitsSummary();
+    const today = dayjs.utc().format('YYYY-MM-DD');
+    const response = await habitStore.getHabitsSummary(today);
     summary.value = Array.isArray(response) ? response : [];
   } catch (err) {
     console.error('Error fetching habits summary:', err);

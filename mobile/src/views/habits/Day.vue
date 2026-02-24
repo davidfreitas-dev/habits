@@ -18,10 +18,6 @@ import Checkbox from '@/components/ui/Checkbox.vue';
 const profileStore = useProfileStore();
 const habitStore = useHabitStore();
 
-const user = computed(() => {
-  return profileStore.user;
-});
-
 const dayInfo = ref({
   possible_habits: [],
   completed_habits: []
@@ -61,7 +57,8 @@ onIonViewWillEnter(() => {
 
 const handleToggleHabit = async (habitId) => {
   await withLoading(async () => {
-    await habitStore.toggleHabit(habitId);
+    const formattedDate = parsedDate.value.format('YYYY-MM-DD');
+    await habitStore.toggleHabit(habitId, formattedDate);
     await getDayInfo();
   }, 'Erro ao carregar os dados do dia.');
 };

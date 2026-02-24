@@ -5,7 +5,7 @@ import { useDayDimensions } from '@/composables/useDayDimensions';
 
 const { daySize } = useDayDimensions();
 
-const startWeekdayFromYear = ref(dayjs().startOf('year').day());
+const startWeekdayFromYear = ref(dayjs.utc().startOf('year').day());
 </script>
 
 <template>

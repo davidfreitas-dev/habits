@@ -37,15 +37,14 @@ const handleNavigate = (date) => {
   router.push({
     name: 'Day', 
     params: {
-      date: date.toISOString()
+      date: dayjs.utc(date).format('YYYY-MM-DD')
     }
   });
 };
 
 const isCurrentDay = (date) => {
-  const today = dayjs().startOf('day').toDate();
-  const isCurrentDay = dayjs(date).isSame(today);
-  return isCurrentDay;
+  const today = dayjs.utc().startOf('day');
+  return dayjs.utc(date).isSame(today, 'day');
 };
 
 const getAmount = (date) => {

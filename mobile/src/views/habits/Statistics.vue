@@ -59,7 +59,8 @@ watch(averagePercentage, (newVal) => {
 
 const handlePeriodChange = async (period) => {
   await withLoading(async () => {
-    const result = await habitStore.getHabitStats(period.value);
+    const today = dayjs.utc().format('YYYY-MM-DD');
+    const result = await habitStore.getHabitStats(period.value, today);
     statsData.value = result.daily_stats;
     currentStreak.value = result.current_streak;
     longestStreak.value = result.longest_streak;
@@ -68,7 +69,8 @@ const handlePeriodChange = async (period) => {
 
 onIonViewWillEnter(async () => {
   await withLoading(async () => {
-    const result = await habitStore.getHabitStats('W');
+    const today = dayjs.utc().format('YYYY-MM-DD');
+    const result = await habitStore.getHabitStats(activePeriod.value, today);
     statsData.value = result.daily_stats;
     currentStreak.value = result.current_streak;
     longestStreak.value = result.longest_streak;
