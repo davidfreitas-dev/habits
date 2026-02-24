@@ -47,7 +47,10 @@ class UpdateHabitUseCase
         $this->pdo->beginTransaction();
 
         try {
-            $updatedHabit = $this->habitRepository->update($habit, $dto->weekDays, $dto->reminderTime);
+            $habit->setTitle($dto->title);
+            $habit->setReminderTime($dto->reminderTime);
+
+            $updatedHabit = $this->habitRepository->update($habit, $dto->weekDays);
 
             $this->pdo->commit();
         } catch (Exception $exception) {
