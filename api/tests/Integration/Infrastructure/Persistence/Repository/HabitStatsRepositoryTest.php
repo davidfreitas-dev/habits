@@ -44,7 +44,7 @@ class HabitStatsRepositoryTest extends DatabaseTestCase
         $endDate = new DateTimeImmutable('2026-02-19');
 
         // Create a daily habit
-        $habit = new Habit('Daily Habit', $this->testUser, new DateTimeImmutable('2026-02-01'));
+        $habit = new Habit('Daily Habit', $this->testUser, null, new DateTimeImmutable('2026-02-01'));
         $createdHabit = $this->habitRepository->create($habit, [0, 1, 2, 3, 4, 5, 6]);
 
         // Complete it on Monday (Feb 16) and Wednesday (Feb 18)
@@ -94,7 +94,7 @@ class HabitStatsRepositoryTest extends DatabaseTestCase
         $fourDaysAgo = $today->modify('-4 days');
 
         // Create a daily habit starting 4 days ago
-        $habit = new Habit('Streak Habit', $this->testUser, $fourDaysAgo);
+        $habit = new Habit('Streak Habit', $this->testUser, null, $fourDaysAgo);
         $createdHabit = $this->habitRepository->create($habit, [0, 1, 2, 3, 4, 5, 6]);
 
         // Scenario: 
@@ -124,7 +124,7 @@ class HabitStatsRepositoryTest extends DatabaseTestCase
         $threeDaysAgo = $today->modify('-3 days');
 
         // Create a habit only for today and 2 days ago (SKIP yesterday)
-        $habit = new Habit('Partial Habit', $this->testUser, $threeDaysAgo);
+        $habit = new Habit('Partial Habit', $this->testUser, null, $threeDaysAgo);
         $createdHabit = $this->habitRepository->create($habit, [
             (int)$today->format('w'),
             (int)$twoDaysAgo->format('w')

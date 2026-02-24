@@ -46,13 +46,14 @@ class HabitRepository implements HabitRepositoryInterface
 
     public function create(Habit $habit, array $weekDays): Habit
     {
-        $sql = 'INSERT INTO habits (user_id, title, created_at, updated_at) 
-                VALUES (:user_id, :title, :created_at, :updated_at)';
+        $sql = 'INSERT INTO habits (user_id, title, reminder_time, created_at, updated_at) 
+                VALUES (:user_id, :title, :reminder_time, :created_at, :updated_at)';
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             'user_id' => $habit->getUser()->getId(),
             'title' => $habit->getTitle(),
+            'reminder_time' => $habit->getReminderTime(),
             'created_at' => $this->formatDateTime($habit->getCreatedAt()),
             'updated_at' => $this->formatDateTime($habit->getUpdatedAt()),
         ]);
@@ -73,12 +74,17 @@ class HabitRepository implements HabitRepositoryInterface
 
     public function update(Habit $habit, array $weekDays): Habit
     {
-        $sql = 'UPDATE habits SET title = :title, updated_at = :updated_at WHERE id = :id';
+        $sql = 'UPDATE habits 
+                SET title = :title, 
+                    reminder_time = :reminder_time, 
+                    updated_at = :updated_at 
+                WHERE id = :id';
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             'id' => $habit->getId(),
             'title' => $habit->getTitle(),
+            'reminder_time' => $habit->getReminderTime(),
             'updated_at' => $this->formatDateTime($habit->getUpdatedAt()),
         ]);
 
@@ -254,8 +260,9 @@ class HabitRepository implements HabitRepositoryInterface
         $weekDays = $this->fetchWeekDaysForHabit((int) $data['id']);
 
         $habit = new Habit(
-            user: $user,
             title: $data['title'],
+            user: $user,
+            reminderTime: $data['reminder_time'] ?? null,
             createdAt: new DateTimeImmutable($data['created_at']),
             updatedAt: new DateTimeImmutable($data['updated_at']),
         );

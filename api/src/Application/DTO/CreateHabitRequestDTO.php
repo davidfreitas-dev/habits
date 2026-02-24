@@ -25,6 +25,11 @@ class CreateHabitRequestDTO
             new Assert\Type(type: 'integer', message: 'Cada dia da semana deve ser um número inteiro.'),
         ])]
         public readonly array $weekDays,
+        #[Assert\Regex(
+            pattern: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/',
+            message: 'O horário do lembrete deve estar no formato HH:mm.',
+        )]
+        public readonly ?string $reminderTime,
     ) {
     }
 
@@ -33,6 +38,7 @@ class CreateHabitRequestDTO
         return new self(
             title: $data['title'] ?? '',
             weekDays: $data['week_days'] ?? [],
+            reminderTime: $data['reminder_time'] ?? null,
         );
     }
 
@@ -41,6 +47,7 @@ class CreateHabitRequestDTO
         return [
             'title' => $this->title,
             'weekDays' => $this->weekDays,
+            'reminder_time' => $this->reminderTime,
         ];
     }
 }

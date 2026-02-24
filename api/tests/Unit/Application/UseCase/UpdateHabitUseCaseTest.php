@@ -33,7 +33,7 @@ class UpdateHabitUseCaseTest extends TestCase
     {
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('Updated Habit', [0, 1]);
+        $dto = new UpdateHabitRequestDTO('Updated Habit', [0, 1], '12:00');
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -47,6 +47,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $existingHabit->method('getCreatedAt')->willReturn(new DateTimeImmutable());
         $existingHabit->method('getUpdatedAt')->willReturn(new DateTimeImmutable());
         $existingHabit->method('getHabitWeekDays')->willReturn(new ArrayCollection());
+        $existingHabit->method('getReminderTime')->willReturn('10:00');
 
 
         /** @var Habit&MockObject $updatedHabit */
@@ -60,13 +61,14 @@ class UpdateHabitUseCaseTest extends TestCase
             new HabitWeekDay(habitId: $habitId, weekDay: 0),
             new HabitWeekDay(habitId: $habitId, weekDay: 1),
         ]));
+        $updatedHabit->method('getReminderTime')->willReturn($dto->reminderTime);
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->habitRepository->expects($this->once())->method('findById')->with($habitId, $userId)->willReturn($existingHabit);
         $this->habitRepository->expects($this->once())->method('findByTitle')->with($dto->title, $userId)->willReturn(null); // No other habit with this title
 
         $this->pdo->expects($this->once())->method('beginTransaction');
-        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays)->willReturn($updatedHabit);
+        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays, $dto->reminderTime)->willReturn($updatedHabit);
         $this->pdo->expects($this->once())->method('commit');
         $this->pdo->expects($this->never())->method('rollBack');
 
@@ -77,13 +79,14 @@ class UpdateHabitUseCaseTest extends TestCase
         $this->assertEquals($dto->title, $response->title);
         $this->assertEquals($userId, $response->userId);
         $this->assertCount(2, $response->weekDays);
+        $this->assertEquals($dto->reminderTime, $response->reminderTime);
     }
 
     public function testShouldUpdateHabitWithSameTitleSuccessfully(): void
     {
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('Original Habit', [0, 1]);
+        $dto = new UpdateHabitRequestDTO('Original Habit', [0, 1], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -97,6 +100,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $existingHabit->method('getCreatedAt')->willReturn(new DateTimeImmutable());
         $existingHabit->method('getUpdatedAt')->willReturn(new DateTimeImmutable());
         $existingHabit->method('getHabitWeekDays')->willReturn(new ArrayCollection());
+        $existingHabit->method('getReminderTime')->willReturn('10:00');
 
         /** @var Habit&MockObject $updatedHabit */
         $updatedHabit = $this->createMock(Habit::class);
@@ -109,6 +113,7 @@ class UpdateHabitUseCaseTest extends TestCase
             new HabitWeekDay(habitId: $habitId, weekDay: 0),
             new HabitWeekDay(habitId: $habitId, weekDay: 1),
         ]));
+        $updatedHabit->method('getReminderTime')->willReturn($dto->reminderTime);
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->habitRepository->expects($this->once())->method('findById')->with($habitId, $userId)->willReturn($existingHabit);
@@ -116,7 +121,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $this->habitRepository->expects($this->never())->method('findByTitle');
 
         $this->pdo->expects($this->once())->method('beginTransaction');
-        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays)->willReturn($updatedHabit);
+        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays, $dto->reminderTime)->willReturn($updatedHabit);
         $this->pdo->expects($this->once())->method('commit');
         $this->pdo->expects($this->never())->method('rollBack');
 
@@ -127,6 +132,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $this->assertEquals($dto->title, $response->title);
         $this->assertEquals($userId, $response->userId);
         $this->assertCount(2, $response->weekDays);
+        $this->assertEquals($dto->reminderTime, $response->reminderTime);
     }
 
     public function testShouldThrowHabitNotFoundExceptionIfHabitNotFound(): void
@@ -136,7 +142,7 @@ class UpdateHabitUseCaseTest extends TestCase
 
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('Any Title', [0]);
+        $dto = new UpdateHabitRequestDTO('Any Title', [0], null);
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->habitRepository->expects($this->once())->method('findById')->with($habitId, $userId)->willReturn(null);
@@ -154,7 +160,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $habitId = 1;
         $userId = 1;
         $anotherUserId = 2;
-        $dto = new UpdateHabitRequestDTO('Any Title', [0]);
+        $dto = new UpdateHabitRequestDTO('Any Title', [0], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -179,7 +185,7 @@ class UpdateHabitUseCaseTest extends TestCase
 
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('Existing Habit', [0]);
+        $dto = new UpdateHabitRequestDTO('Existing Habit', [0], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -211,7 +217,7 @@ class UpdateHabitUseCaseTest extends TestCase
 
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('', []); // Invalid DTO
+        $dto = new UpdateHabitRequestDTO('', [], null); // Invalid DTO
 
         $this->validationService->expects($this->once())->method('validate')->with($dto)->willThrowException(new ValidationException('Validation failed.'));
         $this->habitRepository->expects($this->never())->method('findById');
@@ -226,7 +232,7 @@ class UpdateHabitUseCaseTest extends TestCase
 
         $habitId = 1;
         $userId = 1;
-        $dto = new UpdateHabitRequestDTO('Updated Habit', [0]);
+        $dto = new UpdateHabitRequestDTO('Updated Habit', [0], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);

@@ -49,8 +49,9 @@ class CreateHabitUseCase
 
         try {
             $habit = new Habit(
-                user: $user,
                 title: $dto->title,
+                user: $user,
+                reminderTime: $dto->reminderTime,
             );
 
             $createdHabit = $this->habitRepository->create($habit, $dto->weekDays);

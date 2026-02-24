@@ -390,7 +390,8 @@ POST /api/v1/habits
 ```json
 {
   "title": "Ler Livros",
-  "week_days": [0, 1, 2, 3, 4]
+  "week_days": [0, 1, 2, 3, 4],
+  "reminder_time": "08:00"
 }
 ```
 
@@ -403,6 +404,7 @@ POST /api/v1/habits
     "id": 1,
     "title": "Ler Livros",
     "week_days": [0, 1, 2, 3, 4],
+    "reminder_time": "08:00",
     "created_at": "2024-03-01T10:00:00Z",
     "updated_at": "2024-03-01T10:00:00Z"
   }
@@ -542,6 +544,7 @@ GET /api/v1/habits/{id}
     "id": 1,
     "title": "Ler Livros",
     "week_days": [0, 1, 2, 3, 4],
+    "reminder_time": "08:00",
     "created_at": "2024-03-01T10:00:00Z",
     "updated_at": "2024-03-01T10:00:00Z"
   }
@@ -562,7 +565,8 @@ PUT /api/v1/habits/{id}
 ```json
 {
   "title": "Meditar",
-  "week_days": [0, 1, 2, 3, 4, 5, 6]
+  "week_days": [0, 1, 2, 3, 4, 5, 6],
+  "reminder_time": "09:00"
 }
 ```
 
@@ -575,6 +579,7 @@ PUT /api/v1/habits/{id}
     "id": 1,
     "title": "Meditar",
     "week_days": [0, 1, 2, 3, 4, 5, 6],
+    "reminder_time": "09:00",
     "created_at": "2024-03-01T10:00:00Z",
     "updated_at": "2024-03-01T11:00:00Z"
   }

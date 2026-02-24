@@ -47,9 +47,7 @@ class UpdateHabitUseCase
         $this->pdo->beginTransaction();
 
         try {
-            $habit->setTitle($dto->title);
-
-            $updatedHabit = $this->habitRepository->update($habit, $dto->weekDays);
+            $updatedHabit = $this->habitRepository->update($habit, $dto->weekDays, $dto->reminderTime);
 
             $this->pdo->commit();
         } catch (Exception $exception) {
@@ -57,18 +55,6 @@ class UpdateHabitUseCase
             throw $exception;
         }
 
-        $weekDays = [];
-        foreach ($updatedHabit->getHabitWeekDays() as $habitWeekDay) {
-            $weekDays[] = $habitWeekDay->getWeekDay();
-        }
-
-        return new HabitResponseDTO(
-            id: $updatedHabit->getId(),
-            title: $updatedHabit->getTitle(),
-            weekDays: $weekDays,
-            userId: $updatedHabit->getUser()->getId(),
-            createdAt: $updatedHabit->getCreatedAt()->format('Y-m-d H:i:s'),
-            updatedAt: $updatedHabit->getUpdatedAt()->format('Y-m-d H:i:s'),
-        );
+        return HabitResponseDTO::fromEntity($updatedHabit);
     }
 }

@@ -49,7 +49,7 @@ class CreateHabitUseCaseTest extends TestCase
     public function testShouldCreateHabitSuccessfully(): void
     {
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0, 1, 2, 3, 4, 5, 6]);
+        $dto = new CreateHabitRequestDTO('Read a book', [0, 1, 2, 3, 4, 5, 6], '10:30');
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -59,6 +59,7 @@ class CreateHabitUseCaseTest extends TestCase
         $habit = $this->createMock(Habit::class);
         $habit->method('getTitle')->willReturn($dto->title);
         $habit->method('getUser')->willReturn($user);
+        $habit->method('getReminderTime')->willReturn($dto->reminderTime);
         
         $mockHabitWeekDays = [];
         foreach ($dto->weekDays as $weekDay) {
@@ -75,6 +76,7 @@ class CreateHabitUseCaseTest extends TestCase
         $createdHabit->method('getTitle')->willReturn($dto->title);
         $createdHabit->method('getUser')->willReturn($user);
         $createdHabit->method('getHabitWeekDays')->willReturn(new ArrayCollection($mockHabitWeekDays));
+        $createdHabit->method('getReminderTime')->willReturn($dto->reminderTime);
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->userRepository->expects($this->once())->method('findById')->with($userId)->willReturn($user);
@@ -94,6 +96,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->assertSame(1, $response->id);
         $this->assertEquals($createdHabit->getTitle(), $response->title);
         $this->assertEquals($createdHabit->getUser()->getId(), $response->userId);
+        $this->assertEquals($createdHabit->getReminderTime(), $response->reminderTime);
     }
 
     public function testShouldThrowNotFoundExceptionIfUserNotFound(): void
@@ -102,7 +105,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectExceptionMessage('Usuário não encontrado.');
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0]);
+        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->userRepository->expects($this->once())->method('findById')->with($userId)->willReturn(null);
@@ -118,7 +121,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectExceptionMessage('Já existe um hábito com este título.');
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0]);
+        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -140,7 +143,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('', []); // Invalid DTO
+        $dto = new CreateHabitRequestDTO('', [], null); // Invalid DTO
 
         $this->validationService->expects($this->once())->method('validate')->with($dto)->willThrowException(new ValidationException('Validation failed.'));
         $this->userRepository->expects($this->never())->method('findById');
@@ -155,7 +158,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectException(Exception::class);
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0]);
+        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);

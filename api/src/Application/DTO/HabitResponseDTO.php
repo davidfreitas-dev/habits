@@ -15,6 +15,7 @@ class HabitResponseDTO implements JsonSerializable
         public readonly string $title,
         public readonly array $weekDays,
         public readonly int $userId,
+        public readonly ?string $reminderTime,
         public readonly string $createdAt,
         public readonly string $updatedAt,
     ) {
@@ -27,6 +28,7 @@ class HabitResponseDTO implements JsonSerializable
             'title' => $this->title,
             'week_days' => $this->weekDays,
             'user_id' => $this->userId,
+            'reminder_time' => $this->reminderTime,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
         ];
@@ -41,6 +43,7 @@ class HabitResponseDTO implements JsonSerializable
             title: $habit->getTitle(),
             weekDays: array_values($weekDays),
             userId: $habit->getUser()->getId(),
+            reminderTime: $habit->getReminderTime(),
             createdAt: $habit->getCreatedAt()->format('Y-m-d H:i:s'),
             updatedAt: $habit->getUpdatedAt()->format('Y-m-d H:i:s'),
         );

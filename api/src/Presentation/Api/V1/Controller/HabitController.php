@@ -196,11 +196,8 @@ class HabitController
                 return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
             }
 
-            $data = (array) $request->getParsedBody(); // Changed this line
-            $dto = new UpdateHabitRequestDTO(
-                title: $data['title'] ?? '',
-                weekDays: $data['week_days'] ?? [],
-            );
+            $data = (array) $request->getParsedBody();
+            $dto = UpdateHabitRequestDTO::fromArray($data);
 
             $this->validationService->validate($dto);
 

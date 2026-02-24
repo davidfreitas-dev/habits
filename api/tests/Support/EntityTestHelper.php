@@ -120,6 +120,7 @@ trait EntityTestHelper
             'id' => null,
             'user' => $this->createUser(['id' => self::DEFAULT_USER_ID]),
             'title' => self::DEFAULT_HABIT_TITLE,
+            'reminderTime' => null,            // ✅ adicionar reminderTime nos defaults
             'createdAt' => new DateTimeImmutable(),
             'updatedAt' => new DateTimeImmutable(),
         ];
@@ -128,6 +129,7 @@ trait EntityTestHelper
         $habit = new Habit(
             $mergedData['title'],
             $mergedData['user'],
+            $mergedData['reminderTime'],       // ✅ passar reminderTime na posição correta
             $mergedData['createdAt'],
             $mergedData['updatedAt']
         );
