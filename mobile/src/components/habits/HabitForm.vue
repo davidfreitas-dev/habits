@@ -1,8 +1,11 @@
 <script setup>
 import { ref, watch } from 'vue';
+import { IonDatetime, IonDatetimeButton, IonModal, IonItem, IonLabel, IonIcon } from '@ionic/vue';
+import { notificationsOutline } from 'ionicons/icons';
 import Input from '@/components/ui/Input.vue';
 import Checkbox from '@/components/ui/Checkbox.vue';
 import Button from '@/components/ui/Button.vue';
+import Toggle from '@/components/ui/Toggle.vue';
 
 const emit = defineEmits(['onError', 'onSubmit']);
 
@@ -20,6 +23,8 @@ const props = defineProps({
 const formData = ref({
   title: '',
   weekDays: [],
+  reminderEnabled: false,
+  reminderTime: new Date().toISOString(),
 });
 
 watch(
@@ -27,7 +32,7 @@ watch(
   (newHabit) => {
     if (newHabit) {
       formData.value.title = newHabit.title || '';
-      formData.value.weekDays = []; // Initialize to empty array
+      formData.value.weekDays = [];
       if (newHabit.week_days) {
         if (Array.isArray(newHabit.week_days)) {
           formData.value.weekDays = newHabit.week_days.map(Number);
@@ -37,12 +42,14 @@ watch(
       }
     }
   },
-  { immediate: true } // Executa imediatamente para sincronizar ao montar
+  { immediate: true }
 );
 
 const clearFormData = () => {
   formData.value.title = '';
   formData.value.weekDays = [];
+  formData.value.reminderEnabled = false;
+  formData.value.reminderTime = new Date().toISOString();
 };
 
 defineExpose({ clearFormData });
@@ -70,11 +77,7 @@ const submitForm = () => {
     return;
   }
 
-  const formattedData = {
-    ...formData.value,
-  };
-
-  emit('onSubmit', formattedData);
+  emit('onSubmit', { ...formData.value });
 };
 
 const availableWeekDays = [
@@ -105,6 +108,32 @@ const availableWeekDays = [
       @handle-checkbox-change="toggleWeekDay(index)"
     />
 
+    <!-- Reminder Section -->
+    <ion-item class="ion-no-padding reminder-item">
+      <ion-icon :icon="notificationsOutline" class="reminder-icon" />
+      <ion-label class="ion-no-margin">
+        Ativar lembrete
+      </ion-label>
+      <Toggle v-model:checked="formData.reminderEnabled" />
+    </ion-item>
+
+    <transition name="fade">
+      <ion-item v-if="formData.reminderEnabled" class="ion-no-padding time-item">
+        <ion-label class="ion-no-margin">
+          Horário
+        </ion-label>
+        <ion-datetime-button datetime="reminder-datetime" />
+        <ion-modal :keep-contents-mounted="true">
+          <ion-datetime
+            id="reminder-datetime"
+            v-model="formData.reminderTime"
+            presentation="time"
+            locale="pt-BR"
+          />
+        </ion-modal>
+      </ion-item>
+    </transition>
+
     <Button
       color="primary"
       class="ion-margin-top"
@@ -121,5 +150,68 @@ p {
   color: var(--color-text-primary);
   font-weight: 700;
   margin-top: 1.5rem;
+}
+
+.reminder-item {
+  color: var(--color-text-accent);
+  font-size: 1.1rem;
+  --inner-padding-end: 0;
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--color-background-secondary);
+  padding-top: .25rem;
+}
+
+.time-item {
+  color: var(--color-text-accent);
+  font-size: 1.1rem;
+  --inner-padding-end: 0;
+}
+
+.reminder-icon {
+  font-size: 1.2rem;
+  margin-right: .5rem;
+  --ionicon-stroke-width: 40px;
+  color: var(--color-text-primary);
+  flex-shrink: 0;
+}
+
+ion-datetime-button::part(native) {
+  background: var(--color-background-secondary);
+  color: var(--color-text-accent);
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 6px 12px;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+ion-modal {
+  --background: var(--color-background-elevated);
+  --backdrop-opacity: 0.7;
+  --border-radius: 16px;
+}
+
+ion-modal ion-datetime {
+  background: var(--color-background-elevated);
+  border-radius: 16px;
+  color: var(--color-text-primary);
+  --wheel-highlight-background: var(--color-background-elevated);
+  --wheel-fade-background-rgb: var(--color-background-elevated-rgb);
+}
+
+ion-modal ion-datetime::part(wheel-item) {
+  color: var(--color-text-primary);
+}
+
+ion-modal ion-datetime::part(wheel-item active) {
+  color: var(--color-primary);
 }
 </style>

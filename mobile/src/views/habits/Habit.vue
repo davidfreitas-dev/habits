@@ -28,6 +28,7 @@ const habit = ref({
   id: route.params.id,
   title: '',
   week_days: '',
+  reminder_time: null,
 });
 
 const { showToast } = useToast();
@@ -51,7 +52,7 @@ const handleFormError = (message) => {
 
 const createHabit = async (formData) => {
   await withLoading(async () => {
-    await habitStore.createHabit(formData.title, formData.weekDays);
+    await habitStore.createHabit(formData.title, formData.weekDays, formData.reminder_time);
     habitFormRef.value?.clearFormData();
     showToast('success', 'Hábito criado com sucesso!');
   }, 'Erro ao criar hábito.');
@@ -59,7 +60,7 @@ const createHabit = async (formData) => {
 
 const updateHabit = async (formData) => {
   await withLoading(async () => {
-    await habitStore.updateHabit(habit.value.id, formData.title, formData.weekDays);
+    await habitStore.updateHabit(habit.value.id, formData.title, formData.weekDays, formData.reminder_time);
     showToast('success', 'Hábito atualizado com sucesso!');
     router.go(-1);
   }, 'Erro ao atualizar hábito.');

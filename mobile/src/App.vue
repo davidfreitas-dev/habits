@@ -7,7 +7,7 @@ import { useStatusBar } from '@/composables/useStatusBar';
 import { useNotifications } from '@/composables/useNotifications';
 import { useThemeStore } from '@/stores/theme';
 import { useHabitStore } from '@/stores/habits';
-import { rescheduleAllNotifications } from '@/services/NotificationService';
+import { NotificationService } from '@/services/NotificationService';
 
 const { isConnected } = useNetwork();
 const { setStatusBar, Style } = useStatusBar();
@@ -38,7 +38,7 @@ onMounted(async () => {
     if (granted) {
       try {
         // const habits = await habitStore.fetchAllHabits();
-        // await rescheduleAllNotifications(habits);
+        // await NotificationService.rescheduleAllNotifications(habits);
       } catch (error) {
         console.error('Error rescheduling notifications:', error);
       }
