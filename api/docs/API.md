@@ -453,11 +453,14 @@ GET /api/v1/habits/day?date=YYYY-MM-DD
 
 #### Resumo de Hábitos
 
-Retorna um resumo de hábitos, incluindo a quantidade de hábitos possíveis e completados para todos os dias do ano atual até a data presente.
+Retorna um resumo de hábitos, incluindo a quantidade de hábitos possíveis e completados para todos os dias do ano atual até a data de referência.
 
 ```http
-GET /api/v1/habits/summary
+GET /api/v1/habits/summary?date=YYYY-MM-DD
 ```
+
+**Query Params:**
+- `date`: Opcional. Data de referência ("hoje") no formato `YYYY-MM-DD`. Se omitida, usa a data atual do servidor (UTC).
 
 **Resposta:**
 ```json
@@ -590,11 +593,14 @@ PUT /api/v1/habits/{id}
 
 #### Marcar/Desmarcar Hábito como Completo
 
-Marca ou desmarca um hábito como completo para o dia atual.
+Marca ou desmarca um hábito como completo para um dia específico.
 
 ```http
-PATCH /api/v1/habits/{id}/toggle
+PATCH /api/v1/habits/{id}/toggle?date=YYYY-MM-DD
 ```
+
+**Query Params:**
+- `date`: Opcional. Data no formato `YYYY-MM-DD`. Se omitida, usa a data atual do servidor (UTC).
 
 **Resposta:**
 ```json

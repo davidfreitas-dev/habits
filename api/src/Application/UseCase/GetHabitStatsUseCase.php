@@ -27,9 +27,9 @@ readonly class GetHabitStatsUseCase
     ) {
     }
 
-    public function execute(int $userId, string $period): HabitStatsResponseDTO
+    public function execute(int $userId, string $period, ?DateTimeImmutable $date = null): HabitStatsResponseDTO
     {
-        $endDate = new DateTimeImmutable('today');
+        $endDate = $date ?? new DateTimeImmutable('today');
         $startDate = $this->calculateStartDate($period, $endDate);
 
         $stats = $period === 'W'
@@ -61,7 +61,7 @@ readonly class GetHabitStatsUseCase
             );
         }
 
-        $streaks = $this->habitStatsRepository->getStreaks($userId);
+        $streaks = $this->habitStatsRepository->getStreaks($userId, $endDate);
 
         return new HabitStatsResponseDTO(
             $dtos,

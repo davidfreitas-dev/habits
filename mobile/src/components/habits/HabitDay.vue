@@ -19,7 +19,7 @@ const props = defineProps({
 const { daySize } = useDayDimensions();
 
 const amountAccomplishedPercentage = computed(() => {
-  return props.amountCompleted
+  return props.amountOfHabits > 0
     ? Math.round((props.amountCompleted / props.amountOfHabits) * 100)
     : 0;
 });

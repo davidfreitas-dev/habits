@@ -4,11 +4,16 @@ import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { Capacitor } from '@capacitor/core';
 import { useNetwork } from '@/composables/useNetwork';
 import { useStatusBar } from '@/composables/useStatusBar';
+import { useNotifications } from '@/composables/useNotifications';
 import { useThemeStore } from '@/stores/theme';
+import { useHabitStore } from '@/stores/habits';
+import { rescheduleAllNotifications } from '@/services/NotificationService';
 
 const { isConnected } = useNetwork();
 const { setStatusBar, Style } = useStatusBar();
+const { requestPermission } = useNotifications();
 const themeStore = useThemeStore();
+const habitStore = useHabitStore();
 
 const applyTheme = (isDark) => {
   document.body.classList.toggle('dark', isDark);
@@ -19,7 +24,7 @@ watch(() => themeStore.isDarkMode, (isDark) => {
   applyTheme(isDark);
 });
 
-onMounted(() => {
+onMounted(async () => {
   if (themeStore.isInitialLoad) {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     themeStore.setDarkMode(prefersDark);
@@ -29,6 +34,15 @@ onMounted(() => {
 
   if (Capacitor.isNativePlatform()) {
     window.screen.orientation.lock('portrait');
+    const granted = await requestPermission();
+    if (granted) {
+      try {
+        // const habits = await habitStore.fetchAllHabits();
+        // await rescheduleAllNotifications(habits);
+      } catch (error) {
+        console.error('Error rescheduling notifications:', error);
+      }
+    }
   }
 });
 </script>

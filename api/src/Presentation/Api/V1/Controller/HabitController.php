@@ -53,9 +53,12 @@ class HabitController
                 return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
             }
 
-            $period = $request->getQueryParams()['period'] ?? 'W';
+            $queryParams = $request->getQueryParams();
+            $period = $queryParams['period'] ?? 'W';
+            $dateString = $queryParams['date'] ?? null;
+            $date = $dateString ? new DateTimeImmutable($dateString) : null;
 
-            $stats = $this->getHabitStatsUseCase->execute($userId, $period);
+            $stats = $this->getHabitStatsUseCase->execute($userId, $period, $date);
 
             return $this->jsonResponseFactory->success($stats, 'Estatísticas obtidas com sucesso.');
         } catch (Throwable $e) {
@@ -149,7 +152,10 @@ class HabitController
                 return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
             }
 
-            $summary = $this->getHabitsSummaryUseCase->execute($userId);
+            $dateString = $request->getQueryParams()['date'] ?? null;
+            $date = $dateString ? new DateTimeImmutable($dateString) : null;
+
+            $summary = $this->getHabitsSummaryUseCase->execute($userId, $date);
 
             return $this->jsonResponseFactory->success($summary, 'Resumo de hábitos obtido com sucesso.');
         } catch (Throwable $e) {

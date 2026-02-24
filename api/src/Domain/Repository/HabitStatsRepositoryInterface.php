@@ -19,7 +19,9 @@ interface HabitStatsRepositoryInterface
     public function getAggregatedStats(int $userId, DateTimeImmutable $startDate, DateTimeImmutable $endDate): array;
 
     /**
+     * @param int $userId
+     * @param DateTimeImmutable|null $date The reference date ("today").
      * @return array{current_streak: int, longest_streak: int}
      */
-    public function getStreaks(int $userId): array;
+    public function getStreaks(int $userId, ?DateTimeImmutable $date = null): array;
 }

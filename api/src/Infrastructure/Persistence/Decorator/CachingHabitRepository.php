@@ -154,20 +154,21 @@ class CachingHabitRepository implements HabitRepositoryInterface
         return $habits;
     }
 
-    public function getHabitsSummary(int $userId): array
+    public function getHabitsSummary(int $userId, ?DateTimeImmutable $date = null): array
     {
-        $cacheKey = self::CACHE_PREFIX_SUMMARY . $userId . ':all';
+        $dateSuffix = $date ? $date->format('Y-m-d') : 'all';
+        $cacheKey = self::CACHE_PREFIX_SUMMARY . $userId . ':' . $dateSuffix;
 
         $cachedSummary = $this->cache->get($cacheKey);
         if ($cachedSummary) {
-            $this->logger->info('Cache de sumário completo de hábitos encontrado para o usuário: ' . $userId);
+            $this->logger->info('Cache de sumário de hábitos encontrado para o usuário: ' . $userId . ' (' . $dateSuffix . ')');
 
             return unserialize((string) $cachedSummary);
         }
 
-        $this->logger->info('Cache de sumário completo de hábitos não encontrado para o usuário: ' . $userId);
+        $this->logger->info('Cache de sumário de hábitos não encontrado para o usuário: ' . $userId . ' (' . $dateSuffix . ')');
 
-        $summary = $this->decoratedRepository->getHabitsSummary($userId);
+        $summary = $this->decoratedRepository->getHabitsSummary($userId, $date);
 
         if (!empty($summary)) {
             $this->cache->set($cacheKey, serialize($summary), self::CACHE_TTL);

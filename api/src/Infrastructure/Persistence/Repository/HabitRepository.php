@@ -151,10 +151,10 @@ class HabitRepository implements HabitRepositoryInterface
         return $this->hydrateMultiple($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    public function getHabitsSummary(int $userId): array
+    public function getHabitsSummary(int $userId, ?DateTimeImmutable $date = null): array
     {
-        $currentDate = new DateTimeImmutable()->format(self::DATE_ONLY_FORMAT);
-        $startOfYear = new DateTimeImmutable('first day of January this year')->format(self::DATE_ONLY_FORMAT);
+        $currentDate = ($date ?? new DateTimeImmutable())->format(self::DATE_ONLY_FORMAT);
+        $startOfYear = (new DateTimeImmutable('first day of January this year'))->format(self::DATE_ONLY_FORMAT);
 
         $sql = "
             WITH RECURSIVE date_range AS (

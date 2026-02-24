@@ -24,8 +24,11 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
         return $this->fetchStats($userId, $startDate, $endDate);
     }
 
-    public function getStreaks(int $userId): array
+    public function getStreaks(int $userId, ?DateTimeImmutable $date = null): array
     {
+        $referenceDate = $date ?? new DateTimeImmutable('today');
+        $referenceDateString = $referenceDate->format('Y-m-d');
+
         // A streak is a sequence of consecutive days where all habits scheduled for that day were completed.
         // We consider days starting from the user's first habit creation date.
 
@@ -37,7 +40,7 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
                 UNION ALL
                 SELECT date + INTERVAL 1 DAY
                 FROM dates
-                WHERE date < CURRENT_DATE
+                WHERE date < :reference_date1
             ),
             daily_completion AS (
                 SELECT 
@@ -107,6 +110,7 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
             'user_id1' => $userId,
             'user_id2' => $userId,
             'user_id3' => $userId,
+            'reference_date1' => $referenceDateString,
         ]);
 
         $streaks = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -121,7 +125,7 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
         // We need to check if the last sequence ends today or yesterday
         $currentStreakSql = "
             WITH RECURSIVE dates AS (
-                SELECT CURRENT_DATE AS date
+                SELECT CAST(:reference_date2 AS DATE) AS date
                 UNION ALL
                 SELECT date - INTERVAL 1 DAY
                 FROM dates
@@ -158,6 +162,7 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
             'user_id1' => $userId,
             'user_id2' => $userId,
             'user_id3' => $userId,
+            'reference_date2' => $referenceDateString,
         ]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -169,7 +174,7 @@ class HabitStatsRepository implements HabitStatsRepositoryInterface
         foreach ($rows as $row) {
             $total = (int) $row['total'];
             $completed = (int) $row['completed'];
-            $isToday = $row['date'] === date('Y-m-d');
+            $isToday = $row['date'] === $referenceDateString;
 
             if ($total === 0) {
                 // Skip days with no habits scheduled
