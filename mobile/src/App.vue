@@ -37,8 +37,8 @@ onMounted(async () => {
     const granted = await requestPermission();
     if (granted) {
       try {
-        // const habits = await habitStore.fetchAllHabits();
-        // await NotificationService.rescheduleAllNotifications(habits);
+        const habits = await habitStore.fetchAllHabits();
+        await NotificationService.rescheduleAllNotifications(habits);
       } catch (error) {
         console.error('Error rescheduling notifications:', error);
       }

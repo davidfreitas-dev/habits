@@ -19,11 +19,17 @@ const props = defineProps({
   },
 });
 
+const getLocalISOString = () => {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+  return new Date(now - offset).toISOString();
+};
+
 const formData = ref({
   title: '',
   weekDays: [],
   reminderEnabled: false,
-  reminderTime: new Date().toISOString(),
+  reminderTime: getLocalISOString(),
 });
 
 watch(
@@ -39,6 +45,14 @@ watch(
           formData.value.weekDays = newHabit.week_days.split(',').map(Number);
         }
       }
+
+      if (newHabit.reminder_time) {
+        formData.value.reminderEnabled = true;
+        formData.value.reminderTime = newHabit.reminder_time;
+      } else {
+        formData.value.reminderEnabled = false;
+        formData.value.reminderTime = getLocalISOString();
+      }
     }
   },
   { immediate: true }
@@ -48,7 +62,7 @@ const clearFormData = () => {
   formData.value.title = '';
   formData.value.weekDays = [];
   formData.value.reminderEnabled = false;
-  formData.value.reminderTime = new Date().toISOString();
+  formData.value.reminderTime = getLocalISOString();
 };
 
 defineExpose({ clearFormData });
@@ -76,7 +90,19 @@ const submitForm = () => {
     return;
   }
 
-  emit('onSubmit', { ...formData.value });
+  let reminderTimeValue = formData.value.reminderTime;
+
+  // Extract only HH:mm if it's an ISO string
+  if (reminderTimeValue && reminderTimeValue.includes('T')) {
+    reminderTimeValue = reminderTimeValue.split('T')[1].substring(0, 5);
+  } else if (reminderTimeValue && reminderTimeValue.length > 5) {
+    reminderTimeValue = reminderTimeValue.substring(0, 5);
+  }
+
+  emit('onSubmit', {
+    ...formData.value,
+    reminder_time: formData.value.reminderEnabled ? reminderTimeValue : null
+  });
 };
 
 const availableWeekDays = [
@@ -164,14 +190,6 @@ p {
   --inner-padding-end: 0;
 }
 
-.reminder-icon {
-  font-size: 1.2rem;
-  margin-right: .5rem;
-  --ionicon-stroke-width: 40px;
-  color: var(--color-text-primary);
-  flex-shrink: 0;
-}
-
 ion-datetime-button::part(native) {
   background: var(--color-background-secondary);
   color: var(--color-text-accent);
@@ -197,11 +215,8 @@ ion-modal {
 }
 
 ion-modal ion-datetime {
-  background: var(--color-background-elevated);
-  border-radius: 16px;
-  color: var(--color-text-primary);
-  --wheel-highlight-background: var(--color-background-elevated);
-  --wheel-fade-background-rgb: var(--color-background-elevated-rgb);
+  --background: var(--color-background-elevated);
+  --background-rgb: 30, 30, 30; /* valor RGB da sua cor, sem alpha */
 }
 
 ion-modal ion-datetime::part(wheel-item) {

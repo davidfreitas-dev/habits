@@ -9,9 +9,10 @@ Habitus is a powerful habit management application designed to help you track an
 - **Customized Habit Tracking**: Create and customize habits for your specific goals and routines.
 - **Progress Tracking**: Visualize habit streaks, completion rates, and overall progress.
 - **Cloud Sync**: Store and sync habits across devices for seamless access and backup.
+- **Reminders and Notifications**: Set custom daily reminders to stay on track and receive fun, motivating notifications.
 
 ### To Do
-- **Reminders and Notifications**: Set reminders to stay on track and receive notifications.
+- **Social Features**: Connect with friends and share your progress.
 
 ## Screenshots
 
@@ -20,6 +21,9 @@ Habitus is a powerful habit management application designed to help you track an
     <td><img src="mobile/src/assets/screenshots/Register.jpeg" alt="Register Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/Home.jpeg" alt="Home Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/Habit.jpeg" alt="Habit Screen" width="200"></td>
+  </tr>
+  <tr>
+    <td><img src="mobile/src/assets/screenshots/Edit.jpeg" alt="Options Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/Stats.jpeg" alt="Stats Screen" width="200"></td>
     <td><img src="mobile/src/assets/screenshots/Options.jpeg" alt="Options Screen" width="200"></td>
   </tr>

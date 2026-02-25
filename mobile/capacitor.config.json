@@ -3,6 +3,9 @@
   "appName": "habitus",
   "webDir": "dist",
   "plugins": {
+    "LocalNotifications": {
+      "iconColor": "#a3e635"
+    },
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,
