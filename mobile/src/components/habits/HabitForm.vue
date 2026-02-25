@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { IonDatetime, IonDatetimeButton, IonModal, IonItem, IonLabel } from '@ionic/vue';
+import { IonDatetime, IonDatetimeButton, IonModal, IonList, IonItem, IonLabel } from '@ionic/vue';
 import Input from '@/components/ui/Input.vue';
 import Checkbox from '@/components/ui/Checkbox.vue';
 import Button from '@/components/ui/Button.vue';
@@ -133,30 +133,30 @@ const availableWeekDays = [
       @handle-checkbox-change="toggleWeekDay(index)"
     />
 
-    <!-- Reminder Section -->
-    <ion-item class="ion-no-padding reminder-item">
+    <ion-item lines="none" class="ion-no-padding">
       <ion-label class="ion-no-margin">
-        Ativar lembrete
+        <b>Ativar lembrete</b>
       </ion-label>
       <Toggle v-model:checked="formData.reminderEnabled" />
     </ion-item>
-
-    <transition name="fade">
-      <ion-item v-if="formData.reminderEnabled" class="ion-no-padding time-item">
-        <ion-label class="ion-no-margin">
-          Horário
-        </ion-label>
-        <ion-datetime-button datetime="reminder-datetime" />
-        <ion-modal :keep-contents-mounted="true">
-          <ion-datetime
-            id="reminder-datetime"
-            v-model="formData.reminderTime"
-            presentation="time"
-            locale="pt-BR"
-          />
-        </ion-modal>
-      </ion-item>
-    </transition>
+    <ion-item
+      v-if="formData.reminderEnabled"
+      lines="none"
+      class="ion-no-padding"
+    >
+      <ion-label class="ion-no-margin">
+        Horário
+      </ion-label>
+      <ion-datetime-button datetime="reminder-datetime" />
+      <ion-modal :keep-contents-mounted="true">
+        <ion-datetime
+          id="reminder-datetime"
+          v-model="formData.reminderTime"
+          presentation="time"
+          locale="pt-BR"
+        />
+      </ion-modal>
+    </ion-item>
 
     <Button
       color="primary"
@@ -176,15 +176,7 @@ p {
   margin-top: 1.5rem;
 }
 
-.reminder-item {
-  color: var(--color-text-accent);
-  font-size: 1.1rem;
-  margin-top: 1.5rem;
-  padding-top: .25rem;
-  --inner-padding-end: 0;
-}
-
-.time-item {
+ion-item {
   color: var(--color-text-accent);
   font-size: 1.1rem;
   --inner-padding-end: 0;
@@ -196,16 +188,6 @@ ion-datetime-button::part(native) {
   border-radius: 8px;
   font-size: 1rem;
   padding: 6px 12px;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-  transform: translateY(-6px);
 }
 
 ion-modal {
