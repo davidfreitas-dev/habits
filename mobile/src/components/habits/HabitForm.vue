@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { IonDatetime, IonDatetimeButton, IonModal, IonItem, IonLabel, IonIcon } from '@ionic/vue';
-import { notificationsOutline } from 'ionicons/icons';
+import { IonDatetime, IonDatetimeButton, IonModal, IonItem, IonLabel } from '@ionic/vue';
 import Input from '@/components/ui/Input.vue';
 import Checkbox from '@/components/ui/Checkbox.vue';
 import Button from '@/components/ui/Button.vue';
@@ -110,7 +109,6 @@ const availableWeekDays = [
 
     <!-- Reminder Section -->
     <ion-item class="ion-no-padding reminder-item">
-      <ion-icon :icon="notificationsOutline" class="reminder-icon" />
       <ion-label class="ion-no-margin">
         Ativar lembrete
       </ion-label>
@@ -155,10 +153,9 @@ p {
 .reminder-item {
   color: var(--color-text-accent);
   font-size: 1.1rem;
-  --inner-padding-end: 0;
   margin-top: 1.5rem;
-  border-top: 1px solid var(--color-background-secondary);
   padding-top: .25rem;
+  --inner-padding-end: 0;
 }
 
 .time-item {

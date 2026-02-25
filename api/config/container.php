@@ -11,6 +11,7 @@ use App\Application\{
     UseCase\CreateUserAdminUseCase,
     UseCase\DeleteHabitUseCase,
     UseCase\DeleteUserUseCase,
+    UseCase\GetAllHabitsUseCase,
     UseCase\GetErrorLogDetailsUseCase,
     UseCase\GetHabitDetailsUseCase,
     UseCase\GetHabitStatsUseCase,
@@ -407,6 +408,10 @@ return [
         $c->get(UserRepositoryInterface::class),
     ),
 
+    GetAllHabitsUseCase::class => fn (ContainerInterface $c) => new GetAllHabitsUseCase(
+        $c->get(HabitRepositoryInterface::class),
+    ),
+
     GetHabitStatsUseCase::class => fn (ContainerInterface $c) => new GetHabitStatsUseCase(
         $c->get(HabitStatsRepositoryInterface::class),
     ),
@@ -428,6 +433,7 @@ return [
         $c->get(DeleteHabitUseCase::class),
         $c->get(ToggleHabitUseCase::class),
         $c->get(GetHabitStatsUseCase::class),
+        $c->get(GetAllHabitsUseCase::class),
         $c->get(ValidationService::class),
         $c->get(JsonResponseFactory::class),
         $c->get(LoggerInterface::class),

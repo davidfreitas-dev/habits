@@ -19,6 +19,7 @@
     - [Deletar conta](#deletar-conta)
   - [Hábitos](#hábitos)
     - [Criar Hábito](#criar-hábito)
+    - [Listar todos os hábitos](#listar-todos-os-hábitos)
     - [Listar hábitos por dia](#listar-hábitos-por-dia)
     - [Resumo de Hábitos](#resumo-de-hábitos)
     - [Estatísticas de Hábitos](#estatísticas-de-hábitos)
@@ -217,7 +218,7 @@ POST /api/v1/auth/reset-password
 {
   "email": "joao@example.com",
   "code": "123456",
-  "password": "novaSenha123"
+  "password": "novaSenha123",
   "password_confirm": "novaSenha123"
 }
 ```
@@ -408,6 +409,41 @@ POST /api/v1/habits
     "created_at": "2024-03-01T10:00:00Z",
     "updated_at": "2024-03-01T10:00:00Z"
   }
+}
+```
+
+---
+
+#### Listar todos os hábitos
+
+Retorna todos os hábitos cadastrados para o usuário autenticado.
+
+```http
+GET /api/v1/habits
+```
+
+**Resposta:**
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "title": "Ler Livros",
+      "week_days": [0, 1, 2, 3, 4],
+      "reminder_time": "08:00",
+      "created_at": "2024-03-01T10:00:00Z",
+      "updated_at": "2024-03-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Meditar",
+      "week_days": [0, 1, 2, 3, 4, 5, 6],
+      "reminder_time": "09:00",
+      "created_at": "2024-03-01T10:30:00Z",
+      "updated_at": "2024-03-01T10:30:00Z"
+    }
+  ]
 }
 ```
 

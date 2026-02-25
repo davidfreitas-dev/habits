@@ -17,6 +17,7 @@ class CachingHabitRepository implements HabitRepositoryInterface
     private const CACHE_PREFIX_POSSIBLE = 'habit:possible:';
     private const CACHE_PREFIX_COMPLETED = 'habit:completed:';
     private const CACHE_PREFIX_SUMMARY = 'habit:summary:';
+    private const CACHE_PREFIX_ALL = 'habit:all:';
     private const CACHE_TTL = 3600; // 1 hour for habits
 
     public function __construct(
@@ -29,10 +30,9 @@ class CachingHabitRepository implements HabitRepositoryInterface
     public function create(Habit $habit, array $weekDays): Habit
     {
         $createdHabit = $this->decoratedRepository->create($habit, $weekDays);
-        // Invalidate relevant cache entries after creation
         $this->invalidateHabitCache($createdHabit->getId(), $createdHabit->getUser()->getId());
-        // Also invalidate summary and possible habits for the current date, as a new habit changes the counts
         $this->invalidateSummaryAndPossibleHabitsCache($createdHabit->getUser()->getId());
+        $this->invalidateAllHabitsCache($createdHabit->getUser()->getId());
 
         return $createdHabit;
     }
@@ -86,6 +86,7 @@ class CachingHabitRepository implements HabitRepositoryInterface
         // Invalidate old cache entries first
         $this->invalidateHabitCache($habit->getId(), $habit->getUser()->getId());
         $this->invalidateSummaryAndPossibleHabitsCache($habit->getUser()->getId());
+        $this->invalidateAllHabitsCache($habit->getUser()->getId());
 
         $updatedHabit = $this->decoratedRepository->update($habit, $weekDays);
 
@@ -106,6 +107,7 @@ class CachingHabitRepository implements HabitRepositoryInterface
             $this->cache->delete(self::CACHE_PREFIX_TITLE . \md5($habitToDelete->getTitle()) . ':' . $userId);
             $this->invalidateHabitCache($id, $userId);
             $this->invalidateSummaryAndPossibleHabitsCache($userId);
+            $this->invalidateAllHabitsCache($userId);
         }
 
         return $deleted;
@@ -177,9 +179,32 @@ class CachingHabitRepository implements HabitRepositoryInterface
         return $summary;
     }
 
+    public function findAllByUserId(int $userId): array
+    {
+        $cacheKey = self::CACHE_PREFIX_ALL . $userId;
+
+        $cachedHabits = $this->cache->get($cacheKey);
+        if ($cachedHabits) {
+            $this->logger->info('Cache de todos os hábitos encontrado para o usuário: ' . $userId);
+
+            return unserialize((string) $cachedHabits);
+        }
+
+        $this->logger->info('Cache de todos os hábitos não encontrado para o usuário: ' . $userId);
+
+        $habits = $this->decoratedRepository->findAllByUserId($userId);
+
+        if (!empty($habits)) {
+            $this->cache->set($cacheKey, serialize($habits), self::CACHE_TTL);
+        }
+
+        return $habits;
+    }
+
     public function invalidateUserHabitsCache(int $userId): void
     {
         $this->invalidateSummaryAndPossibleHabitsCache($userId);
+        $this->invalidateAllHabitsCache($userId);
     }
 
     private function setHabitCache(Habit $habit): void
@@ -219,5 +244,11 @@ class CachingHabitRepository implements HabitRepositoryInterface
         $completedPattern = self::CACHE_PREFIX_COMPLETED . $userId . ':*';
         $deletedCompletedKeys = $this->cache->deleteByPattern($completedPattern);
         $this->logger->info('Invalidados ' . $deletedCompletedKeys . ' entradas de cache de hábitos completados para o usuário: ' . $userId);
+    }
+
+    private function invalidateAllHabitsCache(int $userId): void
+    {
+        $this->cache->delete(self::CACHE_PREFIX_ALL . $userId);
+        $this->logger->info('Cache de todos os hábitos invalidado para o usuário: ' . $userId);
     }
 }

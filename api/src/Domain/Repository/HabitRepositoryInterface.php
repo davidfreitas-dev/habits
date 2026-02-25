@@ -88,4 +88,13 @@ interface HabitRepositoryInterface
      * @return array An array of habit summary data (date, completed count, total count).
      */
     public function getHabitsSummary(int $userId, ?DateTimeImmutable $date = null): array;
+
+    /**
+     * Finds all habits for a given user.
+     *
+     * @param int $userId The ID of the user.
+     *
+     * @return Habit[] An array of habit entities.
+     */
+    public function findAllByUserId(int $userId): array;
 }

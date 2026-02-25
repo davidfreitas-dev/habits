@@ -10,6 +10,7 @@ use App\Application\DTO\UpdateHabitRequestDTO;
 use App\Application\Service\ValidationService;
 use App\Application\UseCase\CreateHabitUseCase;
 use App\Application\UseCase\DeleteHabitUseCase;
+use App\Application\UseCase\GetAllHabitsUseCase;
 use App\Application\UseCase\GetHabitDetailsUseCase;
 use App\Application\UseCase\GetHabitsByDayUseCase;
 use App\Application\UseCase\GetHabitsSummaryUseCase;
@@ -39,10 +40,32 @@ class HabitController
         private readonly DeleteHabitUseCase $deleteHabitUseCase,
         private readonly ToggleHabitUseCase $toggleHabitUseCase,
         private readonly GetHabitStatsUseCase $getHabitStatsUseCase,
+        private readonly GetAllHabitsUseCase $getAllHabitsUseCase,
         private readonly ValidationService $validationService,
         private readonly JsonResponseFactory $jsonResponseFactory,
         private readonly LoggerInterface $logger,
     ) {
+    }
+
+    public function getAll(Request $request): Response
+    {
+        try {
+            $userId = (int) $request->getAttribute('user_id');
+            if ($userId === 0) {
+                return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
+            }
+
+            $habits = $this->getAllHabitsUseCase->execute($userId);
+
+            return $this->jsonResponseFactory->success($habits, 'Lista de hábitos obtida com sucesso.');
+        } catch (Throwable $e) {
+            $this->logger->error('Erro inesperado ao buscar todos os hábitos', ['exception' => $e]);
+            return $this->jsonResponseFactory->error(
+                'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+                null,
+                500,
+            );
+        }
     }
 
     public function getStats(Request $request): Response

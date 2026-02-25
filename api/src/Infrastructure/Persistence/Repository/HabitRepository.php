@@ -207,6 +207,15 @@ class HabitRepository implements HabitRepositoryInterface
         ], $results);
     }
 
+    public function findAllByUserId(int $userId): array
+    {
+        $sql = 'SELECT * FROM habits WHERE user_id = :user_id ORDER BY created_at DESC';
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['user_id' => $userId]);
+
+        return $this->hydrateMultiple($stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
     private function syncWeekDays(Habit $habit, array $weekDays): void
     {
         $this->deleteWeekDays($habit->getId());

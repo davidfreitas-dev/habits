@@ -844,6 +844,35 @@
                     "response": []
                 },
                 {
+                    "name": "List All",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{accessToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/habits",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "habits"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
                     "name": "List by Day",
                     "request": {
                         "auth": {

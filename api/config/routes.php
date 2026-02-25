@@ -41,6 +41,7 @@ return function (App $app): void {
           ->add(JwtAuthMiddleware::class);
 
         $group->group('/habits', function (RouteCollectorProxy $habitsGroup): void {
+            $habitsGroup->get('', [HabitController::class, 'getAll']);
             $habitsGroup->post('', [HabitController::class, 'create']);
             $habitsGroup->get('/day', [HabitController::class, 'getByDay']);
             $habitsGroup->get('/summary', [HabitController::class, 'getSummary']);
