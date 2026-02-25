@@ -4,12 +4,13 @@
   "webDir": "dist",
   "plugins": {
     "LocalNotifications": {
-      "iconColor": "#a3e635"
+      "smallIcon": "ic_stat_habitus",
+      "iconColor": "#a3e635"      
     },
     "SplashScreen": {
-      "launchShowDuration": 3000,
+      "launchShowDuration": 2000,
       "launchAutoHide": true,
-      "launchFadeOutDuration": 1500,
+      "launchFadeOutDuration": 1000,
       "backgroundColor": "#09090A",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",

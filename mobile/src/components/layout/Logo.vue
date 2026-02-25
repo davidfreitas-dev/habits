@@ -1,7 +1,7 @@
 <template>
   <router-link to="/tabs/options">
     <img
-      src="../assets/logo.svg"
+      src="../../../assets/logo.svg"
       alt="Logo do aplicativo"
       class="ion-padding"
     >

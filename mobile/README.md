@@ -1,204 +1,205 @@
-# 🛠️ Habits - Habit Tracking App
+# 🌿 Habitus — Habit Tracking App
 
-Seja bem-vindo ao **Habits**, um aplicativo para rastrear e gerenciar seus hábitos diários. 🚀
-
-## 🌟 Tecnologias Utilizadas
-
-- **[Ionic](https://ionicframework.com/):** Framework para desenvolvimento de aplicativos híbridos.
-- **[Vue 3](https://vuejs.org/):** Framework JavaScript progressivo para interfaces de usuário.
+Aplicativo para rastrear e gerenciar seus hábitos diários, construído com Ionic, Vue 3 e Capacitor.
 
 ---
 
-## 🏗️ Arquitetura do Projeto
+## 🌟 Tecnologias
 
-O projeto segue uma arquitetura modular baseada em camadas, focada em separação de preocupações e escalabilidade:
+- **[Ionic](https://ionicframework.com/)** — Framework para apps híbridos
+- **[Vue 3](https://vuejs.org/)** — Framework JavaScript progressivo
+- **[Capacitor](https://capacitorjs.com/)** — Runtime nativo para iOS e Android
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue uma arquitetura modular baseada em camadas, com foco em separação de responsabilidades e escalabilidade:
 
 ```text
 src/
 ├── api/            # Configuração do cliente HTTP (Axios) e interceptores
-├── assets/         # Recursos estáticos (imagens, ícones, logotipos)
 ├── components/     # Componentes Vue reutilizáveis
 │   ├── ui/         # Componentes base e atômicos (Button, Input)
 │   ├── habits/     # Componentes de domínio (HabitDay, Summary)
 │   └── layout/     # Componentes de estrutura (Header, Container)
-├── composables/    # Lógica reutilizável (Hooks/Composition API)
+├── composables/    # Lógica reutilizável com Composition API
 ├── constants/      # Strings globais, endpoints e chaves de storage
+├── lib/            # Bibliotecas externas
 ├── router/         # Definições de rotas e guardas de navegação
-├── services/       # Camada de comunicação com a API (Regras de I/O)
+├── services/       # Camada de comunicação com a API
 ├── stores/         # Gerenciamento de estado global (Pinia)
-├── theme/          # Estilos globais e variáveis de tema do Ionic
+├── theme/          # Estilos globais e variáveis de tema Ionic
 └── views/          # Páginas organizadas por contexto (auth, habits, settings)
 ```
 
-### Fluxo de Dados
-1.  **Views** acionam ações nos **Stores**.
-2.  **Stores** utilizam os **Services** para buscar ou enviar dados.
-3.  **Services** utilizam a instância da **API** para requisições HTTP.
-4.  **Constants** centralizam endpoints e chaves para evitar duplicação.
+**Fluxo de dados:** Views → Stores → Services → API
 
 ---
 
-## 🚀 Guia de Configuração
+## 🚀 Configuração Inicial
 
-### 1. Instale as Dependências Principais
+### Pré-requisitos
 
-#### Instale o Node.js (versão 18)
+**Node.js 18**
+```sh
+node -v  # deve exibir v18.x.x
+```
 
-1. Acesse [Node.js](https://nodejs.org/) e baixe a versão 18.x.
-2. Verifique se o Node.js foi instalado corretamente:
-   ```sh
-   node -v
-   ```
-   A saída deve exibir algo como `v18.x.x`.
+**Ionic CLI**
+```sh
+npm install -g @ionic/cli
+ionic --version
+```
 
-#### Instale o Ionic CLI
+### Instalação
 
-1. Instale o Ionic CLI globalmente:
-   ```sh
-   npm install -g @ionic/cli
-   ```
-2. Verifique se a instalação foi bem-sucedida:
-   ```sh
-   ionic --version
-   ```
+```sh
+git clone https://github.com/davidfreitas-dev/habits.git
+cd habits
+npm install
+```
 
----
+### Variáveis de ambiente
 
-### 2. Configure o Projeto
+Crie um arquivo `.env.development` na raiz do projeto e configure `VITE_BASE_URL` conforme seu ambiente de teste:
 
-1. Clone este repositório:
-   ```sh
-   git clone https://github.com/davidfreitas-dev/habits.git
-   cd habits
-   ```
+```env
+# Navegador (Web)
+VITE_BASE_URL=http://localhost:8000/api/v1
 
-2. Instale as dependências:
-   ```sh
-   npm install
-   ```
+# Emulador Android (10.0.2.2 mapeia para o localhost da máquina host)
+VITE_BASE_URL=http://10.0.2.2:8000/api/v1
 
-3. Configure o arquivo de ambiente:
-   Crie um arquivo `.env.development` na raiz da pasta `mobile/` e configure a variável `VITE_BASE_URL` de acordo com o seu cenário de teste:
-
-   ```env
-   # Escolha APENAS UM dos cenários abaixo:
-
-   # CENÁRIO 1: Navegador (Web)
-   # Use localhost se estiver rodando apenas no browser
-   VITE_BASE_URL=http://localhost:8000/api/v1
-
-   # CENÁRIO 2: Emulador Android
-   # O endereço 10.0.2.2 mapeia para o localhost da sua máquina host
-   VITE_BASE_URL=http://10.0.2.2:8000/api/v1
-
-   # CENÁRIO 3: Dispositivo Físico (Android/iOS)
-   # Use o IP real da sua máquina na rede local (Ex: 192.168.x.x)
-   # Certifique-se de que o celular está no mesmo Wi-Fi que o PC
-   VITE_BASE_URL=http://192.168.x.x:8000/api/v1
-   ```
+# Dispositivo físico (use o IP da sua máquina na rede local)
+VITE_BASE_URL=http://192.168.x.x:8000/api/v1
+```
 
 ---
 
-## 🛠️ Comandos Principais
+## 🛠️ Comandos
 
-### 🔧 Desenvolvimento Local
+### Desenvolvimento
 
-Para iniciar o servidor de desenvolvimento com recarregamento automático (Hot-Reload):
 ```sh
 ionic serve
 ```
 
----
+### Build
 
-### 📱 Adicionar Plataformas
+```sh
+npm run build
+```
 
-Adicione plataformas para iOS e Android:
+### Adicionar plataformas
+
 ```sh
 npx cap add ios
 npx cap add android
 ```
 
----
+### Sincronizar
 
-### 🔄 Sincronizar Arquivos
-
-Para garantir que os arquivos do projeto estejam atualizados nas plataformas:
 ```sh
 npx cap sync
 ```
 
----
+### Executar no dispositivo/emulador
 
-### ▶️ Executar no Dispositivo ou Emulador
-
-#### Executar no iOS:
 ```sh
 npx cap run ios
-```
-
-#### Executar no Android:
-```sh
 npx cap run android
 ```
 
----
+### Live Reload
 
-### 🔄 Live Reload
-
-Para usar o modo de recarregamento ao vivo em dispositivos ou emuladores:
-
-#### iOS:
 ```sh
+# iOS
 ionic capacitor run ios -l --external
-```
 
-#### Android:
-```sh
+# Android
 ionic capacitor run android -l --external
 ```
 
 ---
 
-## 📚 Recursos Adicionais
+## 🖼️ Gerando Assets (Ícones e Splash Screen)
 
-- Documentação do [Ionic](https://ionicframework.com/docs).
-- Documentação do [Vue 3](https://vuejs.org/guide/).
+Os assets do app (ícones e splash screens) são gerados automaticamente pela ferramenta oficial `@capacitor/assets`.
+
+> ⚠️ As plataformas iOS e Android precisam estar adicionadas antes de gerar os assets.
+
+### 1. Prepare as imagens fonte
+
+Certifique-se de ter os arquivos na pasta `assets/` na raiz do projeto com as imagens abaixo:
+
+```text
+assets/
+├── icon-only.png         # Ícone do app — mínimo 1024x1024px, sem transparência
+├── icon-foreground.png   # Camada de frente para Adaptive Icons (Android)
+├── icon-background.png   # Camada de fundo para Adaptive Icons (Android)
+├── splash.png            # Splash screen — mínimo 2732x2732px
+└── splash-dark.png       # Splash screen dark mode (opcional)
+```
+
+### 2. Gere os assets
+
+```sh
+npx capacitor-assets generate
+```
+
+Isso cria automaticamente todos os tamanhos necessários dentro das pastas `ios/` e `android/`.
 
 ---
 
-### Guia Passo a Passo: Criando um `.ipa` para Testes de Desenvolvimento
+## 🔔 Personalizando o Ícone de Notificação (Android)
 
-Este guia explica como construir e empacotar um aplicativo como um arquivo `.ipa` usando o Xcode, para fins de testes de desenvolvimento.
+> ⚠️ O ícone que aparece na status bar do Android segue regras específicas do sistema: deve ser **monocromático**, com fundo transparente e design em branco. Tamanho recomendado: **24x24dp** (mas pode usar 96x96px como fonte).
 
-#### Requisitos
-- Xcode instalado no macOS.
-- Um projeto configurado e compilável no Xcode.
+**1. Defina o arquivo de imagem a ser usado como ícone da notificação**
 
-#### Passos
+Copie o arquivo de imagem *ic_stat_habitus.png* que se encontra na pasta `assets/` e cole na pasta `/drawable` como indicado abaixo:
 
-1. **Compile o Projeto**
-   - Abra o Xcode e carregue seu projeto.
-   - Pressione `⌘ + B` para compilar o projeto.
-   - Certifique-se de que a compilação seja concluída sem erros.
+```
+android/app/src/main/res/drawable/ic_stat_habitus.png
+```
 
-2. **Localize o Arquivo `.app`**
-   - Na barra lateral esquerda do Xcode, navegue até a pasta `Products`.
-   - Dentro da pasta, encontre o arquivo `.app` correspondente ao seu projeto.
-   - Clique com o botão direito no arquivo `.app` e selecione **Show in Finder** (Mostrar no Finder).
+**2. Sincronize e rebuild**
 
-3. **Crie a Pasta Payload**
-   - No Finder, crie uma nova pasta chamada **Payload**.
-   - Arraste e solte o arquivo `.app` dentro da pasta **Payload**.
+```sh
+npx cap sync android
+npx cap open android
+```
 
-4. **Compacte a Pasta Payload**
-   - Clique com o botão direito na pasta **Payload**.
-   - Selecione **Compress** (Compactar).
-   - Um arquivo `.zip` será criado.
+> **iOS:** Não é possível personalizar o ícone de notificação no iOS — o sistema usa automaticamente o ícone do app.
 
-5. **Renomeie o Arquivo**
-   - Renomeie o arquivo `.zip` gerado, alterando a extensão `.zip` para `.ipa`.
+---
 
-Agora o arquivo `.ipa` está pronto para ser usado em testes de desenvolvimento.
+## 📦 Gerando o `.ipa` para Testes (iOS)
 
-### Nota
-- Este método é destinado apenas para testes internos e não deve ser usado para distribuição na App Store. Para distribuição oficial, utilize o método **Archive** e assine o aplicativo com o certificado apropriado.
+### Pré-requisitos
+
+- macOS com Xcode instalado
+- Projeto configurado e compilável no Xcode
+
+### Passos
+
+1. Abra o Xcode e carregue o projeto
+2. Pressione `⌘ + B` para compilar
+3. Na barra lateral, acesse a pasta `Products` e localize o arquivo `.app`
+4. Clique com o botão direito no `.app` → **Show in Finder**
+5. Crie uma pasta chamada `Payload` e mova o `.app` para dentro dela
+6. Clique com o botão direito em `Payload` → **Compress**
+7. Renomeie o `.zip` gerado para `.ipa`
+
+> ⚠️ Este método é para testes internos apenas. Para distribuição na App Store, utilize **Archive** com o certificado de distribuição adequado.
+
+---
+
+## 📚 Recursos
+
+- [Documentação do Ionic](https://ionicframework.com/docs)
+- [Documentação do Vue 3](https://vuejs.org/guide/)
+- [Documentação do Capacitor](https://capacitorjs.com/docs)
+- [Capacitor Local Notifications](https://capacitorjs.com/docs/apis/local-notifications)
+- [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/icons-notification.html)

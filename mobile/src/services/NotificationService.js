@@ -4,6 +4,24 @@ const generateNotificationId = (habitId, weekday) => {
   return parseInt(`${habitId}${weekday}`);
 };
 
+const titles = [
+  'Ei, psiu! ✨',
+  'Bora focar? 💪',
+  'Hora do show! 🚀',
+  'Olha só quem chegou... 👀',
+  'Momento Habitus! 🌿'
+];
+
+const messages = [
+  'Que tal dar aquele check em "{title}" agora?',
+  'O seu eu do futuro vai te agradecer por fazer "{title}"!',
+  'Nada de preguiça! Vamos de "{title}"? 🔥',
+  'Passando para te lembrar do seu compromisso: "{title}".',
+  'Um passo de cada vez! Hora de "{title}".'
+];
+
+const getRandomItem = (array) => array[Math.floor(Math.random() * array.length)];
+
 export const NotificationService = {
   async scheduleHabitNotifications(habit) {
     await this.cancelHabitNotifications(habit.id);
@@ -17,11 +35,13 @@ export const NotificationService = {
 
     for (const weekDay of habit.week_days) {
       const notificationId = generateNotificationId(habit.id, weekDay);
+      const title = getRandomItem(titles);
+      const body = getRandomItem(messages).replace('{title}', habit.title);
       
       notifications.push({
         id: notificationId,
-        title: 'Hábito Pendente!',
-        body: `Não se esqueça do seu hábito: "${habit.title}"`,
+        title,
+        body,
         schedule: {
           on: {
             weekday: weekDay === 0 ? 7 : weekDay,
@@ -30,7 +50,8 @@ export const NotificationService = {
           },
           repeats: true,
         },
-        smallIcon: 'res://icon',
+        largeIcon: 'ic_stat_habitus',
+        smallIcon: 'ic_stat_habitus',
         sound: 'default',
       });
     }
@@ -60,3 +81,4 @@ export const NotificationService = {
     }
   }
 };
+
