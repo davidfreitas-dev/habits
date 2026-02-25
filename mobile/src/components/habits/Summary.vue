@@ -1,17 +1,3 @@
-<template>
-  <div>
-    <HabitDaysStartGap />    
-    <HabitDay
-      v-for="(date, index) in datesFromYearStart"
-      :key="index"
-      :is-current-day="isCurrentDay(date)"
-      :amount-of-habits="getAmount(date)"
-      :amount-completed="getCompleted(date)"
-      @click="handleNavigate(date)"
-    />
-  </div>
-</template>
-
 <script setup>
 import { useRouter } from 'vue-router';
 import dayjs from '@/lib/dayjs';
@@ -47,22 +33,36 @@ const isCurrentDay = (date) => {
   return dayjs.utc(date).isSame(today, 'day');
 };
 
-const getAmount = (date) => {
-  const dayWithHabits = props.summary.find(day => {
-    return dayjs(date).isSame(day.date, 'day');
+const findDayInSummary = (date) => {
+  return props.summary.find(day => {
+    return dayjs.utc(date).isSame(day.date, 'day');
   });
-  
+};
+
+const getAmount = (date) => {
+  const dayWithHabits = findDayInSummary(date);
   return dayWithHabits ? dayWithHabits.total : 0;
 };
 
 const getCompleted = (date) => {
-  const dayWithHabits = props.summary.find(day => {
-    return dayjs(date).isSame(day.date, 'day');
-  });
-  
+  const dayWithHabits = findDayInSummary(date);
   return dayWithHabits ? dayWithHabits.completed : 0;
 };
 </script>
+
+<template>
+  <div>
+    <HabitDaysStartGap />    
+    <HabitDay
+      v-for="(date, index) in datesFromYearStart"
+      :key="index"
+      :is-current-day="isCurrentDay(date)"
+      :amount-of-habits="getAmount(date)"
+      :amount-completed="getCompleted(date)"
+      @click="handleNavigate(date)"
+    />
+  </div>
+</template>
 
 <style scoped>
 div {
