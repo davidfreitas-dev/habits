@@ -199,6 +199,7 @@ ion-modal {
 ion-modal ion-datetime {
   --background: var(--color-background-elevated);
   --background-rgb: var(--color-background-rgb);
+  --wheel-highlight-background: var(--color-background-elevated);
 }
 
 ion-modal ion-datetime::part(wheel-item) {

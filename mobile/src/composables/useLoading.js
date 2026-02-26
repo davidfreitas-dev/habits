@@ -11,6 +11,7 @@ export function useLoading() {
     isLoading.value = true;
 
     const loading = await loadingController.create({
+      mode: 'md',
       spinner: 'crescent',
       cssClass: 'custom-loading-spinner',
       showBackdrop: true,

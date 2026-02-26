@@ -10,7 +10,7 @@ import {
   IonListHeader, 
   IonIcon
 } from '@ionic/vue';
-import { personOutline, gridOutline, chevronForwardOutline, exitOutline } from 'ionicons/icons';
+import { personOutline, gridOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
 import { useLoading } from '@/composables/useLoading';
@@ -61,19 +61,16 @@ const logOut = async () => {
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
               Editar perfil
             </ion-label>
-            <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
           <ion-item class="ion-no-padding" router-link="/password-change">
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
               Alterar senha
             </ion-label>
-            <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
           <ion-item class="ion-no-padding" router-link="/delete-account">
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
               Excluir conta
             </ion-label>
-            <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
         </ion-list>
 
@@ -96,7 +93,6 @@ const logOut = async () => {
             <ion-label class="ion-no-margin ion-padding-top ion-padding-bottom">
               Sobre o app
             </ion-label>
-            <ion-icon slot="end" :icon="chevronForwardOutline" />
           </ion-item>
         </ion-list>
 

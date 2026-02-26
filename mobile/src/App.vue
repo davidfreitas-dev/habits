@@ -2,6 +2,7 @@
 import { onMounted, watch } from 'vue';
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
 import { Capacitor } from '@capacitor/core';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { useNetwork } from '@/composables/useNetwork';
 import { useStatusBar } from '@/composables/useStatusBar';
 import { useNotifications } from '@/composables/useNotifications';
@@ -33,7 +34,7 @@ onMounted(async () => {
   }
 
   if (Capacitor.isNativePlatform()) {
-    window.screen.orientation.lock('portrait');
+    await ScreenOrientation.lock({ orientation: 'portrait' });
     const granted = await requestPermission();
     if (granted) {
       try {
