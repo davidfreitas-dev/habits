@@ -25,8 +25,8 @@ const onToggleChange = (event) => {
 
 <style scoped>
 ion-toggle {
-    --track-background: var(--color-border-default);
-    --track-background-checked: var(--color-border-default);
-    --handle-background-checked: var(--color-primary);
+    --track-background: var(--color-background-elevated);
+    --track-background-checked: var(--color-background-elevated);
+    --handle-background-checked: var(--color-success);
 }
 </style>

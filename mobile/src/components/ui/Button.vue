@@ -13,7 +13,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <ion-button :class="color" :disabled="isLoading || isDisabled">
+  <ion-button
+    mode="md"
+    :class="color"
+    :disabled="isLoading || isDisabled"
+  >
     <ion-spinner v-if="isLoading" name="dots" />
     <slot v-else />
   </ion-button>
