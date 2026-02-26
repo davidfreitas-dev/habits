@@ -47,6 +47,7 @@
   --color-text-accent:          var(--color-neutral-700);
   --color-text-secondary:       var(--color-neutral-600);
   --color-text-disabled:        var(--color-neutral-500);
+  --color-background-rgb:       255, 255, 255;
 
   /* Habit Progression — Lime palette adaptada ao tema claro */
   --habit-bg-0:       var(--color-neutral-200);
@@ -73,6 +74,8 @@ body.dark {
   --color-text-accent:          #f1f1f1;
   --color-text-secondary:       var(--color-neutral-500);
   --color-text-disabled:        var(--color-neutral-600);
+  --color-background-rgb:       30, 30, 30;
+
 
   /* Habit Progression — Lime palette adaptada ao tema escuro */
   --habit-bg-0:         var(--color-neutral-800);

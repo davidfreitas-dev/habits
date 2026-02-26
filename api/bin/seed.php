@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Infrastructure\Persistence\Seeders\DayHabitSeeder;
 use App\Infrastructure\Persistence\Seeders\DaySeeder;
 use App\Infrastructure\Persistence\Seeders\HabitSeeder;
 use DI\ContainerBuilder;
-use Psr\Container\ContainerInterface;
 use Dotenv\Dotenv;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -33,16 +33,22 @@ $container = $containerBuilder->build();
 // Get the PDO instance
 $pdo = $container->get(PDO::class);
 
-// Run the DaySeeder
+echo "Starting seeding process...\n";
+
+// 1. Run the DaySeeder (Ensures dates exist)
 $daySeeder = new DaySeeder($pdo);
 $daySeeder->run();
 
-// Run the HabitSeeder
+// 2. Run the HabitSeeder (Creates specific habits for user 1)
 $habitSeeder = new HabitSeeder(
     $pdo,
     $container->get(App\Domain\Repository\UserRepositoryInterface::class),
     $container->get(App\Domain\Repository\HabitRepositoryInterface::class)
 );
 $habitSeeder->run();
+
+// 3. Run the DayHabitSeeder (Creates completion markings)
+$dayHabitSeeder = new DayHabitSeeder($pdo);
+$dayHabitSeeder->run();
 
 echo "All seeders executed successfully!\n";

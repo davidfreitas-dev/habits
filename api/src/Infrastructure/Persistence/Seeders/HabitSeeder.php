@@ -8,7 +8,6 @@ use App\Domain\Entity\Habit;
 use App\Domain\Repository\HabitRepositoryInterface;
 use App\Domain\Repository\UserRepositoryInterface;
 use DateTimeImmutable;
-use Faker\Factory;
 use PDO;
 
 class HabitSeeder
@@ -22,56 +21,84 @@ class HabitSeeder
 
     public function run(): void
     {
-        $faker = Factory::create('pt_BR');
+        $userId = 1; // Usuário alvo
+        $user = $this->userRepository->findById($userId);
 
-        // Fetch all users
-        $users = $this->userRepository->findAll();
-
-        if (empty($users)) {
-            echo "No users found. Please ensure users are seeded first.
-";
+        if (!$user) {
+            echo "User ID 1 not found. Skipping habit seeding.\n";
             return;
         }
 
+        $habitsData = [
+            [
+                'id' => 100,
+                'title' => 'Beber 2L de água',
+                'reminder_time' => '08:00:00',
+                'interval' => 'P35D',
+                'week_days' => [0, 1, 2, 3, 4, 5, 6]
+            ],
+            [
+                'id' => 101,
+                'title' => 'Meditar',
+                'reminder_time' => '07:00:00',
+                'interval' => 'P35D',
+                'week_days' => [1, 2, 3, 4, 5]
+            ],
+            [
+                'id' => 102,
+                'title' => 'Exercício físico',
+                'reminder_time' => '06:30:00',
+                'interval' => 'P35D',
+                'week_days' => [1, 3, 5, 6]
+            ],
+            [
+                'id' => 103,
+                'title' => 'Ler 30 minutos',
+                'reminder_time' => '21:00:00',
+                'interval' => 'P35D',
+                'week_days' => [0, 1, 2, 3, 4, 5, 6]
+            ],
+            [
+                'id' => 104,
+                'title' => 'Dormir antes das 23h',
+                'reminder_time' => '22:30:00',
+                'interval' => 'P30D',
+                'week_days' => [1, 2, 3, 4]
+            ],
+            [
+                'id' => 105,
+                'title' => 'Sem redes sociais até 9h',
+                'reminder_time' => null,
+                'interval' => 'P20D',
+                'week_days' => [1, 2, 3, 4, 5]
+            ],
+        ];
+
         $this->pdo->beginTransaction();
         try {
-            foreach ($users as $user) {
-                // Create 3 to 5 random habits for each user
-                $numberOfHabits = random_int(3, 5);
-                for ($i = 0; $i < $numberOfHabits; $i++) {
-                    $title = $faker->sentence(3, true);
-                    $weekDays = $this->generateRandomWeekDays();
+            foreach ($habitsData as $data) {
+                // Verificar se o hábito já existe para não duplicar em re-execuções
+                $existing = $this->habitRepository->findByTitle($data['title'], $userId);
+                if ($existing) continue;
 
-                    $habit = new Habit(
-                        user: $user,
-                        title: $title,
-                        createdAt: new DateTimeImmutable(),
-                        updatedAt: new DateTimeImmutable(),
-                    );
+                $createdAt = (new DateTimeImmutable())->sub(new \DateInterval($data['interval']));
+                
+                $habit = new Habit(
+                    title: $data['title'],
+                    user: $user,
+                    reminderTime: $data['reminder_time'],
+                    createdAt: $createdAt,
+                    updatedAt: new DateTimeImmutable()
+                );
 
-                    $this->habitRepository->create($habit, $weekDays);
-                }
+                // Usamos o repositório para garantir que a tabela pivô habit_week_days também seja populada
+                $this->habitRepository->create($habit, $data['week_days']);
             }
             $this->pdo->commit();
-            echo "Habits seeded successfully!
-";
-        } catch (\PDOException $e) {
+            echo "Specific habits for User 1 seeded successfully!\n";
+        } catch (\Exception $e) {
             $this->pdo->rollBack();
             throw $e;
         }
-    }
-
-    private function generateRandomWeekDays(): array
-    {
-        $weekDays = [];
-        $numberOfDays = random_int(1, 7); // At least 1 day, up to 7
-        $allDays = range(0, 6); // 0=Sunday, 6=Saturday
-        shuffle($allDays);
-
-        for ($i = 0; $i < $numberOfDays; $i++) {
-            $weekDays[] = $allDays[$i];
-        }
-        sort($weekDays);
-        return $weekDays;
     }
 }

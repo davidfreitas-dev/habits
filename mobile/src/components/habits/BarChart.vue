@@ -16,8 +16,6 @@ const props = defineProps({
   }
 });
 
-const themeVersion = ref(0);
-
 const getCSSVar = (name, fallback) => getComputedStyle(document.body).getPropertyValue(name).trim() || fallback;
 
 const BAR_DEFAULTS = {
@@ -29,72 +27,71 @@ const BAR_DEFAULTS = {
   grouped: false,
 };
 
+const primaryColor = ref(getCSSVar('--color-primary'));
+const borderColor = ref(getCSSVar('--color-border-default'));
+const tickColor = ref(getCSSVar('--color-neutral-500', '#a1a1aa'));
+
 let observer;
 
 onMounted(() => {
-  observer = new MutationObserver(() => themeVersion.value++);
+  observer = new MutationObserver(() => {
+    primaryColor.value = getCSSVar('--color-primary');
+    borderColor.value = getCSSVar('--color-border-default');
+    tickColor.value = getCSSVar('--color-neutral-500', '#a1a1aa');
+  });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 });
 
 onUnmounted(() => observer?.disconnect());
 
-const chartData = computed(() => {
-  themeVersion.value;
-
-  return {
-    labels: props.labels,
-    datasets: [
-      {
-        ...BAR_DEFAULTS,
-        data: props.data,
-        backgroundColor: getCSSVar('--color-primary'),
-        order: 1,
-        animation: { duration: 1000, easing: 'easeOutQuart' }
-      },
-      {
-        ...BAR_DEFAULTS,
-        data: props.data.map(() => 100),
-        backgroundColor: getCSSVar('--color-border-default'),
-        order: 2,
-        animation: { duration: 0 }
-      }
-    ]
-  };
-});
-
-const chartOptions = computed(() => {
-  themeVersion.value;
-
-  return {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        enabled: true,
-        filter: (item) => item.datasetIndex === 0,
-        callbacks: { label: (ctx) => `${ctx.raw}%` }
-      }
+const chartData = computed(() => ({
+  labels: [...props.labels],
+  datasets: [
+    {
+      ...BAR_DEFAULTS,
+      data: [...props.data],
+      backgroundColor: primaryColor.value,
+      order: 1,
+      animation: { duration: 1000, easing: 'easeOutQuart' }
     },
-    scales: {
-      y: { display: false, beginAtZero: true, max: 100 },
-      x: {
-        grid: { display: false },
-        border: { display: false },
-        ticks: {
-          color: getCSSVar('--color-neutral-500', '#a1a1aa'),
-          font: { size: 16, weight: '600' }
-        }
+    {
+      ...BAR_DEFAULTS,
+      data: props.data.map(() => 100),
+      backgroundColor: borderColor.value,
+      order: 2,
+      animation: { duration: 0 }
+    }
+  ]
+}));
+
+const chartOptions = computed(() => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      enabled: true,
+      filter: (item) => item.datasetIndex === 0,
+      callbacks: { label: (ctx) => `${ctx.raw}%` }
+    }
+  },
+  scales: {
+    y: { display: false, beginAtZero: true, max: 100 },
+    x: {
+      grid: { display: false },
+      border: { display: false },
+      ticks: {
+        color: tickColor.value,
+        font: { size: 16, weight: '600' }
       }
     }
-  };
-});
+  }
+}));
 </script>
 
 <template>
   <div class="chart-container">
     <Bar
-      :key="themeVersion"
       :options="chartOptions"
       :data="chartData"
     />

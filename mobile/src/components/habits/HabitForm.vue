@@ -198,7 +198,7 @@ ion-modal {
 
 ion-modal ion-datetime {
   --background: var(--color-background-elevated);
-  --background-rgb: 30, 30, 30; /* valor RGB da sua cor, sem alpha */
+  --background-rgb: var(--color-background-rgb);
 }
 
 ion-modal ion-datetime::part(wheel-item) {
@@ -206,6 +206,6 @@ ion-modal ion-datetime::part(wheel-item) {
 }
 
 ion-modal ion-datetime::part(wheel-item active) {
-  color: var(--color-primary);
+  color: var(--color-success);
 }
 </style>

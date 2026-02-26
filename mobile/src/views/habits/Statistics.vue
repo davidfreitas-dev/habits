@@ -9,6 +9,9 @@ import BarChart from '@/components/habits/BarChart.vue';
 import PeriodSelector from '@/components/habits/PeriodSelector.vue';
 import dayjs from '@/lib/dayjs';
 
+const ERROR_MSG = 'Erro ao carregar estatísticas';
+const today = () => dayjs.utc().format('YYYY-MM-DD');
+
 const activePeriod = ref('W');
 const statsData = ref([]);
 const currentStreak = ref(0);
@@ -16,13 +19,8 @@ const longestStreak = ref(0);
 const habitStore = useHabitStore();
 const { withLoading } = useLoading();
 
-const chartLabels = computed(() => {
-  return statsData.value.map(item => item.label);
-});
-
-const chartValues = computed(() => {
-  return statsData.value.map(item => item.percentage || 0);
-});
+const chartLabels = computed(() => statsData.value.map(item => item.label));
+const chartValues = computed(() => statsData.value.map(item => item.percentage || 0));
 
 const averagePercentage = computed(() => {
   if (statsData.value.length === 0) return 0;
@@ -45,39 +43,30 @@ watch(averagePercentage, (newVal) => {
   const step = () => {
     const elapsed = Date.now() - startTime;
     const progress = Math.min(elapsed / duration, 1);
-    const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+    const ease = 1 - Math.pow(1 - progress, 4);
     
     displayedPercentage.value = Math.round(startValue + diff * ease);
 
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    }
+    if (progress < 1) requestAnimationFrame(step);
   };
 
   requestAnimationFrame(step);
 }, { immediate: true });
 
-const handlePeriodChange = async (period) => {
-  await withLoading(async () => {
-    const today = dayjs.utc().format('YYYY-MM-DD');
-    const result = await habitStore.getHabitStats(period.value, today);
-    statsData.value = result.daily_stats;
-    currentStreak.value = result.current_streak;
-    longestStreak.value = result.longest_streak;
-  }, 'Erro ao carregar estatísticas');
+const loadStats = async (period) => {
+  const result = await habitStore.getHabitStats(period, today());
+  statsData.value = result.daily_stats;
+  currentStreak.value = result.current_streak;
+  longestStreak.value = result.longest_streak;
 };
 
-onIonViewWillEnter(async () => {
-  await withLoading(async () => {
-    const today = dayjs.utc().format('YYYY-MM-DD');
-    const result = await habitStore.getHabitStats(activePeriod.value, today);
-    statsData.value = result.daily_stats;
-    currentStreak.value = result.current_streak;
-    longestStreak.value = result.longest_streak;
-  }, 'Erro ao carregar estatísticas');
-});
+watch(activePeriod, (period) =>
+  withLoading(() => loadStats(period), ERROR_MSG));
 
-onIonViewDidLeave(async () => {
+onIonViewWillEnter(() =>
+  withLoading(() => loadStats(activePeriod.value), ERROR_MSG));
+
+onIonViewDidLeave(() => {
   statsData.value = [];
 });
 </script>
@@ -88,16 +77,12 @@ onIonViewDidLeave(async () => {
       <Container>
         <Heading title="Estatísticas" />
 
-        <PeriodSelector 
-          v-model="activePeriod"
-          @change="handlePeriodChange"
-        />
+        <PeriodSelector v-model="activePeriod" />
 
         <div class="stats-container">
           <p class="chart-description">
             Sua taxa de conclusão média para cada dia da semana no período selecionado.
           </p>
-          <!-- Chart Card -->
           <div class="chart-card">
             <div class="chart-header">
               <span class="chart-title">Total de Atividades</span>
@@ -113,7 +98,6 @@ onIonViewDidLeave(async () => {
             />
           </div>
 
-          <!-- Streaks Grid -->
           <div class="streaks-grid">
             <div class="streak-card">
               <div class="streak-header">

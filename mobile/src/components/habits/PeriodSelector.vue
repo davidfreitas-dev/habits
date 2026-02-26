@@ -8,7 +8,7 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['update:modelValue', 'change']);
+const emit = defineEmits(['update:modelValue']);
 
 const periods = [
   { label: 'S', value: 'W' },
@@ -22,7 +22,6 @@ const activeIndex = computed(() => periods.findIndex(p => p.value === props.mode
 
 const selectPeriod = (period) => {
   emit('update:modelValue', period.value);
-  emit('change', period);
 };
 </script>
 

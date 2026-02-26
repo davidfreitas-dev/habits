@@ -29,7 +29,8 @@ const handleConfirm = async () => {
     router.push('/signin');
   } catch (err) {
     console.error('Password reset failed:', err);
-    showToast('error', err.message || err.response?.data?.message || 'Erro ao redefinir senha.');
+    const apiErrorMessage = err.response?.data?.data?.[0] || err.response?.data?.message;    
+    showToast('error', apiErrorMessage || 'Erro ao redefinir senha.');
   } finally {
     isLoading.value = false;  
   }
