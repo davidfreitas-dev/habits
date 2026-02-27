@@ -138,7 +138,7 @@ onIonViewDidLeave(() => {
 
 .chart-card {
   background: var(--color-background-secondary);
-  border-radius: 24px;
+  border-radius: var(--radius-2xl);
   padding: 24px;
   color: var(--color-text-primary);
   min-height: 340px;
@@ -175,7 +175,7 @@ onIonViewDidLeave(() => {
 
 .streak-card {
   background: var(--color-background-secondary);
-  border-radius: 24px;
+  border-radius: var(--radius-2xl);
   padding: 20px;
   display: flex;
   flex-direction: column;

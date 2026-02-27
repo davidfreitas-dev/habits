@@ -21,7 +21,7 @@ const props = defineProps({
 div.progress-container {
   position: relative;
   background: var(--color-background-elevated);
-  border-radius: .75rem;
+  border-radius: var(--radius-lg);
   margin-top: 1rem;
   margin-bottom: 1.25rem;
   height: .75rem;
@@ -33,7 +33,7 @@ div.progress {
   top: 0;
   left: 0;
   height: .75rem;
-  border-radius: .75rem;
+  border-radius: var(--radius-lg);
   background: var(--color-primary);
   transition-property: width;
   transition-duration: 500ms;

@@ -19,7 +19,7 @@ ion-button {
   --background-hover: transparent;
   --background-activated: transparent;
   --background-focused: transparent;
-  --border-radius: 0.375rem;
+  --border-radius: var(--border-radius-default);
   --border-color: var(--color-primary-accent);
   --border-style: solid;
   --border-width: 1px;

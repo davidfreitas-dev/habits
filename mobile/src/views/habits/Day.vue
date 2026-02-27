@@ -46,7 +46,7 @@ const getDayInfo = async () => {
   }
 };
 
-const { withLoading } = useLoading(); // Removed isLoading as it's not needed in v-if now
+const { withLoading, isLoading } = useLoading();
 
 onIonViewWillEnter(() => {
   withLoading(async () => {
@@ -107,11 +107,11 @@ const router = useRouter();
           @handle-checkbox-change="handleToggleHabit(habit.id)"
         />
 
-        <ion-text v-if="!dayInfo.possible_habits.length && !isDateInPast" class="ion-text-center ion-padding">
+        <ion-text v-if="!isLoading && !dayInfo.possible_habits.length && !isDateInPast" class="ion-text-center ion-padding">
           <p>Você ainda não criou nenhum hábito.</p>
         </ion-text>
 
-        <ion-text v-if="isDateInPast" class="ion-text-center ion-padding">
+        <ion-text v-if="!isLoading && isDateInPast" class="ion-text-center ion-padding">
           Você não pode alterar o status de hábitos de datas passadas.
         </ion-text>
       </Container>

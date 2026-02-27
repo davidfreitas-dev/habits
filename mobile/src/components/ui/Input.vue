@@ -74,7 +74,7 @@ ion-label {
 }
 
 ion-input {  
-  border-radius: 0.375rem;
+  border-radius: var(--border-radius-default);
   border: 2px solid var(--color-border-default);
   background: var(--color-background-secondary);
   

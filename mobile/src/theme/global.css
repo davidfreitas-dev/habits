@@ -37,6 +37,17 @@
   --color-neutral-100: #f4f4f5;
   --color-neutral-50:  #fafafa;
 
+  /* Layout & Geometry */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  --border-radius-default: var(--radius-lg);
+
   /* Light Theme */
   --color-background-primary:   #ffffff;
   --color-background-secondary: var(--color-neutral-100);
@@ -75,7 +86,6 @@ body.dark {
   --color-text-secondary:       var(--color-neutral-500);
   --color-text-disabled:        var(--color-neutral-600);
   --color-background-rgb:       30, 30, 30;
-
 
   /* Habit Progression — Lime palette adaptada ao tema escuro */
   --habit-bg-0:         var(--color-neutral-800);

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import { IonPage, IonContent, IonRow, onIonViewWillEnter, IonText } from '@ionic/vue';
 import { useGenerateRange } from '@/composables/useGenerateRange';
 import { useProfileStore } from '@/stores/profile';
@@ -25,13 +25,22 @@ const user = computed(() => {
 });
 
 const summary = ref([]);
+const contentRef = ref(null);
 const { showToast } = useToast();
+
+const scrollToBottom = async () => {
+  await nextTick();
+  if (contentRef.value && contentRef.value.$el) {
+    await contentRef.value.$el.scrollToBottom(500);
+  }
+};
 
 const getSummary = async () => {
   try {
     const today = dayjs().format('YYYY-MM-DD');
     const response = await habitStore.getHabitsSummary(today);
     summary.value = Array.isArray(response) ? response : [];
+    scrollToBottom();
   } catch (err) {
     console.error('Error fetching habits summary:', err);
     showToast('error', err.response?.data?.message || 'Erro ao carregar resumo de hábitos.');
@@ -59,7 +68,7 @@ onIonViewWillEnter(() => {
       </ion-row>
       <WeekDays />
     </Header>
-    <ion-content :fullscreen="true">
+    <ion-content ref="contentRef" :fullscreen="true">
       <Container class="ion-margin-bottom">
         <Summary
           v-if="summary.length"

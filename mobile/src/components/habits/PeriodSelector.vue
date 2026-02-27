@@ -48,7 +48,7 @@ const selectPeriod = (period) => {
   display: flex;
   background: var(--color-background-secondary);
   padding: 4px;
-  border-radius: 100px;
+  border-radius: var(--radius-full);
   margin-bottom: 24px;
   margin-top: 16px;
 }
@@ -60,7 +60,7 @@ const selectPeriod = (period) => {
   bottom: 4px;
   width: calc((100% - 8px) / 5);
   background: var(--color-primary);
-  border-radius: 100px;
+  border-radius: var(--radius-full);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 0;
 }
@@ -74,7 +74,7 @@ const selectPeriod = (period) => {
   font-size: 14px;
   flex: 1;
   height: 44px;
-  border-radius: 100px;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
