@@ -29,7 +29,7 @@ const { showToast } = useToast();
 
 const getSummary = async () => {
   try {
-    const today = dayjs.utc().format('YYYY-MM-DD');
+    const today = dayjs().format('YYYY-MM-DD');
     const response = await habitStore.getHabitsSummary(today);
     summary.value = Array.isArray(response) ? response : [];
   } catch (err) {

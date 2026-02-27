@@ -10,7 +10,7 @@ import PeriodSelector from '@/components/habits/PeriodSelector.vue';
 import dayjs from '@/lib/dayjs';
 
 const ERROR_MSG = 'Erro ao carregar estatísticas';
-const today = () => dayjs.utc().format('YYYY-MM-DD');
+const today = () => dayjs().format('YYYY-MM-DD');
 
 const activePeriod = ref('W');
 const statsData = ref([]);

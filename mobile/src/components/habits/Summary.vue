@@ -23,19 +23,19 @@ const handleNavigate = (date) => {
   router.push({
     name: 'Day', 
     params: {
-      date: dayjs.utc(date).format('YYYY-MM-DD')
+      date: dayjs(date).format('YYYY-MM-DD')
     }
   });
 };
 
 const isCurrentDay = (date) => {
-  const today = dayjs.utc().startOf('day');
-  return dayjs.utc(date).isSame(today, 'day');
+  const today = dayjs().startOf('day');
+  return dayjs(date).isSame(today, 'day');
 };
 
 const findDayInSummary = (date) => {
   return props.summary.find(day => {
-    return dayjs.utc(date).isSame(day.date, 'day');
+    return dayjs(date).isSame(day.date, 'day');
   });
 };
 

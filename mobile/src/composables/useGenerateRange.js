@@ -2,8 +2,8 @@ import dayjs from '@/lib/dayjs';
 
 export function useGenerateRange() {
   const generateDatesFromYearBeginning = () => {
-    const firstDayOfTheYear = dayjs.utc().startOf('year');
-    const today = dayjs.utc().startOf('day');
+    const firstDayOfTheYear = dayjs().startOf('year');
+    const today = dayjs().startOf('day');
     const dates = [];
     
     let compareDate = firstDayOfTheYear;
