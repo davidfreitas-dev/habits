@@ -44,7 +44,7 @@ ion-checkbox {
 }
 ion-checkbox::part(container) {
   padding: 6px;
-  border-radius: var(--border-radius-default);
+  border-radius: var(--radius-md);
   border-color: transparent;
 }
 ion-label {

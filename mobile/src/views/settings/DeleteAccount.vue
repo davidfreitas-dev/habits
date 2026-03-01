@@ -42,7 +42,7 @@ const confirmDelete = async () => {
       <BackButton />
     </Header>
 
-    <ion-content :fullscreen="true">
+    <ion-content>
       <Container>
         <Heading title="Exclusão de Conta" />
 

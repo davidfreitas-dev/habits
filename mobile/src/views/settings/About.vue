@@ -4,7 +4,7 @@
       <BackButton />
     </Header>
 
-    <ion-content :fullscreen="true">
+    <ion-content>
       <Container>
         <Segment v-model="selectedSegment" :segments="segments" />
 

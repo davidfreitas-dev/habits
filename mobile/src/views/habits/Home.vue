@@ -68,7 +68,7 @@ onIonViewWillEnter(() => {
       </ion-row>
       <WeekDays />
     </Header>
-    <ion-content ref="contentRef" :fullscreen="true">
+    <ion-content ref="contentRef">
       <Container class="ion-margin-bottom">
         <Summary
           v-if="summary.length"

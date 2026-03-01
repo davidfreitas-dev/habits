@@ -18,7 +18,7 @@ const habitStore = useHabitStore();
 
 const applyTheme = (isDark) => {
   document.body.classList.toggle('dark', isDark);
-  setStatusBar(isDark ? Style.Dark : Style.Light);
+  setStatusBar(isDark ? Style.Dark : Style.Light, isDark ? '#09090a' : '#ffffff');
 };
 
 watch(() => themeStore.isDarkMode, (isDark) => {

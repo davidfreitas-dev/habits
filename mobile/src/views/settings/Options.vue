@@ -14,6 +14,7 @@ import { personOutline, gridOutline, exitOutline } from 'ionicons/icons';
 import { useAuthStore } from '@/stores/auth';
 import { useThemeStore } from '@/stores/theme';
 import { useLoading } from '@/composables/useLoading';
+import Header from '@/components/layout/Header.vue';
 import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
 import Button from '@/components/ui/Button.vue';
@@ -46,10 +47,11 @@ const logOut = async () => {
 
 <template>
   <ion-page ref="pageRef">
-    <ion-content :fullscreen="true" class="vertical-safe-area">
+    <Header>
+      <Heading title="Opções" class="ion-padding-horizontal" />
+    </Header>
+    <ion-content>
       <Container>
-        <Heading title="Opções" />
-        
         <ion-list lines="none" class="ion-no-padding">
           <ion-list-header class="ion-no-padding">
             <ion-label class="ion-no-margin ion-padding-bottom ion-padding-top">

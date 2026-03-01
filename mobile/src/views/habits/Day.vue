@@ -88,7 +88,7 @@ const router = useRouter();
       <BackButton />
     </Header>
 
-    <ion-content :fullscreen="true">
+    <ion-content>
       <Container>
         <Breadcrumb
           :week-day="dayOfWeek"

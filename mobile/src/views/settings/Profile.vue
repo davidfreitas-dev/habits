@@ -61,7 +61,7 @@ const updateProfile = async () => {
       <BackButton />
     </Header>
 
-    <ion-content :fullscreen="true">
+    <ion-content>
       <Container>
         <Heading title="Edição de Perfil" />
 

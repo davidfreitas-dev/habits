@@ -92,7 +92,7 @@ const deleteHabit = async () => {
       <BackButton />
     </Header>
 
-    <ion-content :fullscreen="true">      
+    <ion-content>      
       <Container>
         <Heading :title="pageTitle" />
 

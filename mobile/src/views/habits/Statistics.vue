@@ -3,6 +3,7 @@ import { IonPage, IonContent, onIonViewWillEnter, onIonViewDidLeave } from '@ion
 import { ref, computed, watch } from 'vue';
 import { useHabitStore } from '@/stores/habits';
 import { useLoading } from '@/composables/useLoading';
+import Header from '@/components/layout/Header.vue';
 import Heading from '@/components/layout/Heading.vue';
 import Container from '@/components/layout/Container.vue';
 import BarChart from '@/components/habits/BarChart.vue';
@@ -73,10 +74,11 @@ onIonViewDidLeave(() => {
 
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="vertical-safe-area">
+    <Header>
+      <Heading title="Estatísticas" class="ion-padding-horizontal" />
+    </Header>
+    <ion-content>
       <Container>
-        <Heading title="Estatísticas" />
-
         <PeriodSelector v-model="activePeriod" />
 
         <div class="stats-container">
