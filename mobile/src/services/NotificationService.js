@@ -1,7 +1,10 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 const generateNotificationId = (habitId, weekday) => {
-  return parseInt(`${habitId}${weekday}`);
+  // weekday is 0-6 (0=Sun, 1=Mon, ..., 6=Sat)
+  // We use a formula to avoid collisions: habitId * 7 + weekday
+  // This ensures unique IDs as long as habitId is unique.
+  return Number(habitId) * 7 + Number(weekday);
 };
 
 const titles = [
@@ -33,22 +36,27 @@ export const NotificationService = {
     const [hour, minute] = habit.reminder_time.split(':').map(Number);
     const notifications = [];
 
+    // habit.week_days from API is [0, 1, 2, 3, 4, 5, 6] (0=Sunday, ..., 6=Saturday)
     for (const weekDay of habit.week_days) {
       const notificationId = generateNotificationId(habit.id, weekDay);
       const title = getRandomItem(titles);
       const body = getRandomItem(messages).replace('{title}', habit.title);
       
+      // Capacitor weekday is 1-7 (1=Sunday, 2=Monday, ..., 7=Saturday)
+      const capacitorWeekday = Number(weekDay) + 1;
+
       notifications.push({
         id: notificationId,
         title,
         body,
         schedule: {
           on: {
-            weekday: weekDay === 0 ? 7 : weekDay,
+            weekday: capacitorWeekday,
             hour,
             minute,
           },
           repeats: true,
+          allowWhileIdle: true,
         },
         largeIcon: 'ic_stat_habitus',
         smallIcon: 'ic_stat_habitus',
@@ -62,22 +70,32 @@ export const NotificationService = {
   },
 
   async cancelHabitNotifications(habitId) {
+    if (!habitId) return;
+    
     const notificationsToCancel = [];
     for (let i = 0; i <= 6; i++) {
       notificationsToCancel.push({ id: generateNotificationId(habitId, i) });
     }
     
-    await LocalNotifications.cancel({ notifications: notificationsToCancel });
+    try {
+      await LocalNotifications.cancel({ notifications: notificationsToCancel });
+    } catch (error) {
+      console.error('Erro ao cancelar notificações:', error);
+    }
   },
 
   async rescheduleAllNotifications(habits) {
-    const pending = await LocalNotifications.getPending();
-    if (pending.notifications.length > 0) {
-      await LocalNotifications.cancel(pending);
-    }
+    try {
+      const pending = await LocalNotifications.getPending();
+      if (pending.notifications.length > 0) {
+        await LocalNotifications.cancel(pending);
+      }
 
-    for (const habit of habits) {
-      await this.scheduleHabitNotifications(habit);
+      for (const habit of habits) {
+        await this.scheduleHabitNotifications(habit);
+      }
+    } catch (error) {
+      console.error('Erro ao reagendar notificações:', error);
     }
   }
 };
