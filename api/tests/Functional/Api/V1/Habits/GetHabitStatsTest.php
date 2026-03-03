@@ -80,6 +80,7 @@ class GetHabitStatsTest extends FunctionalTestCase
         $payload = [
             'title' => $title,
             'week_days' => $weekDays,
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [
@@ -88,6 +89,10 @@ class GetHabitStatsTest extends FunctionalTestCase
         
         $response->getBody()->rewind();
         $body = json_decode((string) $response->getBody(), true);
+
+        if (!isset($body['data']['id'])) {
+            throw new \RuntimeException('Failed to create habit: ' . json_encode($body));
+        }
 
         return $body['data']['id'];
     }

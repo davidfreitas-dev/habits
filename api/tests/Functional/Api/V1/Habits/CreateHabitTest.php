@@ -109,6 +109,7 @@ class CreateHabitTest extends FunctionalTestCase
         $payload = [
             'title' => $title,
             'week_days' => $weekDays,
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [
@@ -143,6 +144,7 @@ class CreateHabitTest extends FunctionalTestCase
         $payload = [
             'title' => $this->faker->sentence(3),
             'week_days' => [1, 2, 3], // Monday, Tuesday, Wednesday
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         // Act
@@ -178,12 +180,41 @@ class CreateHabitTest extends FunctionalTestCase
         $this->assertEquals($payload['week_days'], $dbWeekDays);
     }
 
+    public function testCreateHabitWithCustomCreatedAt(): void
+    {
+        // Arrange
+        $customDate = '2023-01-01 10:00:00';
+        $payload = [
+            'title' => 'Habit with custom date',
+            'week_days' => [1, 2, 3],
+            'created_at' => $customDate,
+        ];
+
+        // Act
+        $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [
+            'Authorization' => 'Bearer ' . $this->accessToken,
+        ]);
+
+        $response->getBody()->rewind();
+        $body = json_decode((string) $response->getBody(), true);
+
+        // Assert
+        $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
+        
+        // Verify in database
+        $habitId = $body['data']['id'];
+        $dbHabit = $this->getHabitFromDatabase($habitId);
+        $this->assertNotFalse($dbHabit);
+        $this->assertEquals($customDate, $dbHabit['created_at']);
+    }
+
     public function testCreateHabitWithoutAuthenticationReturnsUnauthorized(): void
     {
         // Arrange
         $payload = [
             'title' => 'Habit without auth',
             'week_days' => [1],
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         // Act
@@ -198,6 +229,7 @@ class CreateHabitTest extends FunctionalTestCase
         // Arrange
         $payload = [
             'week_days' => [1, 2],
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         // Act
@@ -219,6 +251,7 @@ class CreateHabitTest extends FunctionalTestCase
         $payload = [
             'title' => 'Habit with empty week days',
             'week_days' => [],
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         // Act
@@ -240,6 +273,7 @@ class CreateHabitTest extends FunctionalTestCase
         $payload = [
             'title' => 'Habit with invalid week day',
             'week_days' => [1, 8], // 8 is an invalid week day
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         // Act
@@ -253,5 +287,26 @@ class CreateHabitTest extends FunctionalTestCase
         $body = json_decode((string) $response->getBody(), true);
         $this->assertArrayHasKey('data', $body);
         $this->assertContains('O dia da semana deve ser entre 0 e 6.', $body['data']);
+    }
+
+    public function testCreateHabitWithMissingCreatedAtReturnsBadRequest(): void
+    {
+        // Arrange
+        $payload = [
+            'title' => 'Habit with missing created at',
+            'week_days' => [1, 2],
+        ];
+
+        // Act
+        $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [
+            'Authorization' => 'Bearer ' . $this->accessToken,
+        ]);
+
+        // Assert
+        $this->assertEquals(StatusCodeInterface::STATUS_BAD_REQUEST, $response->getStatusCode());
+        $response->getBody()->rewind();
+        $body = json_decode((string) $response->getBody(), true);
+        $this->assertArrayHasKey('data', $body);
+        $this->assertContains('A data de criação é obrigatória.', $body['data']);
     }
 }

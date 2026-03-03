@@ -392,7 +392,8 @@ POST /api/v1/habits
 {
   "title": "Ler Livros",
   "week_days": [0, 1, 2, 3, 4],
-  "reminder_time": "08:00"
+  "reminder_time": "08:00",
+  "created_at": "2024-03-01 10:00:00"
 }
 ```
 
@@ -632,17 +633,21 @@ PUT /api/v1/habits/{id}
 Marca ou desmarca um hábito como completo para um dia específico.
 
 ```http
-PATCH /api/v1/habits/{id}/toggle?date=YYYY-MM-DD
+PATCH /api/v1/habits/{id}/toggle
 ```
 
-**Query Params:**
-- `date`: Opcional. Data no formato `YYYY-MM-DD`. Se omitida, usa a data atual do servidor (UTC).
+**Body:**
+```json
+{
+  "date": "2024-03-01"
+}
+```
 
 **Resposta:**
 ```json
 {
   "status": "success",
-  "message": "Hábito marcado/desmarcado como completo com sucesso."
+  "message": "Hábito marcado com sucesso."
 }
 ```
 

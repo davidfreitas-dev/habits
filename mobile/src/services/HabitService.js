@@ -1,5 +1,6 @@
 import api from '@/api';
 import { HABIT_ENDPOINTS } from '@/constants/endpoints';
+import dayjs from '@/lib/dayjs';
 
 export const HabitService = {
   create(title, weekDays, reminder_time) {
@@ -7,6 +8,7 @@ export const HabitService = {
       title,
       week_days: weekDays,
       reminder_time,
+      created_at: dayjs().format(),
     });
   },
   
@@ -45,8 +47,8 @@ export const HabitService = {
   },
   
   toggle(habitId, date = null) {
-    return api.patch(HABIT_ENDPOINTS.TOGGLE(habitId), null, {
-      params: { date }
+    return api.patch(HABIT_ENDPOINTS.TOGGLE(habitId), {
+      date: date || dayjs().format('YYYY-MM-DD')
     });
   },
   

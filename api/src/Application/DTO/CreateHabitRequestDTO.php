@@ -30,6 +30,8 @@ class CreateHabitRequestDTO
             message: 'O horário do lembrete deve estar no formato HH:mm.',
         )]
         public readonly ?string $reminderTime,
+        #[Assert\NotBlank(message: 'A data de criação é obrigatória.')]
+        public readonly string $createdAt,
     ) {
     }
 
@@ -39,6 +41,7 @@ class CreateHabitRequestDTO
             title: $data['title'] ?? '',
             weekDays: $data['week_days'] ?? [],
             reminderTime: $data['reminder_time'] ?? null,
+            createdAt: $data['created_at'] ?? '',
         );
     }
 
@@ -48,6 +51,7 @@ class CreateHabitRequestDTO
             'title' => $this->title,
             'weekDays' => $this->weekDays,
             'reminder_time' => $this->reminderTime,
+            'created_at' => $this->createdAt,
         ];
     }
 }

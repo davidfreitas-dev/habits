@@ -49,7 +49,12 @@ class CreateHabitUseCaseTest extends TestCase
     public function testShouldCreateHabitSuccessfully(): void
     {
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0, 1, 2, 3, 4, 5, 6], '10:30');
+        $dto = new CreateHabitRequestDTO(
+            'Read a book',
+            [0, 1, 2, 3, 4, 5, 6],
+            '10:30',
+            (new \DateTimeImmutable())->format('Y-m-d H:i:s')
+        );
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -105,7 +110,12 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectExceptionMessage('Usuário não encontrado.');
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
+        $dto = new CreateHabitRequestDTO(
+            'Read a book',
+            [0],
+            null,
+            (new \DateTimeImmutable())->format('Y-m-d H:i:s')
+        );
 
         $this->validationService->expects($this->once())->method('validate')->with($dto);
         $this->userRepository->expects($this->once())->method('findById')->with($userId)->willReturn(null);
@@ -121,7 +131,12 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectExceptionMessage('Já existe um hábito com este título.');
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
+        $dto = new CreateHabitRequestDTO(
+            'Read a book',
+            [0],
+            null,
+            (new \DateTimeImmutable())->format('Y-m-d H:i:s')
+        );
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);
@@ -143,7 +158,7 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectException(ValidationException::class);
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('', [], null); // Invalid DTO
+        $dto = new CreateHabitRequestDTO('', [], null, ''); // Invalid DTO
 
         $this->validationService->expects($this->once())->method('validate')->with($dto)->willThrowException(new ValidationException('Validation failed.'));
         $this->userRepository->expects($this->never())->method('findById');
@@ -158,7 +173,12 @@ class CreateHabitUseCaseTest extends TestCase
         $this->expectException(Exception::class);
 
         $userId = 1;
-        $dto = new CreateHabitRequestDTO('Read a book', [0], null);
+        $dto = new CreateHabitRequestDTO(
+            'Read a book',
+            [0],
+            null,
+            (new \DateTimeImmutable())->format('Y-m-d H:i:s')
+        );
 
         /** @var User&MockObject $user */
         $user = $this->createMock(User::class);

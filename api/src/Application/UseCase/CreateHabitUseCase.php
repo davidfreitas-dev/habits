@@ -13,6 +13,7 @@ use App\Domain\Exception\NotFoundException;
 use App\Domain\Exception\ValidationException;
 use App\Domain\Repository\HabitRepositoryInterface;
 use App\Domain\Repository\UserRepositoryInterface;
+use DateTimeImmutable;
 use Exception;
 use PDO;
 
@@ -52,6 +53,7 @@ class CreateHabitUseCase
                 title: $dto->title,
                 user: $user,
                 reminderTime: $dto->reminderTime,
+                createdAt: new DateTimeImmutable($dto->createdAt),
             );
 
             $createdHabit = $this->habitRepository->create($habit, $dto->weekDays);

@@ -109,6 +109,7 @@ class GetHabitsByDayTest extends FunctionalTestCase
         $payload = [
             'title' => $title,
             'week_days' => $weekDays,
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [

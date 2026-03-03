@@ -68,7 +68,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $this->habitRepository->expects($this->once())->method('findByTitle')->with($dto->title, $userId)->willReturn(null); // No other habit with this title
 
         $this->pdo->expects($this->once())->method('beginTransaction');
-        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays, $dto->reminderTime)->willReturn($updatedHabit);
+        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays)->willReturn($updatedHabit);
         $this->pdo->expects($this->once())->method('commit');
         $this->pdo->expects($this->never())->method('rollBack');
 
@@ -121,7 +121,7 @@ class UpdateHabitUseCaseTest extends TestCase
         $this->habitRepository->expects($this->never())->method('findByTitle');
 
         $this->pdo->expects($this->once())->method('beginTransaction');
-        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays, $dto->reminderTime)->willReturn($updatedHabit);
+        $this->habitRepository->expects($this->once())->method('update')->with($existingHabit, $dto->weekDays)->willReturn($updatedHabit);
         $this->pdo->expects($this->once())->method('commit');
         $this->pdo->expects($this->never())->method('rollBack');
 

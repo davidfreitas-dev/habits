@@ -6,6 +6,7 @@ namespace App\Presentation\Api\V1\Controller;
 
 use App\Application\DTO\CreateHabitRequestDTO;
 use App\Application\DTO\HabitsByDayRequestDTO;
+use App\Application\DTO\ToggleHabitRequestDTO;
 use App\Application\DTO\UpdateHabitRequestDTO;
 use App\Application\Service\ValidationService;
 use App\Application\UseCase\CreateHabitUseCase;
@@ -286,9 +287,13 @@ class HabitController
                 return $this->jsonResponseFactory->fail(null, 'Usuário não autenticado.', 401);
             }
 
-            $dateString = $request->getQueryParams()['date'] ?? null;
+            $data = (array) $request->getParsedBody();
+            $dto = ToggleHabitRequestDTO::fromArray($data);
+
+            $this->validationService->validate($dto);
+
             try {
-                $date = $dateString ? new DateTimeImmutable($dateString) : new DateTimeImmutable();
+                $date = new DateTimeImmutable($dto->date);
             } catch (Exception $e) {
                 return $this->jsonResponseFactory->fail(null, 'Formato de data inválido.', 400);
             }
@@ -297,6 +302,9 @@ class HabitController
             $message = $isCompleted ? 'Hábito marcado com sucesso.' : 'Hábito desmarcado com sucesso.';
 
             return $this->jsonResponseFactory->success(null, $message);
+        } catch (ValidationException $e) {
+            $this->logger->warning('Falha na validação do toggle de hábito', ['exception' => $e]);
+            return $this->jsonResponseFactory->fail($e->getErrors(), $e->getMessage(), 400);
         } catch (HabitNotFoundException $e) {
             $this->logger->warning('Hábito não encontrado ao alterar status', ['exception' => $e]);
             return $this->jsonResponseFactory->fail(null, $e->getMessage(), 404);

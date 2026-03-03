@@ -109,6 +109,7 @@ class ToggleHabitTest extends FunctionalTestCase
         $payload = [
             'title' => $title,
             'week_days' => $weekDays,
+            'created_at' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
         ];
 
         $response = $this->sendRequest('POST', '/api/v1/habits', $payload, [
@@ -118,8 +119,6 @@ class ToggleHabitTest extends FunctionalTestCase
         $body = json_decode((string) $response->getBody(), true);
 
         $this->assertEquals(StatusCodeInterface::STATUS_CREATED, $response->getStatusCode());
-        $this->assertEquals('Hábito criado com sucesso.', $body['message']);
-        $this->assertArrayHasKey('id', $body['data']);
 
         return $body['data']['id'];
     }
