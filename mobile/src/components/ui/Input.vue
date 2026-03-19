@@ -73,16 +73,15 @@ ion-label {
   margin-bottom: 1rem;
 }
 
-ion-input {  
+ion-input {
   border-radius: var(--border-radius-default);
-  border: 2px solid var(--color-border-default);
   background: var(--color-background-secondary);
   
   --color: var(--color-text-primary);
   --placeholder-color: var(--placeholder);
   --placeholder-opacity: .8;
-  --padding-top: 1rem;
-  --padding-bottom: 1rem;
+  --padding-top: 1.125rem;
+  --padding-bottom: 1.125rem;
   --padding-start: 1rem;
   --padding-end: 1rem;
 }

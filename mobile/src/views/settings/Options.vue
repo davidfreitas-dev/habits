@@ -128,7 +128,7 @@ ion-list-header {
   color: var(--color-text-primary);
   font-size: 1.1rem;
   margin-bottom: .5rem;
-  border-bottom: 1px solid var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-background-elevated);
 }
 ion-list-header ion-icon {
   font-size: 1.2rem;

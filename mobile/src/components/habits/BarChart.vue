@@ -28,7 +28,7 @@ const BAR_DEFAULTS = {
 };
 
 const primaryColor = ref(getCSSVar('--color-primary'));
-const borderColor = ref(getCSSVar('--color-border-default'));
+const backgroundColor = ref(getCSSVar('--color-background-elevated'));
 const tickColor = ref(getCSSVar('--color-neutral-500', '#a1a1aa'));
 
 let observer;
@@ -36,7 +36,7 @@ let observer;
 onMounted(() => {
   observer = new MutationObserver(() => {
     primaryColor.value = getCSSVar('--color-primary');
-    borderColor.value = getCSSVar('--color-border-default');
+    backgroundColor.value = getCSSVar('--color-background-elevated');
     tickColor.value = getCSSVar('--color-neutral-500', '#a1a1aa');
   });
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
@@ -57,7 +57,7 @@ const chartData = computed(() => ({
     {
       ...BAR_DEFAULTS,
       data: props.data.map(() => 100),
-      backgroundColor: borderColor.value,
+      backgroundColor: backgroundColor.value,
       order: 2,
       animation: { duration: 0 }
     }

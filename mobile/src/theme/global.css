@@ -49,8 +49,8 @@
   --border-radius-default: var(--radius-lg);
 
   /* Light Theme */
-  --color-background-primary:   #ffffff;
-  --color-background-secondary: var(--color-neutral-100);
+  --color-background-primary:   var(--color-neutral-100);
+  --color-background-secondary: #ffffff;
   --color-background-elevated:  var(--color-neutral-200);
   --color-border-default:       var(--color-neutral-300);
   --color-border-strong:        var(--color-neutral-400);
@@ -62,7 +62,7 @@
 
   /* Habit Progression — Lime palette adaptada ao tema claro */
   --habit-bg-0:       var(--color-neutral-200);
-  --habit-border-0:   var(--color-neutral-400);
+  --habit-border-0:   var(--color-neutral-300);
   --habit-bg-20:      #f7fee7;
   --habit-border-20:  #ecfccb;
   --habit-bg-40:      #ecfccb;

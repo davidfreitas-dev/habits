@@ -41,7 +41,7 @@ const activeTab = computed(() => {
 <style scoped>
 ion-tab-bar {
   --background: var(--color-background-primary);
-  --border: 1px solid var(--color-border-default);
+  --border: 1px solid var(--color-background-elevated);
 }
 ion-tab-button {
   --color-focused: var(--color-primary);

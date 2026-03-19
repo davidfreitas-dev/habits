@@ -11,11 +11,11 @@
     "test:unit": "vitest",
     "lint": "eslint",
     "setup:ios": "npm run build && npx cap add ios && npx cap sync ios && npx cap open ios",
-    "assets:generate": "cp assets/ic_stat_habitus.png android/app/src/main/res/drawable/ic_stat_habitus.png && npx capacitor-assets generate",
     "live:ios": "ionic capacitor run ios -l --external",
     "live:android": "ionic capacitor run android -l --external",
     "prod:android": "ionic build --prod && npx cap sync android && npx cap open android",
-    "prod:ios": "ionic build --prod && npx cap sync ios && npx cap open ios"
+    "prod:ios": "ionic build --prod && npx cap sync ios && npx cap open ios",
+    "assets:generate": "cp assets/ic_stat_habitus.png android/app/src/main/res/drawable/ic_stat_habitus.png && npx capacitor-assets generate"
   },
   "dependencies": {
     "@capacitor/android": "8.1.0",

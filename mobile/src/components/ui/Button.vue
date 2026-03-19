@@ -32,11 +32,11 @@ ion-button {
   text-transform: unset;
   letter-spacing: .0225rem;
 
-  --color: var(--color-neutral-900);
-  --background: var(--color-neutral-100);
-  --background-hover: var(--color-neutral-100);
-  --background-activated: var(--color-neutral-100);
-  --background-focused: var(--color-neutral-100);
+  --color: var(--color-background-primary);
+  --background: var(--color-text-primary);
+  --background-hover: var(--color-text-primary);
+  --background-activated: var(--color-text-primary);
+  --background-focused: var(--color-text-primary);
   --border-radius: var(--border-radius-default);
 }
 
